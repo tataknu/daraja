@@ -27,8 +27,8 @@ export const Route = createFileRoute("/")({
 function AppTabs() {
   const [tab, setTab] = useState<"demo" | "data">("demo");
   return (
-    <div className="min-h-screen">
-      <nav className="border-b border-border bg-card/60">
+    <div className="flex h-screen flex-col overflow-hidden">
+      <nav className="shrink-0 border-b border-border bg-card/60">
         <div className="mx-auto flex max-w-7xl gap-1 px-6 pt-3">
           {(["demo", "data"] as const).map((t) => (
             <button
@@ -136,8 +136,8 @@ function Simulator() {
   });
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-border bg-card/60">
+    <div className="flex min-h-0 flex-1 flex-col">
+      <header className="shrink-0 border-b border-border bg-card/60">
 
         <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-4 px-6 py-6">
 
@@ -163,8 +163,8 @@ function Simulator() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl space-y-8 px-6 py-8">
-        <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
+      <main className="mx-auto w-full max-w-7xl min-h-0 flex-1 px-6 py-6">
+        <div className="grid h-full gap-6 lg:grid-cols-[1fr_380px]">
           <GuestInbox
             guests={guests} guest={guest} messages={live.messages} bookings={live.bookings} busy={!!busy}
             onPick={setGuestId}
@@ -193,7 +193,7 @@ function GuestInbox(props: {
   useEffect(() => { endRef.current?.scrollIntoView({ block: "nearest" }); }, [thread.length]);
 
   return (
-    <section className="paper flex flex-col overflow-hidden">
+    <section className="paper flex h-full min-h-0 flex-col overflow-hidden">
       <div className="flex flex-wrap items-center gap-3 border-b border-border px-5 py-3">
         <h2 className="text-lg font-semibold">Guest inbox</h2>
         <Select value={guest?.id ?? ""} onValueChange={props.onPick}>
@@ -208,7 +208,7 @@ function GuestInbox(props: {
           <Button type="submit" variant="secondary" disabled={props.busy}>Add</Button>
         </form>
       </div>
-      <div className="h-[420px] space-y-3 overflow-y-auto bg-background/50 px-5 py-4">
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-background/50 px-5 py-4">
         {thread.length === 0 && <p className="pt-16 text-center text-sm text-muted-foreground">No emails yet. Write to Noor in any language.</p>}
         {thread.map((m) => (
           <div key={m.id} className={m.direction === "in" ? "ml-12" : "mr-12"}>
@@ -240,11 +240,11 @@ function NoorPhone(props: { host: Contact | undefined; messages: Message[]; busy
   const endRef = useRef<HTMLDivElement>(null);
   useEffect(() => { endRef.current?.scrollIntoView({ block: "nearest" }); }, [sms.length]);
   return (
-    <section className="mx-auto w-full max-w-[340px]">
-      <div className="rounded-[2.5rem] bg-phone-body p-5 shadow-phone">
+    <section className="mx-auto h-full min-h-0 w-full max-w-[340px]">
+      <div className="flex h-full flex-col rounded-[2.5rem] bg-phone-body p-5 shadow-phone">
         <div className="mx-auto mb-3 h-1.5 w-16 rounded-full bg-phone-bezel" />
-        <div className="rounded-md bg-phone-bezel p-2">
-          <div className="lcd-screen h-[380px] overflow-y-auto rounded-sm p-3 text-lg leading-tight">
+        <div className="min-h-0 flex-1 rounded-md bg-phone-bezel p-2">
+          <div className="lcd-screen h-full overflow-y-auto rounded-sm p-3 text-lg leading-tight">
             <div className="mb-2 flex justify-between border-b border-lcd-ink/40 pb-1 text-base">
               <span>▮▮▮▯ Noor</span><span>SMS</span>
             </div>
