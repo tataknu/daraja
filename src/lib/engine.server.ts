@@ -330,6 +330,13 @@ async function handleGuest(guest: Contact, message_id: string, text: string, thr
   const log = (action: string, routed = false) =>
     logDecision(message_id, { intent: r.intent, confidence: r.confidence, entities: { ...r.entities, missing: r.missing }, model: ai.MODEL, action, routed });
 
+  // Any message may also carry feedback — save it, then continue with the main intent.
+  if (r.intent !== "feedback" && r.feedback_text?.trim()) {
+    const fbBooking = booking ?? (await latestBooking(guest));
+    await saveFeedback(fbBooking?.id ?? null, r.feedback_text.trim(), r.language);
+    await logDecision(message_id, { intent: "feedback", confidence: r.confidence, entities: { feedback_text: r.feedback_text }, model: ai.MODEL, action: "side_feedback_saved", routed: false });
+  }
+
   // Low confidence / unknown → human.
   if (r.confidence < CONF_MIN || r.intent === "unknown") {
     booking = booking ?? (await newBooking(guest, text));
@@ -408,10 +415,8 @@ async function handleGuest(guest: Contact, message_id: string, text: string, thr
       return { booking_id: booking.id };
     }
     case "feedback": {
-      const { data: last } = await db.from("bookings").select("*").eq("guest_id", guest.id).order("created_at", { ascending: false }).limit(1);
-      const fb = booking ?? ((last?.[0] as Booking) ?? null);
-      const a = await ai.analyzeFeedback(text).catch(() => ({ translation_en: text, themes: [], sentiment: "neutral" as const }));
-      await db.from("feedback").insert({ booking_id: fb?.id ?? null, text_original: text, lang: r.language, text_translated: a.translation_en, themes: a.themes, sentiment: a.sentiment });
+      const fb = booking ?? (await latestBooking(guest));
+      await saveFeedback(fb?.id ?? null, r.feedback_text?.trim() || text, r.language);
       if (fb?.status === "FEEDBACK_REQUESTED") await transition(fb, "CLOSED", "system");
       await emailGuest(guest, "Thank you so much for your feedback — Noor will read every word.", fb?.id);
       await log("feedback_saved");
@@ -419,6 +424,16 @@ async function handleGuest(guest: Contact, message_id: string, text: string, thr
     }
   }
   return {};
+}
+
+async function latestBooking(guest: Contact): Promise<Booking | null> {
+  const { data } = await db.from("bookings").select("*").eq("guest_id", guest.id).order("created_at", { ascending: false }).limit(1);
+  return (data?.[0] as Booking) ?? null;
+}
+
+async function saveFeedback(booking_id: number | null, text: string, lang: string) {
+  const a = await ai.analyzeFeedback(text).catch(() => ({ translation_en: text, themes: [] as string[], sentiment: "neutral" as const }));
+  await db.from("feedback").insert({ booking_id, text_original: text, lang, text_translated: a.translation_en, themes: a.themes, sentiment: a.sentiment });
 }
 
 async function newBooking(guest: Contact, text: string): Promise<Booking> {

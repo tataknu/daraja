@@ -15,6 +15,7 @@ export interface GuestClassification {
   entities: { date_from: string | null; date_to: string | null; party_size: number | null; slot: string | null };
   missing: string[];
   translation_for_noor: string;
+  feedback_text: string | null;
 }
 export interface HostClassification {
   intent: HostIntent;
@@ -80,7 +81,7 @@ async function callTool<T>(system: string, user: string, name: string, parameter
 export async function classifyGuest(text: string, ctx: { today: string; slots: string[]; booking: string }): Promise<GuestClassification> {
   return callTool<GuestClassification>(
     `You classify emails sent to a small coffee-farm tour operator. Today is ${ctx.today}. Tour slots: ${ctx.slots.join(", ")} (morning = first slot, afternoon = second). Current booking of this guest: ${ctx.booking}.
-Rules: dates as ISO YYYY-MM-DD (assume the next future occurrence). slot must be one of the listed slots or null. "missing" lists which of date_from, party_size are still unknown for a booking_request (consider the existing booking). translation_for_noor: faithful Swahili translation of the email. Never invent prices, availability or directions. If unsure, use lower confidence.`,
+Rules: dates as ISO YYYY-MM-DD (assume the next future occurrence). slot must be one of the listed slots or null. "missing" lists which of date_from, party_size are still unknown for a booking_request (consider the existing booking). translation_for_noor: faithful Swahili translation of the email. feedback_text: if ANY part of the email expresses an opinion, praise, complaint or suggestion about the farm, tour, host or service (even alongside a question, booking or cancellation), copy that part verbatim in the original language; otherwise null. Choose intent by the main purpose of the email; use "feedback" only when giving feedback is its main purpose. Never invent prices, availability or directions. If unsure, use lower confidence.`,
     text,
     "classify_guest",
     {
@@ -100,8 +101,9 @@ Rules: dates as ISO YYYY-MM-DD (assume the next future occurrence). slot must be
         },
         missing: { type: "array", items: { type: "string", enum: ["date_from", "party_size", "slot"] } },
         translation_for_noor: { type: "string" },
+        feedback_text: { type: ["string", "null"] },
       },
-      required: ["intent", "confidence", "language", "entities", "missing", "translation_for_noor"],
+      required: ["intent", "confidence", "language", "entities", "missing", "translation_for_noor", "feedback_text"],
     },
   );
 }
