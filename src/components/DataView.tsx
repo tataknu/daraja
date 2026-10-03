@@ -71,7 +71,7 @@ export function DataView() {
       </div>
       {TABLES.map((t) => {
         const rows = data[t.name] ?? [];
-        const cols = rows.length ? Object.keys(rows[0]) : [];
+        const cols = rows.length ? Object.keys(rows[0] ?? {}) : [];
         return (
           <section key={t.name} className="paper overflow-hidden">
             <div className="flex flex-wrap items-baseline gap-3 border-b border-border px-5 py-3">
