@@ -1,0 +1,3 @@
+/* Theme and shadcn components come from @turflow/ui; scan this app's files too. */
+@import "@turflow/ui/globals.css";
+@source "./";

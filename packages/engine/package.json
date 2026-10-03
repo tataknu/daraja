@@ -1,0 +1,21 @@
+{
+  "name": "@turflow/engine",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./engine.server": "./src/engine.server.ts",
+    "./ai-adapter.server": "./src/ai-adapter.server.ts",
+    "./booking-state": "./src/booking-state.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@turflow/db": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.16.5",
+    "typescript": "^5.8.3",
+    "@turflow/typescript-config": "workspace:*"
+  }
+}
