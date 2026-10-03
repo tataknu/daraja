@@ -6,12 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@turflow/db/types";
 import { postInbound, createGuest, runTimersNow, generateInsights, resetDemo } from "@/lib/sim.functions";
 import { PhoneShell } from "@/components/phone-shell";
+import { DataView } from "@/components/DataView";
 import { demoEmail, personaById } from "@/lib/personas";
 import { Button } from "@turflow/ui/components/button";
 import { Input } from "@turflow/ui/components/input";
 import { Label } from "@turflow/ui/components/label";
 import { Textarea } from "@turflow/ui/components/textarea";
-import { Badge } from "@turflow/ui/components/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@turflow/ui/components/select";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
@@ -73,13 +73,6 @@ function useLive() {
   return { contacts, messages, bookings, reload: load };
 }
 
-const STATUS_STYLE: Record<string, string> = {
-  CONFIRMED: "bg-success text-primary-foreground",
-  PENDING_NOOR: "bg-warning text-foreground",
-  COUNTER_OFFERED: "bg-accent text-accent-foreground",
-  INCOMPLETE: "bg-secondary text-secondary-foreground",
-};
-
 interface Arrival {
   name: string;
   language: string;
@@ -99,6 +92,7 @@ function Simulator() {
   const [busy, setBusy] = useState<string | null>(null);
   const [guestId, setGuestId] = useState<string>("");
   const [arrival, setArrival] = useState<Arrival | null>(null);
+  const [tab, setTab] = useState<"demo" | "data">("demo");
 
   const host = live.contacts.find((c) => c.role === "host");
   const guests = live.contacts.filter((c) => c.role === "guest");
@@ -168,12 +162,30 @@ function Simulator() {
   });
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-border bg-card/60">
+    <div className="flex min-h-screen flex-col lg:h-screen lg:overflow-hidden">
+      <header className="shrink-0 border-b border-border bg-card/60">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-4 sm:px-6">
-          <div className="min-w-0">
-            <Link to="/" className="text-sm text-muted-foreground transition hover:text-foreground">← Noor's Farm Visits</Link>
-            <h1 className="text-2xl font-bold text-primary sm:text-3xl">Live demo</h1>
+          <div className="flex min-w-0 flex-wrap items-end gap-x-6 gap-y-3">
+            <div className="min-w-0">
+              <Link to="/" className="text-sm text-muted-foreground transition hover:text-foreground">← Noor's Farm Visits</Link>
+              <h1 className="text-2xl font-bold text-primary sm:text-3xl">Live demo</h1>
+            </div>
+            <div role="tablist" aria-label="View" className="flex rounded-lg border border-border bg-background p-0.5">
+              {(["demo", "data"] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === t}
+                  onClick={() => setTab(t)}
+                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t === "demo" ? "Conversation" : "Data"}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Button onClick={playDemo} disabled={!!busy}>{busy === "demo" ? "Playing…" : "Play scripted demo"}</Button>
@@ -190,9 +202,10 @@ function Simulator() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:space-y-8 sm:px-6 sm:py-8">
+      {tab === "data" ? <DataView /> : (
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:min-h-0">
         {arrival && <ArrivalBanner arrival={arrival} bookings={live.bookings} onDismiss={() => setArrival(null)} />}
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="grid gap-8 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,1fr)_340px] lg:grid-rows-[minmax(0,1fr)]">
           <GuestInbox
             guests={guests} guest={guest} messages={live.messages} bookings={live.bookings} busy={!!busy}
             onPick={setGuestId}
@@ -201,8 +214,8 @@ function Simulator() {
           />
           <NoorPhone host={host} messages={live.messages} busy={!!busy} onSend={(t) => host && run("sms", () => sendSms(t))} />
         </div>
-        <BookingsTable bookings={live.bookings} contacts={live.contacts} />
       </main>
+      )}
     </div>
   );
 }
@@ -214,7 +227,14 @@ function ArrivalBanner({ arrival, bookings, onDismiss }: { arrival: Arrival; boo
   let tone = "border-border bg-card";
   if (arrival.status === "sending") text = `Sending ${first}'s email. The assistant is reading it…`;
   else if (arrival.status === "error") { text = `${first}'s email couldn't be sent. Try again from the inbox.`; tone = "border-destructive/40 bg-destructive/5"; }
-  else if (booking?.status === "PENDING_NOOR") { text = `B${booking.id} is waiting for Noor. On her phone, tap 1 and then TUMA to accept.`; tone = "border-warning/60 bg-warning/10"; }
+  else if (booking?.status === "PENDING_NOOR") {
+    // A bare "1" only works when this is the only request waiting; otherwise Noor names the booking.
+    const others = bookings.filter((b) => b.status === "PENDING_NOOR" && b.id !== booking.id).length;
+    text = others
+      ? `B${booking.id} is waiting for Noor, with ${others} other request${others === 1 ? "" : "s"}. On her phone, type "B${booking.id} 1" and then TUMA to accept.`
+      : `B${booking.id} is waiting for Noor. On her phone, tap 1 and then TUMA to accept.`;
+    tone = "border-warning/60 bg-warning/10";
+  }
   else if (booking?.status === "CONFIRMED") { text = `B${booking.id} is confirmed. ${first} got the confirmation in ${arrival.language}.`; tone = "border-success/50 bg-success/10"; }
   else if (booking?.status === "DECLINED") text = `Noor declined B${booking.id}. ${first} was told in ${arrival.language}.`;
   else text = `The assistant answered ${first} in ${arrival.language}. See the inbox.`;
@@ -304,7 +324,7 @@ function GuestInbox(props: {
   useEffect(() => { const el = listRef.current; if (el) el.scrollTop = el.scrollHeight; }, [thread.length]);
 
   return (
-    <section className="paper flex min-w-0 flex-col overflow-hidden" aria-labelledby="inbox-title">
+    <section className="paper flex min-w-0 flex-col overflow-hidden lg:h-full lg:min-h-0" aria-labelledby="inbox-title">
       <div className="flex flex-wrap items-center gap-3 border-b border-border px-4 py-3 sm:px-5">
         <h2 id="inbox-title" className="text-lg font-semibold">Guest inbox</h2>
         <Select value={guest?.id ?? ""} onValueChange={props.onPick}>
@@ -315,7 +335,7 @@ function GuestInbox(props: {
         </Select>
         <div className="sm:ml-auto"><NewGuestDialog busy={props.busy} onCreate={props.onCreate} /></div>
       </div>
-      <div ref={listRef} className="h-[420px] space-y-3 overflow-y-auto bg-background/50 px-4 py-4 sm:px-5">
+      <div ref={listRef} className="h-[420px] space-y-3 overflow-y-auto bg-background/50 px-4 py-4 sm:px-5 lg:h-auto lg:min-h-0 lg:flex-1">
         {thread.length === 0 && <p className="pt-16 text-center text-sm text-muted-foreground">No emails yet. Write to Noor in any language.</p>}
         {thread.map((m) => (
           <div key={m.id} className={m.direction === "in" ? "ml-6 sm:ml-12" : "mr-6 sm:mr-12"}>
@@ -346,12 +366,13 @@ function NoorPhone(props: { host: Contact | undefined; messages: Message[]; busy
   const screenRef = useRef<HTMLDivElement>(null);
   useEffect(() => { const el = screenRef.current; if (el) el.scrollTop = el.scrollHeight; }, [sms.length]);
   return (
-    <section className="flex flex-col items-center gap-3" aria-labelledby="phone-title">
+    <section className="flex flex-col items-center gap-3 lg:h-full lg:min-h-0" aria-labelledby="phone-title">
       <div className="text-center">
         <h2 id="phone-title" className="text-lg font-semibold">Noor's phone</h2>
         <p className="text-xs text-muted-foreground">Basic phone · SMS in Swahili, English below each message</p>
       </div>
       <PhoneShell
+        fill
         screenRef={screenRef}
         label="Noor's SMS messages"
         footer={
@@ -381,37 +402,6 @@ function NoorPhone(props: { host: Contact | undefined; messages: Message[]; busy
           </div>
         ))}
       </PhoneShell>
-    </section>
-  );
-}
-
-function BookingsTable({ bookings, contacts }: { bookings: Booking[]; contacts: Contact[] }) {
-  return (
-    <section className="paper overflow-hidden" aria-labelledby="bookings-title">
-      <h2 id="bookings-title" className="border-b border-border px-4 py-3 text-lg font-semibold sm:px-5">Bookings</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-muted text-left text-xs uppercase tracking-wider text-muted-foreground">
-            <tr>
-              <th className="px-4 py-2 sm:px-5">ID</th><th className="px-4 py-2 sm:px-5">Guest</th><th className="px-4 py-2 sm:px-5">Date</th>
-              <th className="hidden px-5 py-2 sm:table-cell">Slot</th><th className="hidden px-5 py-2 sm:table-cell">Party</th><th className="px-4 py-2 sm:px-5">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.length === 0 && <tr><td colSpan={6} className="px-5 py-6 text-center text-muted-foreground">No bookings yet</td></tr>}
-            {bookings.map((b) => (
-              <tr key={b.id} className="border-t border-border">
-                <td className="px-4 py-2 font-mono font-semibold sm:px-5">B{b.id}</td>
-                <td className="px-4 py-2 sm:px-5">{contacts.find((c) => c.id === b.guest_id)?.name}</td>
-                <td className="px-4 py-2 tabular-nums sm:px-5">{b.date_from ?? "—"}</td>
-                <td className="hidden px-5 py-2 tabular-nums sm:table-cell">{b.slot ?? "—"}</td>
-                <td className="hidden px-5 py-2 tabular-nums sm:table-cell">{b.party_size ?? "—"}</td>
-                <td className="px-4 py-2 sm:px-5"><Badge className={STATUS_STYLE[b.status] ?? "bg-muted text-muted-foreground"}>{b.status.replace("_", " ")}</Badge></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
     </section>
   );
 }
