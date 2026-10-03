@@ -26,7 +26,6 @@ export const Route = createFileRoute("/")({
 type Contact = Tables<"contacts">;
 type Message = Tables<"messages">;
 type Booking = Tables<"bookings">;
-type Decision = Tables<"decisions">;
 
 const uid = () => `sim-in-${crypto.randomUUID()}`;
 
@@ -34,15 +33,13 @@ function useLive() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [decisions, setDecisions] = useState<Decision[]>([]);
   const load = async () => {
-    const [c, m, b, d] = await Promise.all([
+    const [c, m, b] = await Promise.all([
       supabase.from("contacts").select("*").order("created_at"),
       supabase.from("messages").select("*").order("created_at"),
       supabase.from("bookings").select("*").order("id", { ascending: false }),
-      supabase.from("decisions").select("*").order("created_at", { ascending: false }).limit(100),
     ]);
-    setContacts(c.data ?? []); setMessages(m.data ?? []); setBookings(b.data ?? []); setDecisions(d.data ?? []);
+    setContacts(c.data ?? []); setMessages(m.data ?? []); setBookings(b.data ?? []);
   };
   useEffect(() => {
     load();
@@ -51,12 +48,11 @@ function useLive() {
     const ch = supabase.channel("sim")
       .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, debounced)
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, debounced)
-      .on("postgres_changes", { event: "*", schema: "public", table: "decisions" }, debounced)
       .on("postgres_changes", { event: "*", schema: "public", table: "contacts" }, debounced)
       .subscribe();
     return () => { clearTimeout(t); supabase.removeChannel(ch); };
   }, []);
-  return { contacts, messages, bookings, decisions, reload: load };
+  return { contacts, messages, bookings, reload: load };
 }
 
 const STATUS_STYLE: Record<string, string> = {
@@ -155,8 +151,6 @@ function Simulator() {
           <NoorPhone host={host} messages={live.messages} busy={!!busy} onSend={(t) => host && run("sms", () => sendSms(t))} />
         </div>
         {busy && busy !== "demo" && <p className="text-center text-sm text-muted-foreground">Working…</p>}
-        <BookingsTable bookings={live.bookings} contacts={live.contacts} />
-        <DecisionLog decisions={live.decisions} messages={live.messages} />
       </main>
     </div>
   );
