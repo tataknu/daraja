@@ -6,14 +6,16 @@
     ".": "./src/index.server.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@turflow/db": "workspace:*"
   },
   "devDependencies": {
+    "@turflow/typescript-config": "workspace:*",
     "@types/node": "^22.16.5",
     "typescript": "^5.8.3",
-    "@turflow/typescript-config": "workspace:*"
+    "vitest": "^4.1.10"
   }
 }

@@ -77,6 +77,7 @@
         "@turflow/typescript-config": "workspace:*",
         "@types/node": "^22.16.5",
         "typescript": "^5.8.3",
+        "vitest": "^4.1.10",
       },
     },
     "packages/typescript-config": {
