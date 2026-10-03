@@ -136,7 +136,9 @@ function Simulator() {
   });
 
   return (
+    <div className="min-h-screen">
       <header className="border-b border-border bg-card/60">
+
         <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-4 px-6 py-6">
 
           <div>
