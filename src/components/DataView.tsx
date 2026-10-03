@@ -95,11 +95,12 @@ export function DataView() {
                     </tr>
                   </thead>
                   <tbody>
-                    {rows.map((r, i) => (
+                    {rows.map((row, i) => (
                       <tr key={i} className="border-b border-border/50 align-top last:border-0 hover:bg-secondary/30">
                         {cols.map((c) => (
                           <td key={c} className="max-w-[260px] whitespace-pre-wrap break-words px-3 py-2">
-                            {cell(r[c])}
+                            {cell(row?.[c])}
+
                           </td>
                         ))}
                       </tr>
