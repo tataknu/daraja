@@ -64,12 +64,21 @@ export async function sendMessage(
   opts: { booking_id?: number | null | undefined; text_translated?: string | null | undefined; thread_ref?: string | null | undefined } = {},
 ) {
   // Phase 1: the simulator IS the transport — writing the row makes it appear in the inbox/phone.
+  const body = channel === "sms" ? sms160(text) : text;
+  const text_en = to.language === "en" ? null : (opts.text_translated ?? (await englishOf(body, to.language)));
   const { error } = await db.from("messages").insert({
+    text_en,
     direction: "out", channel, contact_id: to.id, booking_id: opts.booking_id ?? null,
     provider_msg_id: `sim-out-${crypto.randomUUID()}`, thread_ref: opts.thread_ref ?? null,
     text_original: channel === "sms" ? sms160(text) : text, lang: to.language, text_translated: opts.text_translated ?? null,
   });
   if (error) throw error;
+}
+
+// English gloss of any non-English message, stored for operators/reviewers.
+async function englishOf(text: string, lang: string): Promise<string | null> {
+  if (lang === "en" || !/[a-zA-Z\u00C0-\uFFFF]{3,}/.test(text)) return null;
+  return ai.translate(text, lang, "en").catch(() => null);
 }
 
 async function smsNoor(text: string, booking_id?: number | null | undefined) {
@@ -142,7 +151,11 @@ export async function handleInbound(input: InboundInput) {
     if (error.code === "23505") return { ignored: true as const };
     throw error;
   }
-  if (contact!.role === "host") return handleHost(contact as Contact, msg.id, input.text);
+  if (contact!.role === "host") {
+    const en = await englishOf(input.text, contact!.language);
+    if (en) await db.from("messages").update({ text_en: en }).eq("id", msg.id);
+    return handleHost(contact as Contact, msg.id, input.text);
+  }
   return handleGuest(contact as Contact, msg.id, input.text, input.thread_ref ?? null);
 }
 
@@ -312,7 +325,8 @@ async function handleGuest(guest: Contact, message_id: string, text: string, thr
     await db.from("contacts").update({ language: r.language }).eq("id", guest.id);
     guest = { ...guest, language: r.language };
   }
-  await db.from("messages").update({ lang: r.language, text_translated: r.translation_for_noor, booking_id: booking?.id ?? null }).eq("id", message_id);
+  const text_en = await englishOf(text, r.language);
+  await db.from("messages").update({ lang: r.language, text_translated: r.translation_for_noor, text_en, booking_id: booking?.id ?? null }).eq("id", message_id);
   const log = (action: string, routed = false) =>
     logDecision(message_id, { intent: r.intent, confidence: r.confidence, entities: { ...r.entities, missing: r.missing }, model: ai.MODEL, action, routed });
 
