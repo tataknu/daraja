@@ -15,7 +15,38 @@ packages/
   typescript-config/      Shared strict tsconfig
 ```
 
-## Getting started
+## Local development (Makefile)
+
+Needs Docker running, Node, and an OpenAI API key. bun, the Supabase CLI and wrangler run through
+`npx` when they aren't installed.
+
+```sh
+OPENAI_API_KEY=sk-... make setup   # deps, local Supabase in Docker, migrations + seed, apps/web/.env.local
+make dev                           # app on http://localhost:8080 against the local stack
+make e2e                           # real webhooks end to end (see below)
+make check                         # typecheck, unit tests, production build
+make deploy-local                  # the built Cloudflare Worker, running locally on http://localhost:8787
+make e2e-worker                    # the end-to-end test against that built Worker
+make db-reset                      # wipe the local database and re-seed it
+make db-down                       # stop Supabase (data is kept)
+```
+
+Run `make` to list every target.
+
+Locally, the AI adapter calls OpenAI directly (`AI_GATEWAY_URL`, `AI_MODEL`, `OPENAI_API_KEY` in
+`apps/web/.env.local`). Inside Lovable it keeps using Lovable's AI gateway.
+
+`make e2e` drives the real webhooks, as Postmark and Twilio would:
+1. A guest emails in German.
+2. The AI classifies the email, and the booking waits for Noor.
+3. Noor gets a Swahili SMS.
+4. She replies `B<id> 1` (signed like Twilio).
+5. The booking is confirmed, and the guest gets a German email.
+6. The cron hook runs.
+
+It checks every step in the database and prints the transcript.
+
+## Turborepo commands
 
 ```sh
 bun install

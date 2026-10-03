@@ -2,8 +2,22 @@
 // local stack (MASSIVE-trained intent classifier + NLLB-200 for translation)
 // can replace these implementations later without touching workflow code.
 
-const GATEWAY = "https://ai.gateway.lovable.dev/v1/responses";
-export const MODEL = "openai/gpt-6-astra";
+// Lovable's AI gateway by default. Any OpenAI Responses-compatible endpoint works too, which is how
+// local runs use OpenAI directly: AI_GATEWAY_URL=https://api.openai.com/v1/responses + AI_MODEL + OPENAI_API_KEY.
+const LOVABLE_GATEWAY = "https://ai.gateway.lovable.dev/v1/responses";
+const GATEWAY = process.env["AI_GATEWAY_URL"] || LOVABLE_GATEWAY;
+export const MODEL = process.env["AI_MODEL"] || "openai/gpt-6-astra";
+
+function authHeaders(): Record<string, string> {
+  if (GATEWAY === LOVABLE_GATEWAY) {
+    const key = process.env["LOVABLE_API_KEY"];
+    if (!key) throw new Error("AI key missing");
+    return { "Lovable-API-Key": key, "X-Lovable-AIG-SDK": "fetch" };
+  }
+  const key = process.env["OPENAI_API_KEY"];
+  if (!key) throw new Error("AI key missing");
+  return { Authorization: `Bearer ${key}` };
+}
 
 export type GuestIntent = "booking_request" | "modify" | "cancel" | "question" | "feedback" | "unknown";
 export type HostIntent = "approve" | "decline" | "propose_other_date" | "answer_question" | "unknown";
@@ -37,11 +51,9 @@ function strict(schema: any): any {
 }
 
 async function callTool<T>(system: string, user: string, name: string, parameters: object): Promise<T> {
-  const key = process.env["LOVABLE_API_KEY"];
-  if (!key) throw new Error("AI key missing");
   const res = await fetch(GATEWAY, {
     method: "POST",
-    headers: { "Lovable-API-Key": key, "Content-Type": "application/json", "X-Lovable-AIG-SDK": "fetch" },
+    headers: { ...authHeaders(), "Content-Type": "application/json" },
     body: JSON.stringify({
       model: MODEL,
       instructions: system,

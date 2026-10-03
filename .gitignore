@@ -33,3 +33,7 @@ dist-ssr
 
 # Turborepo
 .turbo
+
+# Supabase CLI local state
+packages/db/supabase/.branches
+packages/db/supabase/.temp
