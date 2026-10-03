@@ -8,7 +8,6 @@ import { postInbound, createGuest, runTimersNow, generateInsights, resetDemo } f
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const Route = createFileRoute("/")({
@@ -54,13 +53,6 @@ function useLive() {
   }, []);
   return { contacts, messages, bookings, reload: load };
 }
-
-const STATUS_STYLE: Record<string, string> = {
-  CONFIRMED: "bg-success text-primary-foreground",
-  PENDING_NOOR: "bg-warning text-foreground",
-  COUNTER_OFFERED: "bg-accent text-accent-foreground",
-  INCOMPLETE: "bg-secondary text-secondary-foreground",
-};
 
 function Simulator() {
   const live = useLive();
