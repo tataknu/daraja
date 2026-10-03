@@ -10,33 +10,76 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicInboundEmailRouteImport } from './routes/api/public/inbound-email'
+import { Route as ApiPublicInboundSmsRouteImport } from './routes/api/public/inbound-sms'
+import { Route as ApiPublicHooksRunTimersRouteImport } from './routes/api/public/hooks/run-timers'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicInboundEmailRoute = ApiPublicInboundEmailRouteImport.update({
+  id: '/api/public/inbound-email',
+  path: '/api/public/inbound-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicInboundSmsRoute = ApiPublicInboundSmsRouteImport.update({
+  id: '/api/public/inbound-sms',
+  path: '/api/public/inbound-sms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHooksRunTimersRoute = ApiPublicHooksRunTimersRouteImport.update({
+  id: '/api/public/hooks/run-timers',
+  path: '/api/public/hooks/run-timers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/public/inbound-email': typeof ApiPublicInboundEmailRoute
+  '/api/public/inbound-sms': typeof ApiPublicInboundSmsRoute
+  '/api/public/hooks/run-timers': typeof ApiPublicHooksRunTimersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/public/inbound-email': typeof ApiPublicInboundEmailRoute
+  '/api/public/inbound-sms': typeof ApiPublicInboundSmsRoute
+  '/api/public/hooks/run-timers': typeof ApiPublicHooksRunTimersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/public/inbound-email': typeof ApiPublicInboundEmailRoute
+  '/api/public/inbound-sms': typeof ApiPublicInboundSmsRoute
+  '/api/public/hooks/run-timers': typeof ApiPublicHooksRunTimersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/api/public/inbound-email'
+    | '/api/public/inbound-sms'
+    | '/api/public/hooks/run-timers'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/api/public/inbound-email'
+    | '/api/public/inbound-sms'
+    | '/api/public/hooks/run-timers'
+  id:
+    | '__root__'
+    | '/'
+    | '/api/public/inbound-email'
+    | '/api/public/inbound-sms'
+    | '/api/public/hooks/run-timers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiPublicInboundEmailRoute: typeof ApiPublicInboundEmailRoute
+  ApiPublicInboundSmsRoute: typeof ApiPublicInboundSmsRoute
+  ApiPublicHooksRunTimersRoute: typeof ApiPublicHooksRunTimersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +91,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/inbound-email': {
+      id: '/api/public/inbound-email'
+      path: '/api/public/inbound-email'
+      fullPath: '/api/public/inbound-email'
+      preLoaderRoute: typeof ApiPublicInboundEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/inbound-sms': {
+      id: '/api/public/inbound-sms'
+      path: '/api/public/inbound-sms'
+      fullPath: '/api/public/inbound-sms'
+      preLoaderRoute: typeof ApiPublicInboundSmsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/run-timers': {
+      id: '/api/public/hooks/run-timers'
+      path: '/api/public/hooks/run-timers'
+      fullPath: '/api/public/hooks/run-timers'
+      preLoaderRoute: typeof ApiPublicHooksRunTimersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiPublicInboundEmailRoute: ApiPublicInboundEmailRoute,
+  ApiPublicInboundSmsRoute: ApiPublicInboundSmsRoute,
+  ApiPublicHooksRunTimersRoute: ApiPublicHooksRunTimersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
