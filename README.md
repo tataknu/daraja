@@ -1,7 +1,13 @@
-# Turflow
+# Daraja
 
-A small-AI front desk for Noor's farm tours: visitors write by email or SMS in any language,
-Noor approves from a basic phone by SMS, and the AI only classifies and translates. Code decides.
+<img src="docs/brand/daraja-horizontal.svg" alt="Daraja" height="48">
+
+Daraja (Swahili for _bridge_) is a small-AI front desk for small tourism hosts: visitors write by
+email or SMS in any language, the host approves from a basic phone by SMS, and the AI only
+classifies and translates. Code decides.
+
+The example host is Noor, a smallholder coffee farmer in the Ondera highlands (the Tourism brief's
+persona). The live demo runs her farm; the engine is not specific to it. Brand files: `docs/brand/`.
 
 Monorepo built with [Turborepo](https://turborepo.dev) and bun workspaces.
 
@@ -72,15 +78,15 @@ Server secrets (`SUPABASE_SERVICE_ROLE_KEY`, `LOVABLE_API_KEY`, `TWILIO_AUTH_TOK
 
 - shadcn components: run `bunx shadcn@latest add <component>` from `apps/web`. `components.json`
   routes them into `packages/ui`, so every app shares them.
-- Import them as `@turflow/ui/components/<name>`, and helpers as `@turflow/ui/lib/utils`.
-- A new app (for example a landing page) imports `@turflow/ui/globals.css` to get the same theme.
+- Import them as `@daraja/ui/components/<name>`, and helpers as `@daraja/ui/lib/utils`.
+- A new app (for example a landing page) imports `@daraja/ui/globals.css` to get the same theme.
 
 ## Database
 
-- `packages/db/migrations`: SQL migrations, applied with `bun run --filter @turflow/db db:migrate`
+- `packages/db/migrations`: SQL migrations, applied with `bun run --filter @daraja/db db:migrate`
   (needs `LOVABLE_DB_MIGRATION_URL`).
 - After a schema change, regenerate the types with
-  `bun run --filter @turflow/db gen:types` (needs the Supabase CLI).
+  `bun run --filter @daraja/db gen:types` (needs the Supabase CLI).
 
 ## Lovable
 

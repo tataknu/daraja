@@ -6,20 +6,20 @@ const STEPS = [
     lcd: false,
   },
   {
-    title: "The assistant reads it",
-    body: "It finds the date, group size and time of day, and translates the message for Noor.",
+    title: "Daraja reads it",
+    body: "It finds the date, group size and time of day, and translates the message for the host.",
     sample: "3 people · Sat 10 Oct · morning",
     lcd: false,
   },
   {
-    title: "Noor decides",
-    body: "One SMS in Swahili. She replies 1 to accept, 2 to decline, or 3 to offer another day.",
+    title: "The host decides",
+    body: "One short SMS on any phone. They reply 1 to accept, 2 to decline, or 3 to offer another day.",
     sample: "Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine",
     lcd: true,
   },
   {
     title: "The visitor hears back",
-    body: "In their own language, with directions once Noor confirms.",
+    body: "In their own language, with directions once the host confirms.",
     sample: "Tolle Neuigkeiten — Noor hat deinen Besuch bestätigt.",
     lcd: false,
   },
@@ -33,8 +33,9 @@ export function HowItWorks() {
           One email in, one SMS out
         </h2>
         <p className="mt-3 max-w-2xl text-muted-foreground">
-          Noor works on the slope all day and her phone stays at the house. The assistant does the
-          reading and translating, so a request costs her one short message.
+          Small hosts are out working all day, often with only a basic phone. Daraja does the
+          reading and translating, so a booking request costs the host one short message. The
+          samples are from Noor's farm, our example host.
         </p>
         <ol className="mt-12 grid gap-10 md:grid-cols-4 md:gap-6">
           {STEPS.map((s, i) => (

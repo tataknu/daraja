@@ -11,7 +11,8 @@ import {
   resetDemo,
 } from "@/lib/sim.functions";
 import { demoEmail, personaById } from "@/lib/personas";
-import { Button } from "@turflow/ui/components/button";
+import { Button } from "@daraja/ui/components/button";
+import { DarajaMark } from "@/components/logo";
 import { ArrivalBanner } from "./arrival-banner";
 import { DataView } from "./data-view";
 import { GuestInbox } from "./guest-inbox";
@@ -145,11 +146,16 @@ export function DemoPage() {
             <div className="min-w-0">
               <Link
                 to="/"
-                className="text-sm text-muted-foreground transition hover:text-foreground"
+                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition hover:text-foreground"
               >
-                ← Noor's Farm Visits
+                ← <DarajaMark className="h-3.5" /> Daraja
               </Link>
-              <h1 className="text-2xl font-bold text-primary sm:text-3xl">Live demo</h1>
+              <h1 className="text-2xl font-bold text-primary sm:text-3xl">
+                Live demo{" "}
+                <span className="font-sans text-base font-normal text-muted-foreground">
+                  · example host: Noor's coffee farm
+                </span>
+              </h1>
             </div>
             <div
               role="tablist"

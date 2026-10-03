@@ -4,6 +4,7 @@ import { Principles } from "./principles";
 import { SiteFooter } from "./site-footer";
 import { SiteNav } from "./site-nav";
 import { TryIt } from "./try-it";
+import { UseCase } from "./use-case";
 
 export function LandingPage() {
   return (
@@ -12,6 +13,7 @@ export function LandingPage() {
       <main>
         <Hero />
         <HowItWorks />
+        <UseCase />
         <Principles />
         <TryIt />
       </main>

@@ -2,8 +2,8 @@ import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import Stepper, { Step } from "@/components/reactbits/Stepper";
 import { PERSONAS, personaById } from "@/lib/personas";
-import { Label } from "@turflow/ui/components/label";
-import { Textarea } from "@turflow/ui/components/textarea";
+import { Label } from "@daraja/ui/components/label";
+import { Textarea } from "@daraja/ui/components/textarea";
 
 /** The 3-step wizard: pick a visitor, edit their email, open the demo with it already sent. */
 export function TryIt() {
@@ -19,15 +19,15 @@ export function TryIt() {
   };
 
   return (
-    <section id="try" className="border-t border-border bg-secondary/40 scroll-mt-4">
+    <section id="try" className="bg-secondary/40 scroll-mt-4">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
         <div>
           <h2 className="text-3xl font-bold text-primary text-balance sm:text-4xl">
-            Try it with a real message
+            Try it as Noor's farm
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Pick a visitor, edit their email, and watch it reach Noor's phone in the live demo. Then
-            answer as Noor.
+            The live demo runs Noor's coffee farm as the example host. Pick a visitor, edit their
+            email, and watch it reach Noor's phone. Then answer as Noor.
           </p>
         </div>
         <Stepper

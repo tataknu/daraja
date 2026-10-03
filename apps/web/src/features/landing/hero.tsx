@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import RotatingText from "@/components/reactbits/RotatingText";
 import TextType from "@/components/reactbits/TextType";
 import { PhoneShell } from "@/components/phone-shell";
-import { Button } from "@turflow/ui/components/button";
+import { Button } from "@daraja/ui/components/button";
 
 const LANGUAGES = ["German", "French", "Japanese", "Spanish", "Dutch", "Italian"];
 // Real messages from a local end-to-end run of this app.
@@ -21,7 +21,7 @@ export function Hero() {
     <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-6 pb-20 sm:px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:pt-12">
       <div className="min-w-0">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-          Coffee-farm visits · Ondera highlands
+          Daraja · Swahili for “bridge”
         </p>
         <h1 className="mt-4 text-4xl font-bold leading-[1.08] text-primary text-balance sm:text-5xl lg:text-6xl">
           Visitors write in{" "}
@@ -43,11 +43,12 @@ export function Hero() {
           )}
           .
           <br />
-          Noor answers from her basic phone.
+          Hosts answer from a basic phone.
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-          An AI front desk for a smallholder coffee farm. It reads every email in the visitor's
-          language and sends Noor one short SMS in Swahili. Nothing is confirmed until she replies.
+          Daraja is an AI front desk for small tourism hosts. It reads every booking email in the
+          visitor's language and sends the host one short SMS they can answer with a single digit.
+          Nothing is confirmed until the host replies.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Button asChild size="lg">
@@ -58,7 +59,7 @@ export function Hero() {
           </Button>
         </div>
         <p className="mt-6 text-sm text-muted-foreground">
-          No app for Noor. No form for visitors. Just email and SMS.
+          No app for the host. No form for visitors. Just email and SMS.
         </p>
       </div>
       <HeroVisual reduce={!!reduce} />
@@ -123,7 +124,7 @@ function HeroVisual({ reduce }: { reduce: boolean }) {
         </AnimatePresence>
       </PhoneShell>
       <p className="mt-3 text-right text-xs text-muted-foreground">
-        Real messages from a test run of this demo.
+        Example: Noor's coffee farm. Real messages from a test run of the demo.
       </p>
     </div>
   );

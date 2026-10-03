@@ -13,13 +13,13 @@ export const Route = createFileRoute("/demo")({
   }),
   head: () => ({
     meta: [
-      { title: "Live demo — Noor's Farm Visits" },
+      { title: "Live demo: Noor's coffee farm — Daraja" },
       {
         name: "description",
         content:
           "Guests email in any language; Noor approves coffee-farm tours by SMS. Live simulator of the booking assistant.",
       },
-      { property: "og:title", content: "Live demo — Noor's Farm Visits" },
+      { property: "og:title", content: "Live demo: Noor's coffee farm — Daraja" },
       {
         property: "og:description",
         content: "Guests email in any language; Noor approves coffee-farm tours by SMS.",
