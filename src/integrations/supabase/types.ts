@@ -14,7 +14,333 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          created_at: string
+          date_from: string | null
+          date_to: string | null
+          guest_id: string
+          id: number
+          notes_original: string | null
+          notes_translated: string | null
+          party_size: number | null
+          slot: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date_from?: string | null
+          date_to?: string | null
+          guest_id: string
+          id?: number
+          notes_original?: string | null
+          notes_translated?: string | null
+          party_size?: number | null
+          slot?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date_from?: string | null
+          date_to?: string | null
+          guest_id?: string
+          id?: number
+          notes_original?: string | null
+          notes_translated?: string | null
+          party_size?: number | null
+          slot?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contacts: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          language: string
+          name: string
+          phone: string | null
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          language?: string
+          name: string
+          phone?: string | null
+          role: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          language?: string
+          name?: string
+          phone?: string | null
+          role?: string
+        }
+        Relationships: []
+      }
+      decisions: {
+        Row: {
+          action_taken: string | null
+          confidence: number | null
+          created_at: string
+          entities: Json | null
+          id: string
+          intent: string | null
+          message_id: string | null
+          model: string | null
+          routed_to_human: boolean
+        }
+        Insert: {
+          action_taken?: string | null
+          confidence?: number | null
+          created_at?: string
+          entities?: Json | null
+          id?: string
+          intent?: string | null
+          message_id?: string | null
+          model?: string | null
+          routed_to_human?: boolean
+        }
+        Update: {
+          action_taken?: string | null
+          confidence?: number | null
+          created_at?: string
+          entities?: Json | null
+          id?: string
+          intent?: string | null
+          message_id?: string | null
+          model?: string | null
+          routed_to_human?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decisions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      farm_settings: {
+        Row: {
+          currency: string
+          directions: string
+          host_id: string | null
+          id: number
+          max_per_slot: number
+          price_per_person: number
+          slots: string[]
+        }
+        Insert: {
+          currency: string
+          directions: string
+          host_id?: string | null
+          id?: number
+          max_per_slot: number
+          price_per_person: number
+          slots: string[]
+        }
+        Update: {
+          currency?: string
+          directions?: string
+          host_id?: string | null
+          id?: number
+          max_per_slot?: number
+          price_per_person?: number
+          slots?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farm_settings_host_id_fkey"
+            columns: ["host_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedback: {
+        Row: {
+          booking_id: number | null
+          created_at: string
+          id: string
+          lang: string | null
+          sentiment: string | null
+          text_original: string
+          text_translated: string | null
+          themes: string[]
+        }
+        Insert: {
+          booking_id?: number | null
+          created_at?: string
+          id?: string
+          lang?: string | null
+          sentiment?: string | null
+          text_original: string
+          text_translated?: string | null
+          themes?: string[]
+        }
+        Update: {
+          booking_id?: number | null
+          created_at?: string
+          id?: string
+          lang?: string | null
+          sentiment?: string | null
+          text_original?: string
+          text_translated?: string | null
+          themes?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          booking_id: number | null
+          channel: string
+          contact_id: string | null
+          created_at: string
+          direction: string
+          id: string
+          lang: string | null
+          provider_msg_id: string | null
+          text_original: string
+          text_translated: string | null
+          thread_ref: string | null
+        }
+        Insert: {
+          booking_id?: number | null
+          channel: string
+          contact_id?: string | null
+          created_at?: string
+          direction: string
+          id?: string
+          lang?: string | null
+          provider_msg_id?: string | null
+          text_original: string
+          text_translated?: string | null
+          thread_ref?: string | null
+        }
+        Update: {
+          booking_id?: number | null
+          channel?: string
+          contact_id?: string | null
+          created_at?: string
+          direction?: string
+          id?: string
+          lang?: string | null
+          provider_msg_id?: string | null
+          text_original?: string
+          text_translated?: string | null
+          thread_ref?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pending_prompts: {
+        Row: {
+          booking_id: number | null
+          expires_at: string
+          id: string
+          kind: string
+          nudged_at: string | null
+          options: Json
+          resolution: string | null
+          resolved_at: string | null
+          sent_at: string
+        }
+        Insert: {
+          booking_id?: number | null
+          expires_at?: string
+          id?: string
+          kind: string
+          nudged_at?: string | null
+          options?: Json
+          resolution?: string | null
+          resolved_at?: string | null
+          sent_at?: string
+        }
+        Update: {
+          booking_id?: number | null
+          expires_at?: string
+          id?: string
+          kind?: string
+          nudged_at?: string | null
+          options?: Json
+          resolution?: string | null
+          resolved_at?: string | null
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_prompts_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reminders_sent: {
+        Row: {
+          booking_id: number
+          kind: string
+        }
+        Insert: {
+          booking_id: number
+          kind: string
+        }
+        Update: {
+          booking_id?: number
+          kind?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminders_sent_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
