@@ -20,10 +20,7 @@ export function Hero() {
   return (
     <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-6 pb-20 sm:px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:pt-12">
       <div className="min-w-0">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-          Daraja · Swahili for “bridge”
-        </p>
-        <h1 className="mt-4 text-4xl font-bold leading-[1.08] text-primary text-balance sm:text-5xl lg:text-6xl">
+        <h1 className="text-4xl font-bold leading-[1.08] text-primary text-balance sm:text-5xl lg:text-6xl">
           Visitors write in{" "}
           {reduce ? (
             <span className="text-accent">any language</span>
