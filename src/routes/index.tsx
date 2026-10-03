@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { postInbound, createGuest, runTimersNow, generateInsights, resetDemo } from "@/lib/sim.functions";
+import { DataView } from "@/components/DataView";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,8 +21,35 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Guests email in any language; Noor approves coffee-farm tours by SMS." },
     ],
   }),
-  component: Simulator,
+  component: AppTabs,
 });
+
+function AppTabs() {
+  const [tab, setTab] = useState<"demo" | "data">("demo");
+  return (
+    <div className="min-h-screen">
+      <nav className="border-b border-border bg-card/60">
+        <div className="mx-auto flex max-w-7xl gap-1 px-6 pt-3">
+          {(["demo", "data"] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`rounded-t-lg border border-b-0 px-5 py-2 text-sm font-medium capitalize transition ${
+                tab === t
+                  ? "border-border bg-background text-primary"
+                  : "border-transparent text-muted-foreground hover:text-primary"
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      </nav>
+      {tab === "demo" ? <Simulator /> : <DataView />}
+    </div>
+  );
+}
+
 
 type Contact = Tables<"contacts">;
 type Message = Tables<"messages">;
@@ -109,7 +138,9 @@ function Simulator() {
   return (
     <div className="min-h-screen">
       <header className="border-b border-border bg-card/60">
+
         <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-4 px-6 py-6">
+
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">Simulator · Phase 1</p>
             <h1 className="text-3xl font-bold text-primary md:text-4xl">Noor's Farm Visits</h1>
