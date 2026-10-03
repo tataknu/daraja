@@ -59,4 +59,7 @@ writeFileSync(
     "\n",
 );
 console.log(`wrote ${ENV_FILE} (Supabase ${s.API_URL}, AI model ${env.AI_MODEL})`);
-if (!openaiKey) console.warn(`! OPENAI_API_KEY is empty: add it to ${ENV_FILE} or run: OPENAI_API_KEY=sk-... make env`);
+if (!openaiKey)
+  console.warn(
+    `! OPENAI_API_KEY is empty: add it to ${ENV_FILE} or run: OPENAI_API_KEY=sk-... make env`,
+  );

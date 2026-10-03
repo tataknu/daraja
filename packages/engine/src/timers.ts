@@ -18,12 +18,19 @@ export async function runTimers(ctx: Ctx, asOf: Date): Promise<string[]> {
       await repo.resolvePrompt(p.id, "expired", asOf);
       if (canTransition(b.status as BookingStatus, "EXPIRED", "system")) {
         await ctx.transition(b, "EXPIRED", "system");
-        await ctx.emailGuest(guest, `We are very sorry — Noor was not able to answer your request (${code(b.id)}) in time, so it has expired. You are welcome to send a new request.`, b.id);
+        await ctx.emailGuest(
+          guest,
+          `We are very sorry — Noor was not able to answer your request (${code(b.id)}) in time, so it has expired. You are welcome to send a new request.`,
+          b.id,
+        );
         log.push(`${code(b.id)} expired`);
       }
     } else if (age >= 24 * HOUR && !p.nudged_at) {
       await repo.markNudged(p.id, asOf);
-      await ctx.smsNoor(`Kumbusho: ${code(p.booking_id!)} bado inasubiri jibu. Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine`, p.booking_id);
+      await ctx.smsNoor(
+        `Kumbusho: ${code(p.booking_id!)} bado inasubiri jibu. Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine`,
+        p.booking_id,
+      );
       log.push(`${code(p.booking_id!)} nudged`);
     }
   }
@@ -32,15 +39,26 @@ export async function runTimers(ctx: Ctx, asOf: Date): Promise<string[]> {
   for (const b of await repo.bookingsWithStatus("CONFIRMED")) {
     if (!b.date_from) continue;
     const guest = await repo.contact(b.guest_id);
-    if (b.date_from === addDays(today, 1) && localHour(asOf) >= 18 && (await repo.recordReminder(b.id, "day_before"))) {
+    if (
+      b.date_from === addDays(today, 1) &&
+      localHour(asOf) >= 18 &&
+      (await repo.recordReminder(b.id, "day_before"))
+    ) {
       const extra = (b.party_size ?? 1) - 1;
-      await ctx.smsNoor(`Kesho ${b.slot}: ${firstName(guest.name)}${extra > 0 ? ` +${extra}` : ""}, ${code(b.id)}`, b.id);
+      await ctx.smsNoor(
+        `Kesho ${b.slot}: ${firstName(guest.name)}${extra > 0 ? ` +${extra}` : ""}, ${code(b.id)}`,
+        b.id,
+      );
       log.push(`${code(b.id)} reminder`);
     }
     if ((b.date_to ?? b.date_from) < today) {
       const visited = await ctx.transition(b, "VISITED", "system");
       await ctx.transition(visited, "FEEDBACK_REQUESTED", "system");
-      await ctx.emailGuest(guest, `Thank you for visiting Noor's coffee farm! How was your visit? Just reply to this email — Noor would love to hear what you enjoyed and what we could do better.`, b.id);
+      await ctx.emailGuest(
+        guest,
+        `Thank you for visiting Noor's coffee farm! How was your visit? Just reply to this email — Noor would love to hear what you enjoyed and what we could do better.`,
+        b.id,
+      );
       log.push(`${code(b.id)} feedback requested`);
     }
   }

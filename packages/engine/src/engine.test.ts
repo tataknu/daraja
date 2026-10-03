@@ -16,20 +16,42 @@ function setup() {
   const engine = createEngine({ repo, ai: script.ai, now: clock });
 
   const email = (from: string, text: string, extra: Partial<InboundInput> = {}): InboundInput => ({
-    channel: "email", sender: from, sender_name: "Lena Schulz", text, provider_msg_id: crypto.randomUUID(), ...extra,
+    channel: "email",
+    sender: from,
+    sender_name: "Lena Schulz",
+    text,
+    provider_msg_id: crypto.randomUUID(),
+    ...extra,
   });
   const noorTexts = (text: string) =>
-    engine.handleInbound({ channel: "sms", sender: NOOR_PHONE, text, provider_msg_id: crypto.randomUUID() });
-  const toNoor = () => data.messages.filter((m) => m.direction === "out" && m.contact_id === noor.id).map((m) => m.text_original);
+    engine.handleInbound({
+      channel: "sms",
+      sender: NOOR_PHONE,
+      text,
+      provider_msg_id: crypto.randomUUID(),
+    });
+  const toNoor = () =>
+    data.messages
+      .filter((m) => m.direction === "out" && m.contact_id === noor.id)
+      .map((m) => m.text_original);
   const emailsTo = (address: string) => {
     const guest = data.contacts.find((c) => c.email === address);
-    return data.messages.filter((m) => m.direction === "out" && m.contact_id === guest?.id).map((m) => m.text_original);
+    return data.messages
+      .filter((m) => m.direction === "out" && m.contact_id === guest?.id)
+      .map((m) => m.text_original);
   };
   const booking = (id: number) => data.bookings.find((b) => b.id === id);
-  const advance = (hours: number) => { now = new Date(now.getTime() + hours * HOUR); };
-  const request = async (from = "lena@example.de", overrides: Parameters<typeof guestSays>[0] = {}) => {
+  const advance = (hours: number) => {
+    now = new Date(now.getTime() + hours * HOUR);
+  };
+  const request = async (
+    from = "lena@example.de",
+    overrides: Parameters<typeof guestSays>[0] = {},
+  ) => {
     script.guest(guestSays(overrides));
-    return engine.handleInbound(email(from, "Hallo! Wir sind 3 Personen und möchten am Samstag morgens kommen."));
+    return engine.handleInbound(
+      email(from, "Hallo! Wir sind 3 Personen und möchten am Samstag morgens kommen."),
+    );
   };
 
   return { engine, data, script, email, noorTexts, toNoor, emailsTo, booking, advance, request };
@@ -40,11 +62,24 @@ describe("a guest asks to visit", () => {
     const t = setup();
     expect(await t.request()).toEqual({ booking_id: 14 });
 
-    expect(t.booking(14)).toMatchObject({ status: "PENDING_NOOR", date_from: "2026-10-10", slot: "09:00", party_size: 3 });
-    expect(t.toNoor()).toEqual(["B14: Lena (Ujerumani), watu 3, Jumamosi 10 Okt asubuhi. Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine"]);
-    expect(t.emailsTo("lena@example.de")[0]).toMatch(/^\[de\] Thank you! Your request \(B14\).*not yet a confirmation/);
+    expect(t.booking(14)).toMatchObject({
+      status: "PENDING_NOOR",
+      date_from: "2026-10-10",
+      slot: "09:00",
+      party_size: 3,
+    });
+    expect(t.toNoor()).toEqual([
+      "B14: Lena (Ujerumani), watu 3, Jumamosi 10 Okt asubuhi. Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine",
+    ]);
+    expect(t.emailsTo("lena@example.de")[0]).toMatch(
+      /^\[de\] Thank you! Your request \(B14\).*not yet a confirmation/,
+    );
     expect(t.data.contacts.find((c) => c.email === "lena@example.de")?.language).toBe("de");
-    expect(t.data.decisions.at(-1)).toMatchObject({ action: "request_sent_to_noor", routed: true, model: "fake-model" });
+    expect(t.data.decisions.at(-1)).toMatchObject({
+      action: "request_sent_to_noor",
+      routed: true,
+      model: "fake-model",
+    });
   });
 
   it("asks for what's missing and doesn't bother Noor", async () => {
@@ -80,7 +115,9 @@ describe("Noor decides by SMS", () => {
     await t.noorTexts("1");
 
     expect(t.booking(14)?.status).toBe("CONFIRMED");
-    expect(t.emailsTo("lena@example.de").at(-1)).toMatch(/Noor has confirmed your coffee farm visit \(B14\)/);
+    expect(t.emailsTo("lena@example.de").at(-1)).toMatch(
+      /Noor has confirmed your coffee farm visit \(B14\)/,
+    );
     expect(t.toNoor().at(-1)).toBe("B14 imethibitishwa. Mgeni ametumiwa maelekezo.");
   });
 
@@ -91,7 +128,10 @@ describe("Noor decides by SMS", () => {
     await t.noorTexts("1");
 
     expect(t.toNoor().at(-1)).toBe("Maombi 2 yanasubiri: B15, B14. Jibu mf. 'B15 1'.");
-    expect([t.booking(14)?.status, t.booking(15)?.status]).toEqual(["PENDING_NOOR", "PENDING_NOOR"]);
+    expect([t.booking(14)?.status, t.booking(15)?.status]).toEqual([
+      "PENDING_NOOR",
+      "PENDING_NOOR",
+    ]);
     await t.noorTexts("B15 1");
     expect(t.booking(15)?.status).toBe("CONFIRMED");
   });
@@ -154,7 +194,9 @@ describe("when things go wrong", () => {
 
   it("hands a low-confidence message to Noor as a question", async () => {
     const t = setup();
-    t.script.guest(guestSays({ confidence: 0.5, translation_for_noor: "Je, mna chakula cha mboga?" }));
+    t.script.guest(
+      guestSays({ confidence: 0.5, translation_for_noor: "Je, mna chakula cha mboga?" }),
+    );
     await t.engine.handleInbound(t.email("lena@example.de", "Vegetarisch?"));
 
     expect(t.toNoor().at(-1)).toBe("B14 Lena: Je, mna chakula cha mboga?");
@@ -199,6 +241,9 @@ describe("feedback and insights", () => {
     expect(t.data.feedback).toHaveLength(1);
 
     expect(await t.engine.monthlyInsights()).toHaveLength(2);
-    expect(t.toNoor().slice(-2)).toEqual(["Wageni wanapenda kuchoma kahawa.", "Boresha: alama barabarani."]);
+    expect(t.toNoor().slice(-2)).toEqual([
+      "Wageni wanapenda kuchoma kahawa.",
+      "Boresha: alama barabarani.",
+    ]);
   });
 });

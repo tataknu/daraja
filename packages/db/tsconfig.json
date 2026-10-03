@@ -1,13 +1,7 @@
 {
   "extends": "@turflow/typescript-config/base.json",
-  "include": [
-    "src/**/*.ts",
-    "schema.ts",
-    "drizzle.config.ts"
-  ],
+  "include": ["src/**/*.ts", "schema.ts", "drizzle.config.ts"],
   "compilerOptions": {
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   }
 }

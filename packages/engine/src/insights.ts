@@ -8,7 +8,9 @@ export async function monthlyInsights(ctx: Ctx): Promise<string[]> {
     return [];
   }
   const items = feedback
-    .map((f, i) => `${i + 1}. [${f.sentiment}] ${f.text_translated} (themes: ${f.themes.join(", ")})`)
+    .map(
+      (f, i) => `${i + 1}. [${f.sentiment}] ${f.text_translated} (themes: ${f.themes.join(", ")})`,
+    )
     .join("\n");
   const r = await ctx.ai.summarizeFeedback(items);
   for (const line of r.lines.slice(0, 3)) await ctx.smsNoor(line);

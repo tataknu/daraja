@@ -132,8 +132,21 @@
     color: var(--color-foreground);
     font-family: var(--font-body);
   }
-  h1, h2, h3 { font-family: var(--font-display); }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
 }
 
-@utility paper { background: var(--card); box-shadow: var(--shadow-paper); border: 1px solid var(--border); border-radius: var(--radius-lg); }
-@utility lcd-screen { background: linear-gradient(180deg, var(--lcd), var(--lcd-dim)); color: var(--lcd-ink); font-family: var(--font-lcd); }
+@utility paper {
+  background: var(--card);
+  box-shadow: var(--shadow-paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+@utility lcd-screen {
+  background: linear-gradient(180deg, var(--lcd), var(--lcd-dim));
+  color: var(--lcd-ink);
+  font-family: var(--font-lcd);
+}

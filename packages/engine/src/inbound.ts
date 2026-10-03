@@ -14,7 +14,11 @@ export async function handleInbound(ctx: Ctx, input: InboundInput): Promise<Inbo
   let contact = await repo.findContact(by, sender);
   if (!contact) {
     const name = input.sender_name?.trim() || sender.split("@")[0] || sender;
-    contact = await repo.createGuest({ name, ...(by === "email" ? { email: sender } : { phone: sender }), language: "en" });
+    contact = await repo.createGuest({
+      name,
+      ...(by === "email" ? { email: sender } : { phone: sender }),
+      language: "en",
+    });
   }
 
   const msg = await repo.insertMessage({

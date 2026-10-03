@@ -37,7 +37,8 @@ export function createContext(deps: EngineDeps): Ctx {
 
   async function sendMessage(channel: Channel, to: Contact, text: string, opts: SendOptions = {}) {
     const body = channel === "sms" ? sms160(text) : text;
-    const text_en = to.language === "en" ? null : (opts.text_translated ?? (await englishOf(body, to.language)));
+    const text_en =
+      to.language === "en" ? null : (opts.text_translated ?? (await englishOf(body, to.language)));
     await repo.insertMessage({
       direction: "out",
       channel,

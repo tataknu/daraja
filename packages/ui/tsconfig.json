@@ -1,9 +1,6 @@
 {
   "extends": "@turflow/typescript-config/base.json",
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "compilerOptions": {
     "types": []
   }

@@ -37,6 +37,7 @@ Locally, the AI adapter calls OpenAI directly (`AI_GATEWAY_URL`, `AI_MODEL`, `OP
 `apps/web/.env.local`). Inside Lovable it keeps using Lovable's AI gateway.
 
 `make e2e` drives the real webhooks, as Postmark and Twilio would:
+
 1. A guest emails in German.
 2. The AI classifies the email, and the booking waits for Noor.
 3. Noor gets a Swahili SMS.

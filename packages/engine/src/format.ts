@@ -14,7 +14,20 @@ export const addDays = (iso: string, n: number) => {
 };
 
 const SW_DAYS = ["Jumapili", "Jumatatu", "Jumanne", "Jumatano", "Alhamisi", "Ijumaa", "Jumamosi"];
-const SW_MONTHS = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ago", "Sep", "Okt", "Nov", "Des"];
+const SW_MONTHS = [
+  "Jan",
+  "Feb",
+  "Mac",
+  "Apr",
+  "Mei",
+  "Jun",
+  "Jul",
+  "Ago",
+  "Sep",
+  "Okt",
+  "Nov",
+  "Des",
+];
 const SW_ORIGIN: Record<string, string> = {
   de: "Ujerumani",
   en: "Uingereza",
@@ -35,7 +48,8 @@ export function swDate(iso: string | null) {
 }
 
 /** Tour slot as Noor says it: morning or afternoon. */
-export const swSlot = (s: string | null) => (s === "09:00" ? "asubuhi" : s === "14:00" ? "mchana" : (s ?? ""));
+export const swSlot = (s: string | null) =>
+  s === "09:00" ? "asubuhi" : s === "14:00" ? "mchana" : (s ?? "");
 
 /** Where the guest is from, in Swahili, from their language code. */
 export const swOrigin = (lang: string) => SW_ORIGIN[lang] ?? lang.toUpperCase();

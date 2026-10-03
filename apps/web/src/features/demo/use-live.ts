@@ -13,18 +13,27 @@ export function useLive() {
       supabase.from("messages").select("*").order("created_at"),
       supabase.from("bookings").select("*").order("id", { ascending: false }),
     ]);
-    setContacts(c.data ?? []); setMessages(m.data ?? []); setBookings(b.data ?? []);
+    setContacts(c.data ?? []);
+    setMessages(m.data ?? []);
+    setBookings(b.data ?? []);
   };
   useEffect(() => {
     load();
     let t: ReturnType<typeof setTimeout> | undefined;
-    const debounced = () => { clearTimeout(t); t = setTimeout(load, 150); };
-    const ch = supabase.channel("sim")
+    const debounced = () => {
+      clearTimeout(t);
+      t = setTimeout(load, 150);
+    };
+    const ch = supabase
+      .channel("sim")
       .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, debounced)
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, debounced)
       .on("postgres_changes", { event: "*", schema: "public", table: "contacts" }, debounced)
       .subscribe();
-    return () => { clearTimeout(t); supabase.removeChannel(ch); };
+    return () => {
+      clearTimeout(t);
+      supabase.removeChannel(ch);
+    };
   }, []);
   return { contacts, messages, bookings, reload: load };
 }

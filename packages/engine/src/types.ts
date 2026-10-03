@@ -43,7 +43,12 @@ export interface FarmSettings {
   directions: string;
 }
 
-export type PromptKind = "approve_booking" | "answer_question" | "confirm_cancellation" | "confirm_readback" | "ask_other_date";
+export type PromptKind =
+  | "approve_booking"
+  | "answer_question"
+  | "confirm_cancellation"
+  | "confirm_readback"
+  | "ask_other_date";
 
 /** A question the system is waiting for Noor to answer. */
 export interface Prompt {

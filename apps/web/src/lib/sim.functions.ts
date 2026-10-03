@@ -19,12 +19,24 @@ export const postInbound = createServerFn({ method: "POST" })
   });
 
 export const createGuest = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ name: z.string().trim().min(1).max(100), email: z.string().trim().email().max(255) }).parse(d))
+  .inputValidator((d) =>
+    z
+      .object({
+        name: z.string().trim().min(1).max(100),
+        email: z.string().trim().email().max(255),
+      })
+      .parse(d),
+  )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@turflow/db/client.server");
-    const { data: row, error } = await supabaseAdmin.from("contacts")
-      .upsert({ role: "guest", name: data.name, email: data.email.toLowerCase() }, { onConflict: "email" })
-      .select("id").single();
+    const { data: row, error } = await supabaseAdmin
+      .from("contacts")
+      .upsert(
+        { role: "guest", name: data.name, email: data.email.toLowerCase() },
+        { onConflict: "email" },
+      )
+      .select("id")
+      .single();
     if (error) throw new Error(error.message);
     return row;
   });

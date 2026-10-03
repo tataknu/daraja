@@ -40,7 +40,11 @@ export function parseHostReply(text: string, open: Prompt[]): HostCommand {
   const bareChoice = /^\s*([1-3])\s*$/.exec(text);
   const waiting = open.filter((p) => p.kind === "approve_booking");
   if (bareChoice && waiting.length > 1) {
-    return { kind: "ask_which", codes: waiting.map((p) => code(p.booking_id!)), choice: bareChoice[1]! };
+    return {
+      kind: "ask_which",
+      codes: waiting.map((p) => code(p.booking_id!)),
+      choice: bareChoice[1]!,
+    };
   }
   const only = waiting.length === 1 ? waiting[0] : undefined;
   const coded = /^\s*B?\s*(\d+)[\s\-:.,/]*([1-3])\b/i.exec(text);
@@ -54,7 +58,8 @@ export function parseHostReply(text: string, open: Prompt[]): HostCommand {
 
   const mine = open.filter((p) => p.booking_id === pick.bookingId);
   const mineReadback = mine.find((p) => p.kind === "confirm_readback");
-  if (mineReadback && pick.choice <= 2) return { kind: "readback", prompt: mineReadback, yes: pick.choice === 1 };
+  if (mineReadback && pick.choice <= 2)
+    return { kind: "readback", prompt: mineReadback, yes: pick.choice === 1 };
   if (!mine.some((p) => p.kind === "approve_booking")) return { kind: "no_open_request", ...pick };
   return { kind: "act", ...pick, action: ACTIONS[pick.choice]! };
 }

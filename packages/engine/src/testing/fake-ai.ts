@@ -2,7 +2,9 @@
 // with the target language so tests can see what was translated.
 import type { Ai, GuestClassification, HostClassification } from "../ai/types";
 
-type GuestOverrides = Partial<Omit<GuestClassification, "entities">> & { entities?: Partial<GuestClassification["entities"]> };
+type GuestOverrides = Partial<Omit<GuestClassification, "entities">> & {
+  entities?: Partial<GuestClassification["entities"]>;
+};
 
 /** A guest classification; by default a complete German request for 3 people on Sat 10 Oct, morning. */
 export function guestSays({ entities, ...rest }: GuestOverrides = {}): GuestClassification {
@@ -19,7 +21,14 @@ export function guestSays({ entities, ...rest }: GuestOverrides = {}): GuestClas
 }
 
 export function noorSays(overrides: Partial<HostClassification> = {}): HostClassification {
-  return { intent: "approve", booking: "B14", confidence: 0.9, proposed_date: null, answer_text_for_guest: null, ...overrides };
+  return {
+    intent: "approve",
+    booking: "B14",
+    confidence: 0.9,
+    proposed_date: null,
+    answer_text_for_guest: null,
+    ...overrides,
+  };
 }
 
 export function fakeAi() {
@@ -37,8 +46,14 @@ export function fakeAi() {
     classifyGuest: async () => next(guest, "guest classification"),
     classifyHost: async () => next(host, "host classification"),
     translate: async (text, from, to) => (from === to ? text : `[${to}] ${text}`),
-    analyzeFeedback: async (text) => ({ translation_en: `[en] ${text}`, themes: ["roasting"], sentiment: "positive" }),
-    summarizeFeedback: async () => ({ lines: ["Wageni wanapenda kuchoma kahawa.", "Boresha: alama barabarani."] }),
+    analyzeFeedback: async (text) => ({
+      translation_en: `[en] ${text}`,
+      themes: ["roasting"],
+      sentiment: "positive",
+    }),
+    summarizeFeedback: async () => ({
+      lines: ["Wageni wanapenda kuchoma kahawa.", "Boresha: alama barabarani."],
+    }),
   };
   return {
     ai,

@@ -44,7 +44,12 @@ export interface Repo {
 
   contact(id: string): Promise<Contact>;
   findContact(by: "email" | "phone", value: string): Promise<Contact | null>;
-  createGuest(guest: { name: string; email?: string; phone?: string; language: string }): Promise<Contact>;
+  createGuest(guest: {
+    name: string;
+    email?: string;
+    phone?: string;
+    language: string;
+  }): Promise<Contact>;
   setContactLanguage(id: string, language: string): Promise<void>;
 
   messageSeen(providerMsgId: string): Promise<boolean>;

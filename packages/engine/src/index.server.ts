@@ -15,7 +15,12 @@ export { createEngine, type Engine } from "./engine";
 export type { InboundInput, InboundResult } from "./types";
 
 let live: Engine | undefined;
-const engine = () => (live ??= createEngine({ repo: supabaseRepo(supabaseAdmin), ai: gatewayAi, now: () => new Date() }));
+const engine = () =>
+  (live ??= createEngine({
+    repo: supabaseRepo(supabaseAdmin),
+    ai: gatewayAi,
+    now: () => new Date(),
+  }));
 
 export const handleInbound = (input: InboundInput) => engine().handleInbound(input);
 export const runTimers = (asOf?: Date) => engine().runTimers(asOf);

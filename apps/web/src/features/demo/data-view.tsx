@@ -63,7 +63,8 @@ export function DataView() {
     <div className="mx-auto min-h-0 flex-1 w-full max-w-7xl space-y-6 overflow-y-auto px-6 py-8">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Everything the system stores — guests, bookings, messages, decisions and more. Updates live.
+          Everything the system stores — guests, bookings, messages, decisions and more. Updates
+          live.
         </p>
         <Button variant="outline" size="sm" onClick={load} disabled={loading}>
           {loading ? "Loading…" : "Refresh"}
@@ -83,24 +84,36 @@ export function DataView() {
               </span>
             </div>
             {rows.length === 0 ? (
-              <p className="px-5 py-4 text-sm text-muted-foreground">No rows{loading ? " yet" : ""}.</p>
+              <p className="px-5 py-4 text-sm text-muted-foreground">
+                No rows{loading ? " yet" : ""}.
+              </p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-border bg-secondary/60">
                       {cols.map((c) => (
-                        <th key={c} className="whitespace-nowrap px-3 py-2 font-medium text-muted-foreground">{c}</th>
+                        <th
+                          key={c}
+                          className="whitespace-nowrap px-3 py-2 font-medium text-muted-foreground"
+                        >
+                          {c}
+                        </th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {rows.map((row, i) => (
-                      <tr key={i} className="border-b border-border/50 align-top last:border-0 hover:bg-secondary/30">
+                      <tr
+                        key={i}
+                        className="border-b border-border/50 align-top last:border-0 hover:bg-secondary/30"
+                      >
                         {cols.map((c) => (
-                          <td key={c} className="max-w-[260px] whitespace-pre-wrap break-words px-3 py-2">
+                          <td
+                            key={c}
+                            className="max-w-[260px] whitespace-pre-wrap break-words px-3 py-2"
+                          >
                             {cell(row?.[c])}
-
                           </td>
                         ))}
                       </tr>

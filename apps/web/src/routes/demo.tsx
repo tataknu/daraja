@@ -14,9 +14,16 @@ export const Route = createFileRoute("/demo")({
   head: () => ({
     meta: [
       { title: "Live demo — Noor's Farm Visits" },
-      { name: "description", content: "Guests email in any language; Noor approves coffee-farm tours by SMS. Live simulator of the booking assistant." },
+      {
+        name: "description",
+        content:
+          "Guests email in any language; Noor approves coffee-farm tours by SMS. Live simulator of the booking assistant.",
+      },
       { property: "og:title", content: "Live demo — Noor's Farm Visits" },
-      { property: "og:description", content: "Guests email in any language; Noor approves coffee-farm tours by SMS." },
+      {
+        property: "og:description",
+        content: "Guests email in any language; Noor approves coffee-farm tours by SMS.",
+      },
     ],
   }),
   component: DemoPage,
