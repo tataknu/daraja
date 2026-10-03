@@ -1,4 +1,4 @@
-# Turflow local workflow. Run `make` to list targets.
+# Daraja local workflow. Run `make` to list targets.
 #
 # First run:   make setup     (install deps, start local Supabase in Docker, migrate, write .env.local)
 # Every day:   make dev       (app on http://localhost:8080 against local Supabase + OpenAI)

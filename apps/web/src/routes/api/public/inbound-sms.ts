@@ -30,7 +30,7 @@ export const Route = createFileRoute("/api/public/inbound-sms")({
         }
         if (!params["From"] || !params["Body"] || !params["MessageSid"])
           return new Response("Bad request", { status: 400 });
-        const { handleInbound } = await import("@turflow/engine");
+        const { handleInbound } = await import("@daraja/engine");
         await handleInbound({
           channel: "sms",
           sender: params["From"],

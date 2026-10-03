@@ -1,5 +1,5 @@
 {
-  "name": "@turflow/engine",
+  "name": "@daraja/engine",
   "private": true,
   "type": "module",
   "exports": {
@@ -11,11 +11,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@turflow/db": "workspace:*"
+    "@daraja/db": "workspace:*"
   },
   "devDependencies": {
-    "@turflow/eslint-config": "workspace:*",
-    "@turflow/typescript-config": "workspace:*",
+    "@daraja/eslint-config": "workspace:*",
+    "@daraja/typescript-config": "workspace:*",
     "@types/node": "^22.16.5",
     "eslint": "^9.32.0",
     "typescript": "^5.8.3",

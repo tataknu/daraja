@@ -1,4 +1,4 @@
-import type { Tables } from "@turflow/db/types";
+import type { Tables } from "@daraja/db/types";
 
 export type Contact = Tables<"contacts">;
 export type Message = Tables<"messages">;

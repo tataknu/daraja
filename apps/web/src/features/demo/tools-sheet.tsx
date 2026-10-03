@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button } from "@turflow/ui/components/button";
-import { Input } from "@turflow/ui/components/input";
-import { Label } from "@turflow/ui/components/label";
+import { Button } from "@daraja/ui/components/button";
+import { Input } from "@daraja/ui/components/input";
+import { Label } from "@daraja/ui/components/label";
 import {
   Sheet,
   SheetContent,
@@ -9,7 +9,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@turflow/ui/components/sheet";
+} from "@daraja/ui/components/sheet";
 
 export function ToolsSheet(props: {
   busy: boolean;

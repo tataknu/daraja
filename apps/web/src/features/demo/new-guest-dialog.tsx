@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button } from "@turflow/ui/components/button";
-import { Input } from "@turflow/ui/components/input";
-import { Label } from "@turflow/ui/components/label";
+import { Button } from "@daraja/ui/components/button";
+import { Input } from "@daraja/ui/components/input";
+import { Label } from "@daraja/ui/components/label";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@turflow/ui/components/dialog";
+} from "@daraja/ui/components/dialog";
 
 export function NewGuestDialog({
   busy,

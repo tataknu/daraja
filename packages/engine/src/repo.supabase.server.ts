@@ -1,5 +1,5 @@
 // Repo on Supabase. Server-only: uses the service-role client, which bypasses row-level security.
-import type { supabaseAdmin } from "@turflow/db/client.server";
+import type { supabaseAdmin } from "@daraja/db/client.server";
 import type { Repo } from "./repo";
 
 type Db = typeof supabaseAdmin;

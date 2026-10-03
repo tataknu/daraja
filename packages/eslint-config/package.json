@@ -1,5 +1,5 @@
 {
-  "name": "@turflow/eslint-config",
+  "name": "@daraja/eslint-config",
   "private": true,
   "type": "module",
   "exports": {

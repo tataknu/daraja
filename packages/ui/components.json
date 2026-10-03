@@ -12,11 +12,11 @@
   "iconLibrary": "lucide",
   "rtl": false,
   "aliases": {
-    "components": "@turflow/ui/components",
-    "hooks": "@turflow/ui/hooks",
-    "lib": "@turflow/ui/lib",
-    "utils": "@turflow/ui/lib/utils",
-    "ui": "@turflow/ui/components"
+    "components": "@daraja/ui/components",
+    "hooks": "@daraja/ui/hooks",
+    "lib": "@daraja/ui/lib",
+    "utils": "@daraja/ui/lib/utils",
+    "ui": "@daraja/ui/components"
   },
   "registries": {}
 }

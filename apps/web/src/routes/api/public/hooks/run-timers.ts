@@ -7,7 +7,7 @@ export const Route = createFileRoute("/api/public/hooks/run-timers")({
       POST: async ({ request }) => {
         const denied = await authenticateCronRequest(request);
         if (denied) return denied;
-        const { runTimers } = await import("@turflow/engine");
+        const { runTimers } = await import("@daraja/engine");
         const log = await runTimers(new Date());
         return Response.json({ ok: true, log });
       },

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@turflow/ui/components/button";
+import { Button } from "@daraja/ui/components/button";
 
 const TABLES = [
   { name: "contacts", order: "created_at", desc: "Guests and the host" },

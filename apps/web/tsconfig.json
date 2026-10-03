@@ -1,5 +1,5 @@
 {
-  "extends": "@turflow/typescript-config/base.json",
+  "extends": "@daraja/typescript-config/base.json",
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",

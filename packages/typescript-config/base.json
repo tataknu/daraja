@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Turflow base (strict, bundler)",
+  "display": "Daraja base (strict, bundler)",
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",

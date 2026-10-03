@@ -1,5 +1,5 @@
 // From React Bits (https://reactbits.dev, Stepper-TS-TW), MIT + Commons Clause.
-// Re-skinned to the Turflow theme tokens; adds completeButtonText and keyboard-focusable controls.
+// Re-skinned to the Daraja theme tokens; adds completeButtonText and keyboard-focusable controls.
 'use client';
 
 import React, { useState, Children, useRef, useLayoutEffect, type HTMLAttributes, type ReactNode } from 'react';

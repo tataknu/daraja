@@ -15,8 +15,8 @@
     "components": "@/components",
     "hooks": "@/hooks",
     "lib": "@/lib",
-    "utils": "@turflow/ui/lib/utils",
-    "ui": "@turflow/ui/components"
+    "utils": "@daraja/ui/lib/utils",
+    "ui": "@daraja/ui/components"
   },
   "registries": {}
 }

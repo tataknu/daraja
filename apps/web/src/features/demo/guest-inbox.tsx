@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "@turflow/ui/components/button";
-import { Textarea } from "@turflow/ui/components/textarea";
+import { Button } from "@daraja/ui/components/button";
+import { Textarea } from "@daraja/ui/components/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@turflow/ui/components/select";
+} from "@daraja/ui/components/select";
 import { NewGuestDialog } from "./new-guest-dialog";
 import type { Booking, Contact, Message } from "./types";
 

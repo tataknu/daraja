@@ -1,11 +1,11 @@
-// Public API of @turflow/engine, wired to Supabase and the AI gateway. Server-only.
+// Public API of @daraja/engine, wired to Supabase and the AI gateway. Server-only.
 //
 // Rules the code enforces (see AGENTS.md):
 // - AI only classifies and translates (ai/); it never changes state.
 // - Booking transitions go through booking-state.ts; only Noor's approval confirms.
 // - Every outbound message goes through sendMessage() in context.ts.
 // - Webhooks and the simulator share handleInbound().
-import { supabaseAdmin } from "@turflow/db/client.server";
+import { supabaseAdmin } from "@daraja/db/client.server";
 import { gatewayAi } from "./ai/gateway.server";
 import { createEngine, type Engine } from "./engine";
 import { supabaseRepo } from "./repo.supabase.server";

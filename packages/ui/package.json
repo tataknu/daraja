@@ -1,5 +1,5 @@
 {
-  "name": "@turflow/ui",
+  "name": "@daraja/ui",
   "private": true,
   "type": "module",
   "sideEffects": [
@@ -36,8 +36,8 @@
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
-    "@turflow/eslint-config": "workspace:*",
-    "@turflow/typescript-config": "workspace:*",
+    "@daraja/eslint-config": "workspace:*",
+    "@daraja/typescript-config": "workspace:*",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "eslint": "^9.32.0",

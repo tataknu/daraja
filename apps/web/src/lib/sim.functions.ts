@@ -14,7 +14,7 @@ const inbound = z.object({
 export const postInbound = createServerFn({ method: "POST" })
   .inputValidator((d) => inbound.parse(d))
   .handler(async ({ data }) => {
-    const { handleInbound } = await import("@turflow/engine");
+    const { handleInbound } = await import("@daraja/engine");
     return handleInbound(data);
   });
 
@@ -28,7 +28,7 @@ export const createGuest = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@turflow/db/client.server");
+    const { supabaseAdmin } = await import("@daraja/db/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("contacts")
       .upsert(
@@ -44,17 +44,17 @@ export const createGuest = createServerFn({ method: "POST" })
 export const runTimersNow = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ asOf: z.string().datetime().nullable() }).parse(d))
   .handler(async ({ data }) => {
-    const { runTimers } = await import("@turflow/engine");
+    const { runTimers } = await import("@daraja/engine");
     return runTimers(data.asOf ? new Date(data.asOf) : new Date());
   });
 
 export const generateInsights = createServerFn({ method: "POST" }).handler(async () => {
-  const { monthlyInsights } = await import("@turflow/engine");
+  const { monthlyInsights } = await import("@daraja/engine");
   return monthlyInsights();
 });
 
 export const resetDemo = createServerFn({ method: "POST" }).handler(async () => {
-  const { resetDemo } = await import("@turflow/engine");
+  const { resetDemo } = await import("@daraja/engine");
   await resetDemo();
   return { ok: true };
 });

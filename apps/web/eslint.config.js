@@ -1,4 +1,4 @@
-import react from "@turflow/eslint-config/react";
+import react from "@daraja/eslint-config/react";
 
 export default [
   ...react,

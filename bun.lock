@@ -10,17 +10,17 @@
       },
     },
     "apps/web": {
-      "name": "@turflow/web",
+      "name": "@daraja/web",
       "dependencies": {
+        "@daraja/db": "workspace:*",
+        "@daraja/engine": "workspace:*",
+        "@daraja/ui": "workspace:*",
         "@supabase/supabase-js": "^2.117.2",
         "@tailwindcss/vite": "^4.2.1",
         "@tanstack/react-query": "^5.101.1",
         "@tanstack/react-router": "1.170.41",
         "@tanstack/react-start": "1.168.60",
         "@tanstack/router-plugin": "1.168.42",
-        "@turflow/db": "workspace:*",
-        "@turflow/engine": "workspace:*",
-        "@turflow/ui": "workspace:*",
         "gsap": "^3.13.0",
         "motion": "^12.23.12",
         "react": "^19.2.0",
@@ -31,11 +31,11 @@
         "zod": "^3.25.76",
       },
       "devDependencies": {
+        "@daraja/eslint-config": "workspace:*",
+        "@daraja/typescript-config": "workspace:*",
         "@lovable.dev/vite-tanstack-config": "^2.24.0",
         "@testing-library/jest-dom": "^6.6.0",
         "@testing-library/react": "^16.0.0",
-        "@turflow/eslint-config": "workspace:*",
-        "@turflow/typescript-config": "workspace:*",
         "@types/node": "^22.16.5",
         "@types/react": "^19.2.0",
         "@types/react-dom": "^19.2.0",
@@ -49,13 +49,13 @@
       },
     },
     "packages/db": {
-      "name": "@turflow/db",
+      "name": "@daraja/db",
       "dependencies": {
         "@supabase/supabase-js": "^2.117.2",
       },
       "devDependencies": {
-        "@turflow/eslint-config": "workspace:*",
-        "@turflow/typescript-config": "workspace:*",
+        "@daraja/eslint-config": "workspace:*",
+        "@daraja/typescript-config": "workspace:*",
         "@types/node": "^22.16.5",
         "drizzle-kit": "^0.31.11",
         "drizzle-orm": "^0.45.3",
@@ -65,13 +65,13 @@
       },
     },
     "packages/engine": {
-      "name": "@turflow/engine",
+      "name": "@daraja/engine",
       "dependencies": {
-        "@turflow/db": "workspace:*",
+        "@daraja/db": "workspace:*",
       },
       "devDependencies": {
-        "@turflow/eslint-config": "workspace:*",
-        "@turflow/typescript-config": "workspace:*",
+        "@daraja/eslint-config": "workspace:*",
+        "@daraja/typescript-config": "workspace:*",
         "@types/node": "^22.16.5",
         "eslint": "^9.32.0",
         "typescript": "^5.8.3",
@@ -79,7 +79,7 @@
       },
     },
     "packages/eslint-config": {
-      "name": "@turflow/eslint-config",
+      "name": "@daraja/eslint-config",
       "dependencies": {
         "@eslint/js": "^9.32.0",
         "eslint-config-prettier": "^10.1.1",
@@ -93,10 +93,10 @@
       },
     },
     "packages/typescript-config": {
-      "name": "@turflow/typescript-config",
+      "name": "@daraja/typescript-config",
     },
     "packages/ui": {
-      "name": "@turflow/ui",
+      "name": "@daraja/ui",
       "dependencies": {
         "@radix-ui/react-dialog": "^1.1.15",
         "@radix-ui/react-label": "^2.1.8",
@@ -113,8 +113,8 @@
         "tw-animate-css": "^1.3.4",
       },
       "devDependencies": {
-        "@turflow/eslint-config": "workspace:*",
-        "@turflow/typescript-config": "workspace:*",
+        "@daraja/eslint-config": "workspace:*",
+        "@daraja/typescript-config": "workspace:*",
         "@types/react": "^19.2.0",
         "@types/react-dom": "^19.2.0",
         "eslint": "^9.32.0",
@@ -175,6 +175,18 @@
     "@babel/traverse": ["@babel/traverse@7.29.8", "", { "dependencies": { "@babel/code-frame": "^7.29.7", "@babel/generator": "^7.29.8", "@babel/helper-globals": "^7.29.7", "@babel/parser": "^7.29.8", "@babel/template": "^7.29.7", "@babel/types": "^7.29.8", "debug": "^4.3.1" } }, "sha512-I5z7H3bf/41ktsNVLtpN0wAa336HkqIHQ5BuPLEhTkt1jVSyZpeNKIzTgEWmlxjdg81R0IgUCcaE+Ok3NvrfZg=="],
 
     "@babel/types": ["@babel/types@7.29.8", "", { "dependencies": { "@babel/helper-string-parser": "^7.29.7", "@babel/helper-validator-identifier": "^7.29.7" } }, "sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg=="],
+
+    "@daraja/db": ["@daraja/db@workspace:packages/db"],
+
+    "@daraja/engine": ["@daraja/engine@workspace:packages/engine"],
+
+    "@daraja/eslint-config": ["@daraja/eslint-config@workspace:packages/eslint-config"],
+
+    "@daraja/typescript-config": ["@daraja/typescript-config@workspace:packages/typescript-config"],
+
+    "@daraja/ui": ["@daraja/ui@workspace:packages/ui"],
+
+    "@daraja/web": ["@daraja/web@workspace:apps/web"],
 
     "@drizzle-team/brocli": ["@drizzle-team/brocli@0.10.2", "", {}, "sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w=="],
 
@@ -549,18 +561,6 @@
     "@turbo/windows-64": ["@turbo/windows-64@2.11.7", "", { "os": "win32", "cpu": "x64" }, "sha512-ZIoKT7J7KutgYl4bGxmmgeUQjG+7E0nY8BF9dxUOiMH2vdTsM4JQ2uSwTYFkTR2Llbg6ghGjSmuZ8LQtkLEYjg=="],
 
     "@turbo/windows-arm64": ["@turbo/windows-arm64@2.11.7", "", { "os": "win32", "cpu": "arm64" }, "sha512-88Xv2f7SLGVJ68lRRx8o375dKmnZYNdDtvlKcPA0kZpcF93eAQd8l96BKQ0/AMHG0bMJA0Z5QqoqtetxzNsC+g=="],
-
-    "@turflow/db": ["@turflow/db@workspace:packages/db"],
-
-    "@turflow/engine": ["@turflow/engine@workspace:packages/engine"],
-
-    "@turflow/eslint-config": ["@turflow/eslint-config@workspace:packages/eslint-config"],
-
-    "@turflow/typescript-config": ["@turflow/typescript-config@workspace:packages/typescript-config"],
-
-    "@turflow/ui": ["@turflow/ui@workspace:packages/ui"],
-
-    "@turflow/web": ["@turflow/web@workspace:apps/web"],
 
     "@tybys/wasm-util": ["@tybys/wasm-util@0.10.4", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-W3c4gRigFS0T/Ma4qIYF3GDAc5AQdHb1yL5znJT1Zv1YaD9Kitx656wBjvr19qbiosmZT8lWDM5BEMynUqX65A=="],
 
