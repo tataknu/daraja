@@ -130,7 +130,7 @@ export async function handleInbound(input: InboundInput) {
   let { data: contact } = await db.from("contacts").select("*").eq(key, sender).maybeSingle();
   if (!contact) {
     const name = input.sender_name?.trim() || sender.split("@")[0] || sender;
-    const ins = await db.from("contacts").insert({ role: "guest", name, [key]: sender, language: "en" }).select("*").single();
+    const ins = await db.from("contacts").insert({ role: "guest", name, ...(key === "email" ? { email: sender } : { phone: sender }), language: "en" }).select("*").single();
     if (ins.error) throw ins.error;
     contact = ins.data;
   }

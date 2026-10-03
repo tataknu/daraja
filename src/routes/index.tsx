@@ -86,6 +86,7 @@ function Simulator() {
     try { return await fn(); }
     catch (e) { toast.error(e instanceof Error ? e.message : String(e)); }
     finally { setBusy(null); await live.reload(); }
+    return undefined;
   };
 
   const sendEmail = (g: Contact, text: string, thread?: string | null) =>
