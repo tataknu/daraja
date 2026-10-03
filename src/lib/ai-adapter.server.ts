@@ -2,8 +2,8 @@
 // local stack (MASSIVE-trained intent classifier + NLLB-200 for translation)
 // can replace these implementations later without touching workflow code.
 
-const GATEWAY = "https://ai.gateway.lovable.dev/v1/chat/completions";
-export const MODEL = "google/gemini-3-flash-preview";
+const GATEWAY = "https://ai.gateway.lovable.dev/v1/responses";
+export const MODEL = "openai/gpt-6-astra";
 
 export type GuestIntent = "booking_request" | "modify" | "cancel" | "question" | "feedback" | "unknown";
 export type HostIntent = "approve" | "decline" | "propose_other_date" | "answer_question" | "unknown";
@@ -12,7 +12,7 @@ export interface GuestClassification {
   intent: GuestIntent;
   confidence: number;
   language: string;
-  entities: { date_from?: string | null; date_to?: string | null; party_size?: number | null; slot?: string | null };
+  entities: { date_from: string | null; date_to: string | null; party_size: number | null; slot: string | null };
   missing: string[];
   translation_for_noor: string;
 }
@@ -20,8 +20,19 @@ export interface HostClassification {
   intent: HostIntent;
   booking: string | null;
   confidence: number;
-  proposed_date?: string | null;
-  answer_text_for_guest?: string | null;
+  proposed_date: string | null;
+  answer_text_for_guest: string | null;
+}
+
+// Strict structured output: every object has additionalProperties:false and all keys required.
+function strict(schema: any): any {
+  if (schema?.type === "object" || (Array.isArray(schema?.type) && schema.type.includes("object"))) {
+    const props = schema.properties ?? {};
+    for (const k of Object.keys(props)) props[k] = strict(props[k]);
+    return { ...schema, properties: props, required: Object.keys(props), additionalProperties: false };
+  }
+  if (schema?.type === "array" && schema.items) return { ...schema, items: strict(schema.items) };
+  return schema;
 }
 
 async function callTool<T>(system: string, user: string, name: string, parameters: object): Promise<T> {
@@ -29,22 +40,41 @@ async function callTool<T>(system: string, user: string, name: string, parameter
   if (!key) throw new Error("AI key missing");
   const res = await fetch(GATEWAY, {
     method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    headers: { "Lovable-API-Key": key, "Content-Type": "application/json", "X-Lovable-AIG-SDK": "fetch" },
     body: JSON.stringify({
       model: MODEL,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: user },
-      ],
-      tools: [{ type: "function", function: { name, description: name, parameters } }],
-      tool_choice: { type: "function", function: { name } },
+      instructions: system,
+      input: [{ role: "user", content: user }],
+      stream: true,
+      store: false,
+      reasoning: { effort: "low", summary: "auto" },
+      include: ["reasoning.encrypted_content"],
+      text: { format: { type: "json_schema", name, strict: true, schema: strict(parameters) } },
     }),
   });
-  if (!res.ok) throw new Error(`AI error ${res.status}: ${await res.text()}`);
-  const json = await res.json();
-  const args = json.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
-  if (!args) throw new Error("AI returned no structured output");
-  return JSON.parse(args) as T;
+  if (!res.ok || !res.body) throw new Error(`AI error ${res.status}: ${await res.text()}`);
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = "", out = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    const lines = buf.split("\n");
+    buf = lines.pop() ?? "";
+    for (const line of lines) {
+      if (!line.startsWith("data:")) continue;
+      const data = line.slice(5).trim();
+      if (!data || data === "[DONE]") continue;
+      let ev: any;
+      try { ev = JSON.parse(data); } catch { continue; }
+      if (ev.type === "response.output_text.delta") out += ev.delta ?? "";
+      else if (ev.type === "error" || ev.type === "response.failed")
+        throw new Error(`AI stream error: ${JSON.stringify(ev.error ?? ev.response?.error ?? ev)}`);
+    }
+  }
+  if (!out) throw new Error("AI returned empty output");
+  return JSON.parse(out) as T;
 }
 
 export async function classifyGuest(text: string, ctx: { today: string; slots: string[]; booking: string }): Promise<GuestClassification> {
