@@ -9,10 +9,18 @@ import { supabaseAdmin } from "@daraja/db/client.server";
 import { gatewayAi } from "./ai/gateway.server";
 import { createEngine, type Engine } from "./engine";
 import { supabaseRepo } from "./repo.supabase.server";
-import type { InboundInput } from "./types";
+import { SAMPLE_REVIEWS } from "./samples";
+import type { InboundInput, ReviewInput } from "./types";
 
 export { createEngine, type Engine } from "./engine";
-export type { InboundInput, InboundResult } from "./types";
+export type {
+  InboundInput,
+  InboundResult,
+  InsightItem,
+  InsightQuote,
+  InsightReport,
+  ReviewInput,
+} from "./types";
 
 let live: Engine | undefined;
 const engine = () =>
@@ -26,3 +34,11 @@ export const handleInbound = (input: InboundInput) => engine().handleInbound(inp
 export const runTimers = (asOf?: Date) => engine().runTimers(asOf);
 export const monthlyInsights = () => engine().monthlyInsights();
 export const resetDemo = () => engine().resetDemo();
+export const importReviews = (reviews: ReviewInput[], source?: "guest" | "sample") =>
+  engine().importReviews(reviews, source);
+/** The sample review set, analysed with the stored analyses where present (no tokens spent). */
+export const loadSampleReviews = () =>
+  engine().importReviews(
+    SAMPLE_REVIEWS.map((r) => ({ text: r.text, lang: r.lang, analysis: r.analysis })),
+    "sample",
+  );

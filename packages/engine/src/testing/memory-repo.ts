@@ -1,13 +1,15 @@
 // In-memory Repo with the same semantics as the Supabase one, for tests.
 import type {
   BookingPatch,
+  FeedbackRow,
   FeedbackSummaryRow,
   MessagePatch,
+  NewAiCall,
   NewFeedback,
   NewMessage,
   Repo,
 } from "../repo";
-import type { Booking, Contact, Decision, FarmSettings, Prompt } from "../types";
+import type { Booking, Contact, Decision, FarmSettings, InsightReport, Prompt } from "../types";
 
 const CLOSED = ["DECLINED", "EXPIRED", "CANCELLED", "CLOSED"];
 const HOURS_48 = 48 * 3600e3;
@@ -41,7 +43,9 @@ export function memoryRepo(clock: () => Date) {
     messages: [] as Stored<NewMessage & { id: string }>[],
     prompts: [] as StoredPrompt[],
     decisions: [] as (Decision & { message_id: string })[],
-    feedback: [] as Stored<NewFeedback>[],
+    feedback: [] as Stored<NewFeedback & { id: string }>[],
+    insightReports: [] as Stored<InsightReport & { id: string }>[],
+    aiCalls: [] as NewAiCall[],
     reminders: new Set<string>(),
   };
   const id = () => crypto.randomUUID();
@@ -83,6 +87,7 @@ export function memoryRepo(clock: () => Date) {
         email: g.email ?? null,
         phone: g.phone ?? null,
         language: g.language,
+        referral_code: null,
       };
       data.contacts.push(c);
       return copy(c);
@@ -135,6 +140,7 @@ export function memoryRepo(clock: () => Date) {
         party_size: null,
         notes_original: notes,
         notes_translated: null,
+        referred_by: null,
         ...stamp(),
       };
       data.bookings.push(b);
@@ -210,7 +216,9 @@ export function memoryRepo(clock: () => Date) {
       data.decisions.push({ ...copy(d), message_id: messageId });
     },
     async saveFeedback(f) {
-      data.feedback.push({ ...copy(f), ...stamp() });
+      const row = { ...copy(f), id: id(), ...stamp() };
+      data.feedback.push(row);
+      return { id: row.id };
     },
     async recentFeedback(limit): Promise<FeedbackSummaryRow[]> {
       return newestFirst(data.feedback)
@@ -220,6 +228,37 @@ export function memoryRepo(clock: () => Date) {
           themes: f.themes,
           sentiment: f.sentiment,
         }));
+    },
+    async feedbackForInsights(limit): Promise<FeedbackRow[]> {
+      return newestFirst(data.feedback)
+        .slice(0, limit)
+        .map((f) => ({
+          id: f.id,
+          created_at: f.created_at,
+          booking_id: f.booking_id,
+          lang: f.lang,
+          text_original: f.text_original,
+          text_translated: f.text_translated,
+          sentiment: f.sentiment,
+          points: copy(f.points ?? []),
+          ideas: copy(f.ideas ?? []),
+          source: f.source ?? "guest",
+        }));
+    },
+    async saveInsightReport(report) {
+      const row = { ...copy(report), id: id(), ...stamp() };
+      data.insightReports.push(row);
+      return { id: row.id };
+    },
+    async setReferralCode(cid, code) {
+      find(data.contacts, (c) => c.id === cid, "contact").referral_code = code.toUpperCase();
+    },
+    async contactByReferralCode(code) {
+      const c = data.contacts.find((x) => x.referral_code === code.toUpperCase());
+      return c ? copy(c) : null;
+    },
+    async logAiCalls(calls) {
+      data.aiCalls.push(...copy(calls));
     },
     async recordReminder(bookingId, kind) {
       const key = `${bookingId}:${kind}`;
@@ -233,6 +272,8 @@ export function memoryRepo(clock: () => Date) {
         data.prompts.length =
         data.decisions.length =
         data.feedback.length =
+        data.insightReports.length =
+        data.aiCalls.length =
           0;
       data.reminders.clear();
       nextBooking = 14;
@@ -248,6 +289,7 @@ export function memoryRepo(clock: () => Date) {
     email: null,
     phone: NOOR_PHONE,
     language: "sw",
+    referral_code: null,
   };
   data.contacts.push(noor);
   data.settings.host_id = noor.id;

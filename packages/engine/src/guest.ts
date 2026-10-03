@@ -2,7 +2,9 @@
 import type { GuestClassification } from "./ai/types";
 import { code, canTransition, type BookingStatus } from "./booking-state";
 import { CONF_MIN, type Ctx } from "./context";
+import { ingestFeedback } from "./feedback";
 import { firstName, localDate, swDate, swOrigin, swSlot } from "./format";
+import { followUpFeedback } from "./referrals";
 import type { Booking, Contact, FarmSettings, InboundResult } from "./types";
 
 /** The booking a guest's email is about: the one in the thread, else their newest open booking. */
@@ -24,20 +26,6 @@ async function findActiveBooking(
 function describe(b: Booking | null) {
   if (!b) return "none";
   return `${code(b.id)} status=${b.status} date=${b.date_from ?? "?"} slot=${b.slot ?? "?"} party=${b.party_size ?? "?"}`;
-}
-
-async function saveFeedback(ctx: Ctx, bookingId: number | null, text: string, lang: string) {
-  const a = await ctx.ai
-    .analyzeFeedback(text)
-    .catch(() => ({ translation_en: text, themes: [] as string[], sentiment: "neutral" as const }));
-  await ctx.repo.saveFeedback({
-    booking_id: bookingId,
-    text_original: text,
-    lang,
-    text_translated: a.translation_en,
-    themes: a.themes,
-    sentiment: a.sentiment,
-  });
 }
 
 export async function handleGuest(
@@ -103,7 +91,7 @@ export async function handleGuest(
   // Any message may also carry feedback: save it, then continue with the main intent.
   if (r.intent !== "feedback" && r.feedback_text?.trim()) {
     const fbBooking = booking ?? (await ctx.repo.latestBooking(guest.id));
-    await saveFeedback(ctx, fbBooking?.id ?? null, r.feedback_text.trim(), r.language);
+    await ingestFeedback(ctx, fbBooking?.id ?? null, r.feedback_text.trim(), r.language);
     await ctx.log(messageId, {
       intent: "feedback",
       confidence: r.confidence,
@@ -176,13 +164,14 @@ export async function handleGuest(
 
     case "feedback": {
       const fb = booking ?? (await ctx.repo.latestBooking(guest.id));
-      await saveFeedback(ctx, fb?.id ?? null, r.feedback_text?.trim() || text, r.language);
-      if (fb?.status === "FEEDBACK_REQUESTED") await ctx.transition(fb, "CLOSED", "system");
-      await ctx.emailGuest(
-        guest,
-        "Thank you so much for your feedback — Noor will read every word.",
-        fb?.id,
+      const review = await ingestFeedback(
+        ctx,
+        fb?.id ?? null,
+        r.feedback_text?.trim() || text,
+        r.language,
       );
+      if (fb?.status === "FEEDBACK_REQUESTED") await ctx.transition(fb, "CLOSED", "system");
+      await followUpFeedback(ctx, guest, fb, review);
       await log("feedback_saved");
       return { booking_id: fb?.id };
     }

@@ -11,6 +11,7 @@ export async function runTimers(ctx: Ctx, asOf: Date): Promise<string[]> {
   const log: string[] = [];
 
   for (const p of await repo.unresolvedPrompts("approve_booking")) {
+    ctx.trace.booking_id = p.booking_id;
     const age = asOf.getTime() - new Date(p.sent_at).getTime();
     if (age >= 48 * HOUR) {
       const b = await repo.booking(p.booking_id!);
@@ -33,11 +34,13 @@ export async function runTimers(ctx: Ctx, asOf: Date): Promise<string[]> {
       );
       log.push(`${code(p.booking_id!)} nudged`);
     }
+    await ctx.flushUsage("timers");
   }
 
   const today = localDate(asOf);
   for (const b of await repo.bookingsWithStatus("CONFIRMED")) {
     if (!b.date_from) continue;
+    ctx.trace.booking_id = b.id;
     const guest = await repo.contact(b.guest_id);
     if (
       b.date_from === addDays(today, 1) &&
@@ -61,6 +64,7 @@ export async function runTimers(ctx: Ctx, asOf: Date): Promise<string[]> {
       );
       log.push(`${code(b.id)} feedback requested`);
     }
+    await ctx.flushUsage("timers");
   }
   return log;
 }

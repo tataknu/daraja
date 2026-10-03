@@ -1,5 +1,6 @@
 // Repo on Supabase. Server-only: uses the service-role client, which bypasses row-level security.
 import type { supabaseAdmin } from "@daraja/db/client.server";
+import type { ReviewIdea, ReviewPoint } from "./ai/types";
 import type { Repo } from "./repo";
 
 type Db = typeof supabaseAdmin;
@@ -178,8 +179,14 @@ export function supabaseRepo(db: Db): Repo {
         routed_to_human: d.routed,
       });
     },
-    async saveFeedback(feedback) {
-      await db.from("feedback").insert(feedback);
+    async saveFeedback({ points = [], ideas = [], ...rest }) {
+      const { data, error } = await db
+        .from("feedback")
+        .insert({ ...rest, points: points as never, ideas: ideas as never })
+        .select("id")
+        .single();
+      if (error) throw error;
+      return data;
     },
     async recentFeedback(limit) {
       const { data } = await db
@@ -188,6 +195,57 @@ export function supabaseRepo(db: Db): Repo {
         .order("created_at", { ascending: false })
         .limit(limit);
       return data ?? [];
+    },
+    async feedbackForInsights(limit) {
+      const { data, error } = await db
+        .from("feedback")
+        .select(
+          "id, created_at, booking_id, lang, text_original, text_translated, sentiment, points, ideas, source",
+        )
+        .order("created_at", { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return (data ?? []).map((f) => ({
+        ...f,
+        points: (f.points ?? []) as unknown as ReviewPoint[],
+        ideas: (f.ideas ?? []) as unknown as ReviewIdea[],
+      }));
+    },
+    async saveInsightReport(report) {
+      const { data, error } = await db
+        .from("insight_reports")
+        .insert({
+          review_count: report.review_count,
+          report: report as never,
+          sms_lines: report.sms_sw,
+        })
+        .select("id")
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    async setReferralCode(contactId, code) {
+      const { error } = await db
+        .from("contacts")
+        .update({ referral_code: code.toUpperCase() })
+        .eq("id", contactId);
+      if (error) throw error;
+    },
+    async contactByReferralCode(code) {
+      const { data } = await db
+        .from("contacts")
+        .select("*")
+        .eq("referral_code", code.toUpperCase())
+        .maybeSingle();
+      return data;
+    },
+    async logAiCalls(calls) {
+      if (!calls.length) return;
+      try {
+        await db.from("ai_calls").insert(calls);
+      } catch {
+        // Usage logging must never break a workflow.
+      }
     },
     async recordReminder(bookingId, kind) {
       const { error } = await db.from("reminders_sent").insert({ booking_id: bookingId, kind });

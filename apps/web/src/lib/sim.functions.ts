@@ -53,6 +53,11 @@ export const generateInsights = createServerFn({ method: "POST" }).handler(async
   return monthlyInsights();
 });
 
+export const loadSampleReviews = createServerFn({ method: "POST" }).handler(async () => {
+  const { loadSampleReviews } = await import("@daraja/engine");
+  return loadSampleReviews();
+});
+
 export const resetDemo = createServerFn({ method: "POST" }).handler(async () => {
   const { resetDemo } = await import("@daraja/engine");
   await resetDemo();

@@ -1,11 +1,13 @@
 // The AI tasks the engine uses. Each keeps its prompt and output schema together; the transport
 // is passed in, so the same tasks run on Lovable's gateway, OpenAI, or a test fake.
+import { analyzeReview, groupIdeas, writeInsightsSms } from "./review-tasks";
 import type {
   Ai,
   CallTool,
   FeedbackAnalysis,
   GuestClassification,
   HostClassification,
+  UsageListener,
 } from "./types";
 
 export async function classifyGuest(
@@ -131,13 +133,20 @@ export async function summarizeFeedback(
   );
 }
 
-export function createAi(call: CallTool, model: string): Ai {
+/** An Ai over any transport. `onUsage` hears about every call; `withUsage` makes a metered copy. */
+export function createAi(transport: CallTool, model: string, onUsage?: UsageListener): Ai {
+  const call: CallTool = (system, user, name, parameters) =>
+    transport(system, user, name, parameters, onUsage);
   return {
     model,
+    withUsage: (listener) => createAi(transport, model, listener),
     classifyGuest: (text, ctx) => classifyGuest(call, text, ctx),
     classifyHost: (text, ctx) => classifyHost(call, text, ctx),
     translate: (text, from, to) => translate(call, text, from, to),
     analyzeFeedback: (text) => analyzeFeedback(call, text),
     summarizeFeedback: (items) => summarizeFeedback(call, items),
+    analyzeReview: (text) => analyzeReview(call, text),
+    groupIdeas: (ideas) => groupIdeas(call, ideas),
+    writeInsightsSms: (summary) => writeInsightsSms(call, summary),
   };
 }

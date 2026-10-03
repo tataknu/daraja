@@ -1,6 +1,15 @@
 // Everything the engine reads or writes. The Supabase implementation is repo.supabase.server.ts;
 // tests use testing/memory-repo.ts.
-import type { Booking, Channel, Contact, Decision, FarmSettings, Prompt } from "./types";
+import type { AiUsage, ReviewIdea, ReviewPoint } from "./ai/types";
+import type {
+  Booking,
+  Channel,
+  Contact,
+  Decision,
+  FarmSettings,
+  InsightReport,
+  Prompt,
+} from "./types";
 
 export interface NewMessage {
   direction: "in" | "out";
@@ -31,6 +40,32 @@ export interface NewFeedback {
   text_translated: string;
   themes: string[];
   sentiment: string;
+  points?: ReviewPoint[];
+  ideas?: ReviewIdea[];
+  /** "guest" for feedback emails, "sample" for imported sample reviews. */
+  source?: "guest" | "sample";
+}
+
+/** A stored review, as the insights report reads it. */
+export interface FeedbackRow {
+  id: string;
+  created_at: string;
+  booking_id: number | null;
+  lang: string | null;
+  text_original: string;
+  text_translated: string | null;
+  sentiment: string | null;
+  points: ReviewPoint[];
+  ideas: ReviewIdea[];
+  source: string;
+}
+
+/** One model call, linked to what triggered it. */
+export interface NewAiCall extends AiUsage {
+  /** "inbound", "timers", "insights" or "import". */
+  source: string;
+  message_id: string | null;
+  booking_id: number | null;
 }
 
 export interface FeedbackSummaryRow {
@@ -79,8 +114,18 @@ export interface Repo {
   markNudged(id: string, now: Date): Promise<void>;
 
   logDecision(messageId: string, decision: Decision): Promise<void>;
-  saveFeedback(feedback: NewFeedback): Promise<void>;
+  saveFeedback(feedback: NewFeedback): Promise<{ id: string }>;
   recentFeedback(limit: number): Promise<FeedbackSummaryRow[]>;
+  /** The newest reviews with their points and ideas, newest first. */
+  feedbackForInsights(limit: number): Promise<FeedbackRow[]>;
+  saveInsightReport(report: InsightReport): Promise<{ id: string }>;
+
+  setReferralCode(contactId: string, code: string): Promise<void>;
+  /** Case-insensitive. */
+  contactByReferralCode(code: string): Promise<Contact | null>;
+
+  /** Never throws: usage logging must not break a workflow. */
+  logAiCalls(calls: NewAiCall[]): Promise<void>;
   /** False when this reminder was already sent for the booking. */
   recordReminder(bookingId: number, kind: string): Promise<boolean>;
   resetDemo(): Promise<void>;

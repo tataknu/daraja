@@ -9,7 +9,13 @@ const TABLES = [
   { name: "messages", order: "created_at", desc: "Every email and SMS, both directions" },
   { name: "pending_prompts", order: "sent_at", desc: "Questions waiting for Noor's reply" },
   { name: "decisions", order: "created_at", desc: "What the assistant decided and why" },
-  { name: "feedback", order: "created_at", desc: "Guest feedback, translated and themed" },
+  {
+    name: "feedback",
+    order: "created_at",
+    desc: "Reviews, translated, with what visitors loved and wished",
+  },
+  { name: "insight_reports", order: "created_at", desc: "Review insights sent to Noor" },
+  { name: "ai_calls", order: "created_at", desc: "Every AI call: task, model, tokens, latency" },
   { name: "reminders_sent", order: null, desc: "Which reminders have already gone out" },
 ] as const;
 

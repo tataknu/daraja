@@ -3,7 +3,10 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.server.ts"
+    ".": "./src/index.server.ts",
+    "./ai": "./src/ai/index.ts",
+    "./testing": "./src/testing/index.ts",
+    "./samples": "./src/samples/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

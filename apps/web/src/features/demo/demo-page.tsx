@@ -15,6 +15,8 @@ import { Button } from "@daraja/ui/components/button";
 import { DarajaMark } from "@/components/logo";
 import { ArrivalBanner } from "./arrival-banner";
 import { DataView } from "./data-view";
+import { InsightsView } from "./insights-view";
+import { MetricsView } from "./metrics-view";
 import { GuestInbox } from "./guest-inbox";
 import { NoorPhone } from "./noor-phone";
 import { ToolsSheet } from "./tools-sheet";
@@ -22,6 +24,8 @@ import type { Arrival, Contact } from "./types";
 import { useLive } from "./use-live";
 
 const route = getRouteApi("/demo");
+const TABS = { demo: "Conversation", insights: "Insights", metrics: "Metrics", data: "Data" };
+type Tab = keyof typeof TABS;
 const uid = () => `sim-in-${crypto.randomUUID()}`;
 
 /** The live simulator: a guest inbox, Noor's phone, and the data behind them. */
@@ -37,7 +41,7 @@ export function DemoPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const [guestId, setGuestId] = useState<string>("");
   const [arrival, setArrival] = useState<Arrival | null>(null);
-  const [tab, setTab] = useState<"demo" | "data">("demo");
+  const [tab, setTab] = useState<Tab>("demo");
 
   const host = live.contacts.find((c) => c.role === "host");
   const guests = live.contacts.filter((c) => c.role === "guest");
@@ -162,7 +166,7 @@ export function DemoPage() {
               aria-label="View"
               className="flex rounded-lg border border-border bg-background p-0.5"
             >
-              {(["demo", "data"] as const).map((t) => (
+              {(Object.keys(TABS) as Tab[]).map((t) => (
                 <button
                   key={t}
                   type="button"
@@ -175,7 +179,7 @@ export function DemoPage() {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {t === "demo" ? "Conversation" : "Data"}
+                  {TABS[t]}
                 </button>
               ))}
             </div>
@@ -212,6 +216,10 @@ export function DemoPage() {
 
       {tab === "data" ? (
         <DataView />
+      ) : tab === "insights" ? (
+        <InsightsView />
+      ) : tab === "metrics" ? (
+        <MetricsView />
       ) : (
         <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:min-h-0">
           {arrival && (

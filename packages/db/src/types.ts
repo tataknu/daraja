@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_calls: {
+        Row: {
+          booking_id: number | null
+          cached_tokens: number
+          created_at: string
+          id: string
+          input_tokens: number
+          latency_ms: number
+          message_id: string | null
+          model: string
+          ok: boolean
+          output_tokens: number
+          reasoning_tokens: number
+          source: string
+          task: string
+        }
+        Insert: {
+          booking_id?: number | null
+          cached_tokens?: number
+          created_at?: string
+          id?: string
+          input_tokens?: number
+          latency_ms?: number
+          message_id?: string | null
+          model: string
+          ok?: boolean
+          output_tokens?: number
+          reasoning_tokens?: number
+          source: string
+          task: string
+        }
+        Update: {
+          booking_id?: number | null
+          cached_tokens?: number
+          created_at?: string
+          id?: string
+          input_tokens?: number
+          latency_ms?: number
+          message_id?: string | null
+          model?: string
+          ok?: boolean
+          output_tokens?: number
+          reasoning_tokens?: number
+          source?: string
+          task?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_calls_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_calls_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           created_at: string
@@ -24,6 +87,7 @@ export type Database = {
           notes_original: string | null
           notes_translated: string | null
           party_size: number | null
+          referred_by: string | null
           slot: string | null
           status: string
           updated_at: string
@@ -37,6 +101,7 @@ export type Database = {
           notes_original?: string | null
           notes_translated?: string | null
           party_size?: number | null
+          referred_by?: string | null
           slot?: string | null
           status?: string
           updated_at?: string
@@ -50,6 +115,7 @@ export type Database = {
           notes_original?: string | null
           notes_translated?: string | null
           party_size?: number | null
+          referred_by?: string | null
           slot?: string | null
           status?: string
           updated_at?: string
@@ -58,6 +124,13 @@ export type Database = {
           {
             foreignKeyName: "bookings_guest_id_fkey"
             columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_referred_by_fkey"
+            columns: ["referred_by"]
             isOneToOne: false
             referencedRelation: "contacts"
             referencedColumns: ["id"]
@@ -72,6 +145,7 @@ export type Database = {
           language: string
           name: string
           phone: string | null
+          referral_code: string | null
           role: string
         }
         Insert: {
@@ -81,6 +155,7 @@ export type Database = {
           language?: string
           name: string
           phone?: string | null
+          referral_code?: string | null
           role: string
         }
         Update: {
@@ -90,6 +165,7 @@ export type Database = {
           language?: string
           name?: string
           phone?: string | null
+          referral_code?: string | null
           role?: string
         }
         Relationships: []
@@ -181,8 +257,11 @@ export type Database = {
           booking_id: number | null
           created_at: string
           id: string
+          ideas: Json
           lang: string | null
+          points: Json
           sentiment: string | null
+          source: string
           text_original: string
           text_translated: string | null
           themes: string[]
@@ -191,8 +270,11 @@ export type Database = {
           booking_id?: number | null
           created_at?: string
           id?: string
+          ideas?: Json
           lang?: string | null
+          points?: Json
           sentiment?: string | null
+          source?: string
           text_original: string
           text_translated?: string | null
           themes?: string[]
@@ -201,8 +283,11 @@ export type Database = {
           booking_id?: number | null
           created_at?: string
           id?: string
+          ideas?: Json
           lang?: string | null
+          points?: Json
           sentiment?: string | null
+          source?: string
           text_original?: string
           text_translated?: string | null
           themes?: string[]
@@ -216,6 +301,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      insight_reports: {
+        Row: {
+          created_at: string
+          id: string
+          report: Json
+          review_count: number
+          sms_lines: string[]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          report: Json
+          review_count: number
+          sms_lines?: string[]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          report?: Json
+          review_count?: number
+          sms_lines?: string[]
+        }
+        Relationships: []
       }
       messages: {
         Row: {

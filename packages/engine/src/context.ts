@@ -1,5 +1,6 @@
 // What every engine module gets: its dependencies plus the shared actions built on them
 // (outbound messages, booking transitions, the decision log).
+import type { AiUsage } from "./ai/types";
 import { canTransition, code, type Actor, type BookingStatus } from "./booking-state";
 import { sms160 } from "./format";
 import type { BookingPatch } from "./repo";
@@ -15,6 +16,10 @@ export interface SendOptions {
 }
 
 export interface Ctx extends EngineDeps {
+  /** What this unit of work is about; AI usage is logged against it. */
+  trace: { message_id: string | null; booking_id: number | null };
+  /** Writes the AI calls made since the last flush to the usage log, linked to `trace`. */
+  flushUsage(source: "inbound" | "timers" | "insights" | "import"): Promise<void>;
   /** The only way a message leaves the system. Phase 1 writes it for the simulator; Phase 2 swaps the transport here. */
   sendMessage(channel: Channel, to: Contact, text: string, opts?: SendOptions): Promise<void>;
   /** English gloss of a non-English message, for operators and reviewers. */
@@ -27,8 +32,18 @@ export interface Ctx extends EngineDeps {
   log(messageId: string, decision: Decision): Promise<void>;
 }
 
+/** One context per unit of work (an inbound message, a timer run), so usage is never mixed up. */
 export function createContext(deps: EngineDeps): Ctx {
-  const { repo, ai, now } = deps;
+  const { repo, now } = deps;
+  const usage: AiUsage[] = [];
+  const ai = deps.ai.withUsage((u) => usage.push(u));
+  const trace: Ctx["trace"] = { message_id: null, booking_id: null };
+
+  async function flushUsage(source: "inbound" | "timers" | "insights" | "import") {
+    const calls = usage.splice(0);
+    if (!calls.length) return;
+    await repo.logAiCalls(calls.map((u) => ({ ...u, source, ...trace }))).catch(() => undefined);
+  }
 
   async function englishOf(text: string, lang: string) {
     if (lang === "en" || !/[a-zA-Z\u00C0-\uFFFF]{3,}/.test(text)) return null;
@@ -80,6 +95,9 @@ export function createContext(deps: EngineDeps): Ctx {
 
   return {
     ...deps,
+    ai,
+    trace,
+    flushUsage,
     englishOf,
     sendMessage,
     smsNoor,
