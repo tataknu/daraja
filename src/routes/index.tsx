@@ -162,7 +162,7 @@ function Simulator() {
 }
 
 function GuestInbox(props: {
-  guests: Contact[]; guest?: Contact; messages: Message[]; bookings: Booking[]; busy: boolean;
+  guests: Contact[]; guest: Contact | undefined; messages: Message[]; bookings: Booking[]; busy: boolean;
   onPick: (id: string) => void; onCreate: (n: string, e: string) => void; onSend: (t: string, thread: string | null) => void;
 }) {
   const { guests, guest, messages } = props;
@@ -216,7 +216,7 @@ function GuestInbox(props: {
   );
 }
 
-function NoorPhone(props: { host?: Contact; messages: Message[]; busy: boolean; onSend: (t: string) => void }) {
+function NoorPhone(props: { host: Contact | undefined; messages: Message[]; busy: boolean; onSend: (t: string) => void }) {
   const [text, setText] = useState("");
   const sms = props.messages.filter((m) => m.contact_id === props.host?.id && m.channel === "sms");
   const endRef = useRef<HTMLDivElement>(null);
