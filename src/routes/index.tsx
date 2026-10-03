@@ -8,7 +8,6 @@ import { postInbound, createGuest, runTimersNow, generateInsights, resetDemo } f
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const Route = createFileRoute("/")({
@@ -26,7 +25,6 @@ export const Route = createFileRoute("/")({
 type Contact = Tables<"contacts">;
 type Message = Tables<"messages">;
 type Booking = Tables<"bookings">;
-type Decision = Tables<"decisions">;
 
 const uid = () => `sim-in-${crypto.randomUUID()}`;
 
@@ -34,15 +32,13 @@ function useLive() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [decisions, setDecisions] = useState<Decision[]>([]);
   const load = async () => {
-    const [c, m, b, d] = await Promise.all([
+    const [c, m, b] = await Promise.all([
       supabase.from("contacts").select("*").order("created_at"),
       supabase.from("messages").select("*").order("created_at"),
       supabase.from("bookings").select("*").order("id", { ascending: false }),
-      supabase.from("decisions").select("*").order("created_at", { ascending: false }).limit(100),
     ]);
-    setContacts(c.data ?? []); setMessages(m.data ?? []); setBookings(b.data ?? []); setDecisions(d.data ?? []);
+    setContacts(c.data ?? []); setMessages(m.data ?? []); setBookings(b.data ?? []);
   };
   useEffect(() => {
     load();
@@ -51,20 +47,12 @@ function useLive() {
     const ch = supabase.channel("sim")
       .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, debounced)
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings" }, debounced)
-      .on("postgres_changes", { event: "*", schema: "public", table: "decisions" }, debounced)
       .on("postgres_changes", { event: "*", schema: "public", table: "contacts" }, debounced)
       .subscribe();
     return () => { clearTimeout(t); supabase.removeChannel(ch); };
   }, []);
-  return { contacts, messages, bookings, decisions, reload: load };
+  return { contacts, messages, bookings, reload: load };
 }
-
-const STATUS_STYLE: Record<string, string> = {
-  CONFIRMED: "bg-success text-primary-foreground",
-  PENDING_NOOR: "bg-warning text-foreground",
-  COUNTER_OFFERED: "bg-accent text-accent-foreground",
-  INCOMPLETE: "bg-secondary text-secondary-foreground",
-};
 
 function Simulator() {
   const live = useLive();
@@ -155,8 +143,6 @@ function Simulator() {
           <NoorPhone host={host} messages={live.messages} busy={!!busy} onSend={(t) => host && run("sms", () => sendSms(t))} />
         </div>
         {busy && busy !== "demo" && <p className="text-center text-sm text-muted-foreground">Working…</p>}
-        <BookingsTable bookings={live.bookings} contacts={live.contacts} />
-        <DecisionLog decisions={live.decisions} messages={live.messages} />
       </main>
     </div>
   );
@@ -256,65 +242,6 @@ function NoorPhone(props: { host: Contact | undefined; messages: Message[]; busy
           <button type="submit" disabled={props.busy || !text.trim()}
             className="w-full rounded-full bg-success py-2 font-lcd text-xl text-primary-foreground transition hover:opacity-90 disabled:opacity-40">TUMA ✉</button>
         </form>
-      </div>
-    </section>
-  );
-}
-
-function BookingsTable({ bookings, contacts }: { bookings: Booking[]; contacts: Contact[] }) {
-  return (
-    <section className="paper overflow-hidden">
-      <h2 className="border-b border-border px-5 py-3 text-lg font-semibold">Bookings</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-muted text-left text-xs uppercase tracking-wider text-muted-foreground">
-            <tr><th className="px-5 py-2">ID</th><th className="px-5 py-2">Guest</th><th className="px-5 py-2">Date</th><th className="px-5 py-2">Slot</th><th className="px-5 py-2">Party</th><th className="px-5 py-2">Status</th></tr>
-          </thead>
-          <tbody>
-            {bookings.length === 0 && <tr><td colSpan={6} className="px-5 py-6 text-center text-muted-foreground">No bookings yet</td></tr>}
-            {bookings.map((b) => (
-              <tr key={b.id} className="border-t border-border">
-                <td className="px-5 py-2 font-mono font-semibold">B{b.id}</td>
-                <td className="px-5 py-2">{contacts.find((c) => c.id === b.guest_id)?.name}</td>
-                <td className="px-5 py-2">{b.date_from ?? "—"}</td>
-                <td className="px-5 py-2">{b.slot ?? "—"}</td>
-                <td className="px-5 py-2">{b.party_size ?? "—"}</td>
-                <td className="px-5 py-2"><Badge className={STATUS_STYLE[b.status] ?? "bg-muted text-muted-foreground"}>{b.status}</Badge></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  );
-}
-
-function DecisionLog({ decisions, messages }: { decisions: Decision[]; messages: Message[] }) {
-  return (
-    <section className="paper overflow-hidden">
-      <h2 className="border-b border-border px-5 py-3 text-lg font-semibold">Decision log</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-muted text-left text-xs uppercase tracking-wider text-muted-foreground">
-            <tr><th className="px-5 py-2">Message</th><th className="px-5 py-2">Intent</th><th className="px-5 py-2">Confidence</th><th className="px-5 py-2">Action</th><th className="px-5 py-2">Model</th><th className="px-5 py-2">To human</th></tr>
-          </thead>
-          <tbody>
-            {decisions.length === 0 && <tr><td colSpan={6} className="px-5 py-6 text-center text-muted-foreground">No decisions yet</td></tr>}
-            {decisions.map((d) => {
-              const m = messages.find((x) => x.id === d.message_id);
-              return (
-                <tr key={d.id} className="border-t border-border align-top">
-                  <td className="max-w-xs truncate px-5 py-2" title={m?.text_original}>{m?.channel === "sms" ? "📱 " : "✉ "}{m?.text_original}</td>
-                  <td className="px-5 py-2 font-mono">{d.intent}</td>
-                  <td className="px-5 py-2">{d.confidence != null ? Number(d.confidence).toFixed(2) : "—"}</td>
-                  <td className="px-5 py-2">{d.action_taken}</td>
-                  <td className="px-5 py-2 text-xs text-muted-foreground">{d.model}</td>
-                  <td className="px-5 py-2">{d.routed_to_human ? <Badge className="bg-accent text-accent-foreground">yes</Badge> : "no"}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
       </div>
     </section>
   );
