@@ -136,8 +136,8 @@ function Simulator() {
   });
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-border bg-card/60">
+      <main className="mx-auto max-w-7xl space-y-8 px-6 py-8">
+
         <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-4 px-6 py-6">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">Simulator · Phase 1</p>

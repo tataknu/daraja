@@ -31,7 +31,8 @@ export function DataView() {
     const entries = await Promise.all(
       TABLES.map(async (t) => {
         let q = supabase.from(t.name).select("*").limit(200);
-        q = t.desc ? q.order(t.order, { ascending: false }) : q;
+        q = t.order ? q.order(t.order, { ascending: false }) : q;
+
         const { data: rows } = await q;
         return [t.name, rows ?? []] as const;
       }),
