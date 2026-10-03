@@ -31,7 +31,7 @@ export function createContext(deps: EngineDeps): Ctx {
   const { repo, ai, now } = deps;
 
   async function englishOf(text: string, lang: string) {
-    if (lang === "en" || !/[a-zA-ZÀ-￿]{3,}/.test(text)) return null;
+    if (lang === "en" || !/[a-zA-Z\u00C0-\uFFFF]{3,}/.test(text)) return null;
     return ai.translate(text, lang, "en").catch(() => null);
   }
 

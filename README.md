@@ -7,12 +7,16 @@ Monorepo built with [Turborepo](https://turborepo.dev) and bun workspaces.
 
 ```
 apps/
-  web/                    Lovable TanStack Start app: UI, server functions, webhook routes
+  web/                    TanStack Start app
+    src/routes/           thin route files (URL, head, search params)
+    src/features/demo/    the live simulator: inbox, Noor's phone, data tab
+    src/features/landing/ landing page and the wizard into the demo
 packages/
-  engine/                 Backend domain: workflow engine, booking state machine, AI adapter (server-only)
+  engine/                 workflows (guest, host, timers, insights) behind Repo and Ai interfaces
   db/                     Supabase types + admin client, migrations, Supabase project config
-  ui/                     Design system: shadcn components + theme (globals.css)
-  typescript-config/      Shared strict tsconfig
+  ui/                     design system: shadcn components + theme (globals.css)
+  eslint-config/          shared lint rules
+  typescript-config/      shared strict tsconfig
 ```
 
 ## Local development (Makefile)
