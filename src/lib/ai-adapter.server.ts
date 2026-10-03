@@ -87,7 +87,7 @@ Rules: dates as ISO YYYY-MM-DD (assume the next future occurrence). slot must be
       type: "object",
       properties: {
         intent: { type: "string", enum: ["booking_request", "modify", "cancel", "question", "feedback", "unknown"] },
-        confidence: { type: "number", minimum: 0, maximum: 1 },
+        confidence: { type: "number" },
         language: { type: "string", description: "ISO 639-1 code of the email" },
         entities: {
           type: "object",
@@ -116,7 +116,7 @@ export async function classifyHost(text: string, ctx: { today: string; openPromp
       properties: {
         intent: { type: "string", enum: ["approve", "decline", "propose_other_date", "answer_question", "unknown"] },
         booking: { type: ["string", "null"] },
-        confidence: { type: "number", minimum: 0, maximum: 1 },
+        confidence: { type: "number" },
         proposed_date: { type: ["string", "null"] },
         answer_text_for_guest: { type: ["string", "null"] },
       },
