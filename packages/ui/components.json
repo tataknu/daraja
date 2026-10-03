@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "css": "src/styles/globals.css",
+    "baseColor": "slate",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "rtl": false,
+  "aliases": {
+    "components": "@turflow/ui/components",
+    "hooks": "@turflow/ui/hooks",
+    "lib": "@turflow/ui/lib",
+    "utils": "@turflow/ui/lib/utils",
+    "ui": "@turflow/ui/components"
+  },
+  "registries": {}
+}
