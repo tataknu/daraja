@@ -180,7 +180,7 @@ async function handleHost(noor: Contact, message_id: string, text: string) {
       return { booking_id: p.booking_id };
     }
   }
-  const m = /^\s*B?(\d+)\s*([1-3])\b/i.exec(text);
+  const m = /^\s*B?\s*(\d+)[\s\-:.,/]*([1-3])\b/i.exec(text);
   if (m) {
     const id = Number(m[1]);
     const choice = Number(m[2]);
