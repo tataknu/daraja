@@ -60,7 +60,7 @@ export function DataView() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6 px-6 py-8">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
           Everything the system stores — guests, bookings, messages, decisions and more. Updates live.
