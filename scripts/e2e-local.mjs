@@ -103,9 +103,13 @@ async function main() {
   const ask = (await noorMsgs())[0]?.text_original ?? "";
   check("Noor got a Swahili approval SMS", ask.includes(`B${booking.id}`) && ask.includes("1=Ndiyo"), ask);
 
-  // 2. Noor approves from her basic phone (Twilio webhook, signed).
+  // 2. Noor approves from her basic phone (Twilio webhook, signed). With only this request waiting
+  //    she can just type "1"; with others waiting she needs the code.
+  const waiting = await rest(`pending_prompts?kind=eq.approve_booking&resolved_at=is.null&select=booking_id`);
+  const reply = waiting.length === 1 ? "1" : `B${booking.id} 1`;
+  console.log(`      Noor replies "${reply}" (${waiting.length} request(s) waiting)`);
   const url = `${BASE}/api/public/inbound-sms`;
-  const params = { From: NOOR, Body: `B${booking.id} 1`, MessageSid: `SM${randomUUID().replace(/-/g, "")}` };
+  const params = { From: NOOR, Body: reply, MessageSid: `SM${randomUUID().replace(/-/g, "")}` };
   const r2 = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded", "X-Twilio-Signature": twilioSignature(url, params) },

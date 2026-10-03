@@ -180,10 +180,25 @@ async function handleHost(noor: Contact, message_id: string, text: string) {
       return { booking_id: p.booking_id };
     }
   }
-  const m = /^\s*B?\s*(\d+)[\s\-:.,/]*([1-3])\b/i.exec(text);
-  if (m) {
-    const id = Number(m[1]);
-    const choice = Number(m[2]);
+  // A bare "1"/"2"/"3" answers the request waiting for her: no booking code needed when there is
+  // exactly one. With several waiting, ask which one instead of failing.
+  const bareChoice = /^\s*([1-3])\s*$/.exec(text);
+  const waiting = open.filter((p) => p.kind === "approve_booking");
+  if (bareChoice && waiting.length > 1) {
+    const codes = waiting.map((p) => code(p.booking_id!));
+    await logDecision(message_id, { intent: "unknown", confidence: 1, entities: { choice: bareChoice[1], waiting: codes }, model: "regex", action: "asked_which_booking", routed: true });
+    await smsNoor(`Maombi ${codes.length} yanasubiri: ${codes.join(", ")}. Jibu mf. '${codes[0]} ${bareChoice[1]}'.`);
+    return {};
+  }
+  const coded = /^\s*B?\s*(\d+)[\s\-:.,/]*([1-3])\b/i.exec(text);
+  const only = waiting.length === 1 ? waiting[0] : undefined;
+  const pick = bareChoice && only?.booking_id
+    ? { id: only.booking_id, choice: Number(bareChoice[1]) }
+    : coded
+      ? { id: Number(coded[1]), choice: Number(coded[2]) }
+      : null;
+  if (pick) {
+    const { id, choice } = pick;
     const mine = open.filter((p) => p.booking_id === id);
     const rb = mine.find((p) => p.kind === "confirm_readback");
     if (rb && choice <= 2) return resolveReadback(rb, choice === 1, message_id);

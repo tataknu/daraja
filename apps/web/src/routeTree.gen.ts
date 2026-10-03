@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as ApiPublicInboundEmailRouteImport } from './routes/api/public/inbound-email'
 import { Route as ApiPublicInboundSmsRouteImport } from './routes/api/public/inbound-sms'
 import { Route as ApiPublicHooksRunTimersRouteImport } from './routes/api/public/hooks/run-timers'
@@ -17,6 +18,11 @@ import { Route as ApiPublicHooksRunTimersRouteImport } from './routes/api/public
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicInboundEmailRoute = ApiPublicInboundEmailRouteImport.update({
@@ -37,12 +43,14 @@ const ApiPublicHooksRunTimersRoute = ApiPublicHooksRunTimersRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/demo': typeof DemoRoute
   '/api/public/inbound-email': typeof ApiPublicInboundEmailRoute
   '/api/public/inbound-sms': typeof ApiPublicInboundSmsRoute
   '/api/public/hooks/run-timers': typeof ApiPublicHooksRunTimersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/demo': typeof DemoRoute
   '/api/public/inbound-email': typeof ApiPublicInboundEmailRoute
   '/api/public/inbound-sms': typeof ApiPublicInboundSmsRoute
   '/api/public/hooks/run-timers': typeof ApiPublicHooksRunTimersRoute
@@ -50,6 +58,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/demo': typeof DemoRoute
   '/api/public/inbound-email': typeof ApiPublicInboundEmailRoute
   '/api/public/inbound-sms': typeof ApiPublicInboundSmsRoute
   '/api/public/hooks/run-timers': typeof ApiPublicHooksRunTimersRoute
@@ -58,18 +67,21 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/demo'
     | '/api/public/inbound-email'
     | '/api/public/inbound-sms'
     | '/api/public/hooks/run-timers'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/demo'
     | '/api/public/inbound-email'
     | '/api/public/inbound-sms'
     | '/api/public/hooks/run-timers'
   id:
     | '__root__'
     | '/'
+    | '/demo'
     | '/api/public/inbound-email'
     | '/api/public/inbound-sms'
     | '/api/public/hooks/run-timers'
@@ -77,6 +89,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DemoRoute: typeof DemoRoute
   ApiPublicInboundEmailRoute: typeof ApiPublicInboundEmailRoute
   ApiPublicInboundSmsRoute: typeof ApiPublicInboundSmsRoute
   ApiPublicHooksRunTimersRoute: typeof ApiPublicHooksRunTimersRoute
@@ -89,6 +102,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/inbound-email': {
@@ -117,6 +137,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DemoRoute: DemoRoute,
   ApiPublicInboundEmailRoute: ApiPublicInboundEmailRoute,
   ApiPublicInboundSmsRoute: ApiPublicInboundSmsRoute,
   ApiPublicHooksRunTimersRoute: ApiPublicHooksRunTimersRoute,
