@@ -201,8 +201,8 @@ function GuestInbox(props: {
                 <span>{new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
               </div>
               <p className="whitespace-pre-wrap">{m.text_original}</p>
-              {m.text_translated && m.direction === "out" && (
-                <p className="mt-2 border-t border-border pt-2 text-xs italic text-muted-foreground">EN: {m.text_translated}</p>
+              {m.text_en && (
+                <p className="mt-2 border-t border-border pt-2 text-xs italic text-muted-foreground">EN: {m.text_en}</p>
               )}
             </div>
           </div>
@@ -236,6 +236,7 @@ function NoorPhone(props: { host: Contact | undefined; messages: Message[]; busy
               <div key={m.id} className="mb-2">
                 <div className="text-sm opacity-70">{m.direction === "in" ? "> Mimi" : "< Msaidizi"} {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>
                 <p className={`whitespace-pre-wrap break-words ${m.direction === "in" ? "pl-3" : ""}`}>{m.text_original}</p>
+                {m.text_en && <p className="mt-0.5 border-l-2 border-lcd-ink/40 pl-2 font-sans text-xs italic opacity-80">EN: {m.text_en}</p>}
               </div>
             ))}
             <div ref={endRef} />
