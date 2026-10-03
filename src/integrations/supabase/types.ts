@@ -227,6 +227,7 @@ export type Database = {
           id: string
           lang: string | null
           provider_msg_id: string | null
+          text_en: string | null
           text_original: string
           text_translated: string | null
           thread_ref: string | null
@@ -240,6 +241,7 @@ export type Database = {
           id?: string
           lang?: string | null
           provider_msg_id?: string | null
+          text_en?: string | null
           text_original: string
           text_translated?: string | null
           thread_ref?: string | null
@@ -253,6 +255,7 @@ export type Database = {
           id?: string
           lang?: string | null
           provider_msg_id?: string | null
+          text_en?: string | null
           text_original?: string
           text_translated?: string | null
           thread_ref?: string | null
