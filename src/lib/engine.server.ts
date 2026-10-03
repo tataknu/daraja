@@ -12,8 +12,8 @@ export interface InboundInput {
   sender: string; // email address or phone number
   text: string;
   provider_msg_id: string;
-  thread_ref?: string | null;
-  sender_name?: string | null;
+  thread_ref?: string | null | undefined;
+  sender_name?: string | null | undefined;
 }
 
 type Contact = { id: string; role: string; name: string; email: string | null; phone: string | null; language: string };
@@ -61,7 +61,7 @@ export async function sendMessage(
   channel: "email" | "sms",
   to: Contact,
   text: string,
-  opts: { booking_id?: number | null; text_translated?: string | null; thread_ref?: string | null } = {},
+  opts: { booking_id?: number | null | undefined; text_translated?: string | null | undefined; thread_ref?: string | null | undefined } = {},
 ) {
   // Phase 1: the simulator IS the transport — writing the row makes it appear in the inbox/phone.
   const { error } = await db.from("messages").insert({
@@ -72,11 +72,11 @@ export async function sendMessage(
   if (error) throw error;
 }
 
-async function smsNoor(text: string, booking_id?: number | null) {
+async function smsNoor(text: string, booking_id?: number | null | undefined) {
   await sendMessage("sms", await host(), text, { booking_id });
 }
 
-async function emailGuest(guest: Contact, english: string, booking_id?: number | null) {
+async function emailGuest(guest: Contact, english: string, booking_id?: number | null | undefined) {
   const localized = await ai.translate(english, "en", guest.language).catch(() => english);
   await sendMessage("email", guest, localized, {
     booking_id, text_translated: guest.language === "en" ? null : english, thread_ref: booking_id ? code(booking_id) : null,
@@ -239,7 +239,7 @@ async function loadBooking(id: number) {
   return { b: b as Booking, guest: g as Contact };
 }
 
-async function executeHostAction(id: number, action: string, o: { proposed_date?: string | null; answer?: string | null }) {
+async function executeHostAction(id: number, action: string, o: { proposed_date?: string | null | undefined; answer?: string | null | undefined }) {
   const { b, guest } = await loadBooking(id);
   const s = await settings();
   const when = `${b.date_from} at ${b.slot ?? s.slots[0]}`;
