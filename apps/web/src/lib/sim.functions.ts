@@ -14,7 +14,7 @@ const inbound = z.object({
 export const postInbound = createServerFn({ method: "POST" })
   .inputValidator((d) => inbound.parse(d))
   .handler(async ({ data }) => {
-    const { handleInbound } = await import("@turflow/engine/engine.server");
+    const { handleInbound } = await import("@turflow/engine");
     return handleInbound(data);
   });
 
@@ -32,17 +32,17 @@ export const createGuest = createServerFn({ method: "POST" })
 export const runTimersNow = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ asOf: z.string().datetime().nullable() }).parse(d))
   .handler(async ({ data }) => {
-    const { runTimers } = await import("@turflow/engine/engine.server");
+    const { runTimers } = await import("@turflow/engine");
     return runTimers(data.asOf ? new Date(data.asOf) : new Date());
   });
 
 export const generateInsights = createServerFn({ method: "POST" }).handler(async () => {
-  const { monthlyInsights } = await import("@turflow/engine/engine.server");
+  const { monthlyInsights } = await import("@turflow/engine");
   return monthlyInsights();
 });
 
 export const resetDemo = createServerFn({ method: "POST" }).handler(async () => {
-  const { resetDemo } = await import("@turflow/engine/engine.server");
+  const { resetDemo } = await import("@turflow/engine");
   await resetDemo();
   return { ok: true };
 });

@@ -27,7 +27,7 @@ export const Route = createFileRoute("/api/public/inbound-email")({
         const p = Postmark.safeParse(await request.json());
         if (!p.success) return new Response("Bad request", { status: 400 });
         const ref = p.data.Subject?.match(/B\d+/)?.[0] ?? null;
-        const { handleInbound } = await import("@turflow/engine/engine.server");
+        const { handleInbound } = await import("@turflow/engine");
         await handleInbound({
           channel: "email", sender: p.data.From, sender_name: p.data.FromName ?? null,
           text: p.data.TextBody.slice(0, 4000), provider_msg_id: p.data.MessageID, thread_ref: ref,

@@ -3,9 +3,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./engine.server": "./src/engine.server.ts",
-    "./ai-adapter.server": "./src/ai-adapter.server.ts",
-    "./booking-state": "./src/booking-state.ts"
+    ".": "./src/index.server.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

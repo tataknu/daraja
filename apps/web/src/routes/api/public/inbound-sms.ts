@@ -18,7 +18,7 @@ export const Route = createFileRoute("/api/public/inbound-sms")({
           return new Response("Invalid signature", { status: 401 });
         }
         if (!params["From"] || !params["Body"] || !params["MessageSid"]) return new Response("Bad request", { status: 400 });
-        const { handleInbound } = await import("@turflow/engine/engine.server");
+        const { handleInbound } = await import("@turflow/engine");
         await handleInbound({ channel: "sms", sender: params["From"], text: params["Body"].slice(0, 1600), provider_msg_id: params["MessageSid"] });
         return new Response("<Response/>", { headers: { "Content-Type": "text/xml" } });
       },
