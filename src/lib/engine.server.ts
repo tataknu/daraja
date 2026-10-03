@@ -129,7 +129,7 @@ export async function handleInbound(input: InboundInput) {
   const sender = input.sender.trim().toLowerCase();
   let { data: contact } = await db.from("contacts").select("*").eq(key, sender).maybeSingle();
   if (!contact) {
-    const name = input.sender_name?.trim() || sender.split("@")[0];
+    const name = input.sender_name?.trim() || sender.split("@")[0] || sender;
     const ins = await db.from("contacts").insert({ role: "guest", name, [key]: sender, language: "en" }).select("*").single();
     if (ins.error) throw ins.error;
     contact = ins.data;
@@ -357,12 +357,12 @@ async function handleGuest(guest: Contact, message_id: string, text: string, thr
         await log(`asked_for_${missing.join("+").replace(/ /g, "_")}`);
         return { booking_id: booking.id };
       }
-      if (!patch.slot) patch.slot = s.slots[0];
+      if (!patch.slot) patch.slot = s.slots[0] ?? "09:00";
       booking = await transition(booking, "PENDING_NOOR", "system", patch);
       await resolvePrompts(booking.id, "superseded");
       await createPrompt(booking.id, "approve_booking", { 1: "approve", 2: "decline", 3: "other_day" });
       // Capacity check uses seeded max only — informational for Noor, never decided by AI.
-      const { data: same } = await db.from("bookings").select("party_size").eq("date_from", patch.date_from!).eq("slot", patch.slot)
+      const { data: same } = await db.from("bookings").select("party_size").eq("date_from", patch.date_from!).eq("slot", patch.slot!)
         .in("status", ["CONFIRMED", "PENDING_NOOR"]).neq("id", booking.id);
       const taken = (same ?? []).reduce((a, x) => a + (x.party_size ?? 0), 0);
       const over = taken + patch.party_size! > s.max_per_slot ? " ZIDI!" : "";
