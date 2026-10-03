@@ -6,3 +6,13 @@ pnpm-lock.yaml
 package-lock.json
 bun.lock
 routeTree.gen.ts
+.wrangler
+.turbo
+# Generated or vendored code
+apps/web/src/integrations/supabase
+apps/web/src/components/reactbits
+packages/db/src/types.ts
+packages/db/migrations
+packages/db/supabase
+# Turborepo manages a block in this file
+AGENTS.md

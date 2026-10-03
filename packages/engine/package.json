@@ -7,14 +7,17 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@turflow/db": "workspace:*"
   },
   "devDependencies": {
+    "@turflow/eslint-config": "workspace:*",
     "@turflow/typescript-config": "workspace:*",
     "@types/node": "^22.16.5",
+    "eslint": "^9.32.0",
     "typescript": "^5.8.3",
     "vitest": "^4.1.10"
   }

@@ -20,11 +20,25 @@ function authHeaders(): Record<string, string> {
   return { Authorization: `Bearer ${key}` };
 }
 
+interface JsonSchema {
+  type?: string | string[];
+  properties?: Record<string, JsonSchema>;
+  items?: JsonSchema;
+  [key: string]: unknown;
+}
+
+interface StreamEvent {
+  type?: string;
+  delta?: string;
+  error?: unknown;
+  response?: { error?: unknown };
+}
+
 // Strict structured output: every object has additionalProperties:false and all keys required.
-function strict(schema: any): any {
+function strict(schema: JsonSchema): JsonSchema {
   if (schema?.type === "object" || (Array.isArray(schema?.type) && schema.type.includes("object"))) {
     const props = schema.properties ?? {};
-    for (const k of Object.keys(props)) props[k] = strict(props[k]);
+    for (const [k, v] of Object.entries(props)) props[k] = strict(v);
     return { ...schema, properties: props, required: Object.keys(props), additionalProperties: false };
   }
   if (schema?.type === "array" && schema.items) return { ...schema, items: strict(schema.items) };
@@ -43,7 +57,7 @@ export async function callTool<T>(system: string, user: string, name: string, pa
       store: false,
       reasoning: { effort: "low", summary: "auto" },
       include: ["reasoning.encrypted_content"],
-      text: { format: { type: "json_schema", name, strict: true, schema: strict(parameters) } },
+      text: { format: { type: "json_schema", name, strict: true, schema: strict(parameters as JsonSchema) } },
     }),
   });
   if (!res.ok || !res.body) throw new Error(`AI error ${res.status}: ${await res.text()}`);
@@ -60,7 +74,7 @@ export async function callTool<T>(system: string, user: string, name: string, pa
       if (!line.startsWith("data:")) continue;
       const data = line.slice(5).trim();
       if (!data || data === "[DONE]") continue;
-      let ev: any;
+      let ev: StreamEvent;
       try { ev = JSON.parse(data); } catch { continue; }
       if (ev.type === "response.output_text.delta") out += ev.delta ?? "";
       else if (ev.type === "error" || ev.type === "response.failed")

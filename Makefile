@@ -19,7 +19,7 @@ SUPABASE_SKIP := studio,imgproxy,mailpit,edge-runtime,logflare,vector,supavisor,
 WITH_ENV  := set -a && . ./$(ENV_LOCAL) && set +a &&
 
 .DEFAULT_GOAL := help
-.PHONY: help setup install env db-up db-down db-status db-migrate db-reset dev test lint check build \
+.PHONY: help setup install env db-up db-down db-status db-migrate db-reset dev test lint format check build \
         deploy-local e2e e2e-worker clean require-env require-docker
 
 help: ## List targets
@@ -68,13 +68,17 @@ test: ## Typecheck all packages and run unit tests
 	$(BUN) run typecheck
 	$(BUN) run test
 
-lint: ## Lint (note: Lovable's code has existing Prettier issues)
+lint: ## Lint every package
 	$(BUN) run lint
+
+format: ## Format the repo with Prettier
+	$(BUN) run format
 
 build: require-env ## Production build (Cloudflare Worker in apps/web/.output)
 	$(WITH_ENV) $(BUN) run build
 
-check: test build ## Typecheck, unit tests and production build
+check: test lint build ## Typecheck, unit tests, lint, format check and production build
+	$(BUN) run format:check
 
 deploy-local: build ## Run the built Worker locally in workerd on http://localhost:8787
 	grep -v '^VITE_\|^#' $(ENV_LOCAL) > $(WORKER)/.dev.vars

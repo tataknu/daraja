@@ -72,6 +72,8 @@ export function DemoPage() {
         toast.error(e instanceof Error ? e.message : String(e));
       }
     })();
+    // Runs once per arrival (the ref guards re-entry); the server-fn helpers are stable for its purpose.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search.persona, search.message]);
 
   const playDemo = () => run("demo", async () => {
