@@ -48,7 +48,7 @@ export function Hero() {
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
           Daraja is an AI front desk for small tourism hosts. It reads every booking email in the
           visitor's language and sends the host one short SMS they can answer with a single digit.
-          Nothing is confirmed until the host replies.
+          The host always has the final say.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Button asChild size="lg">
