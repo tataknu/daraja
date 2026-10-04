@@ -13,7 +13,7 @@ export function ArrivalBanner({
   const first = arrival.name.split(" ")[0];
   let text: string;
   let tone = "border-border bg-card";
-  if (arrival.status === "sending") text = `Sending ${first}'s email. The assistant is reading it…`;
+  if (arrival.status === "sending") text = `Sending ${first}'s email. Daraja is reading it…`;
   else if (arrival.status === "error") {
     text = `${first}'s email couldn't be sent. Try again from the inbox.`;
     tone = "border-destructive/40 bg-destructive/5";
@@ -31,7 +31,7 @@ export function ArrivalBanner({
     tone = "border-success/50 bg-success/10";
   } else if (booking?.status === "DECLINED")
     text = `Noor declined B${booking.id}. ${first} was told in ${arrival.language}.`;
-  else text = `The assistant answered ${first} in ${arrival.language}. See the inbox.`;
+  else text = `Daraja answered ${first} in ${arrival.language}. See the inbox.`;
   return (
     <div
       role="status"

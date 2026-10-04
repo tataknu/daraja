@@ -9,9 +9,10 @@ import {
   SelectValue,
 } from "@daraja/ui/components/select";
 import { splitDirections } from "./directions";
+import { arrived } from "./pending";
 import { MapCard } from "./map-card";
 import { NewGuestDialog } from "./new-guest-dialog";
-import type { Booking, Contact, Message } from "./types";
+import type { Booking, Contact, Message, Pending } from "./types";
 
 export function GuestInbox(props: {
   guests: Contact[];
@@ -22,6 +23,8 @@ export function GuestInbox(props: {
   onPick: (id: string) => void;
   onCreate: (n: string, e: string) => void;
   onSend: (t: string, thread: string | null) => void;
+  /** This guest's email while the server handles it. */
+  pending?: Pending | null;
 }) {
   const { guests, guest, messages } = props;
   const [text, setText] = useState("");
@@ -35,7 +38,9 @@ export function GuestInbox(props: {
   useEffect(() => {
     const el = listRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [thread.length]);
+  }, [thread.length, props.pending]);
+  const first = guest?.name.split(" ")[0] ?? "the guest";
+  const pendingShown = props.pending && !arrived(props.pending, thread) ? props.pending : null;
 
   return (
     <section
@@ -101,6 +106,23 @@ export function GuestInbox(props: {
             </div>
           );
         })}
+        {pendingShown && (
+          <div className="ml-6 sm:ml-12">
+            <div className="rounded-lg border border-primary/20 bg-secondary px-4 py-3 text-sm opacity-80">
+              <div className="mb-1 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+                <span className="font-medium">From {guest?.name}</span>
+                <span>Sending…</span>
+              </div>
+              <p className="whitespace-pre-wrap break-words">{pendingShown.text}</p>
+            </div>
+          </div>
+        )}
+        {props.pending && (
+          <p aria-live="polite" className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="size-2 animate-pulse rounded-full bg-accent" aria-hidden="true" />
+            Daraja is reading {first}'s email and writing to Noor…
+          </p>
+        )}
       </div>
       <form
         className="space-y-2 border-t border-border p-4"

@@ -20,7 +20,7 @@ import { MetricsView } from "./metrics-view";
 import { GuestInbox } from "./guest-inbox";
 import { NoorPhone } from "./noor-phone";
 import { ToolsSheet } from "./tools-sheet";
-import type { Arrival, Contact } from "./types";
+import type { Arrival, Contact, Pending } from "./types";
 import { useLive } from "./use-live";
 
 const route = getRouteApi("/demo");
@@ -44,6 +44,8 @@ export function DemoPage() {
   const [tab, setTab] = useState<Tab>("demo");
   // False while opening the page resets the demo; nothing is sent until it's done.
   const [ready, setReady] = useState(false);
+  // The email or SMS being handled right now: shown at once, with what Daraja is doing.
+  const [pending, setPending] = useState<Pending | null>(null);
 
   const host = live.contacts.find((c) => c.role === "host");
   const guests = live.contacts.filter((c) => c.role === "guest");
@@ -62,19 +64,38 @@ export function DemoPage() {
     return undefined;
   };
 
-  const sendEmail = (g: Pick<Contact, "email" | "name">, text: string, thread?: string | null) =>
-    post({
-      data: {
-        channel: "email",
-        sender: g.email!,
-        sender_name: g.name,
-        text,
-        provider_msg_id: uid(),
-        thread_ref: thread ?? null,
-      },
-    });
+  /** Shows `p` straight away and until the server has handled it and the page has reloaded. */
+  const sending = async <T,>(p: Omit<Pending, "since">, fn: () => Promise<T>) => {
+    setPending({ ...p, since: Date.now() });
+    try {
+      return await fn();
+    } finally {
+      await live.reload();
+      setPending(null);
+    }
+  };
+
+  const sendEmail = (
+    g: Pick<Contact, "id" | "email" | "name">,
+    text: string,
+    thread?: string | null,
+  ) =>
+    sending({ channel: "email", contactId: g.id, text }, () =>
+      post({
+        data: {
+          channel: "email",
+          sender: g.email!,
+          sender_name: g.name,
+          text,
+          provider_msg_id: uid(),
+          thread_ref: thread ?? null,
+        },
+      }),
+    );
   const sendSms = (text: string) =>
-    post({ data: { channel: "sms", sender: host!.phone!, text, provider_msg_id: uid() } });
+    sending({ channel: "sms", contactId: host!.id, text }, () =>
+      post({ data: { channel: "sms", sender: host!.phone!, text, provider_msg_id: uid() } }),
+    );
 
   // Every visit starts from a clean demo: opening or reloading the page resets it first. The ref
   // keeps it to one reset even if React runs the effect twice.
@@ -110,7 +131,7 @@ export function DemoPage() {
         const email = demoEmail(persona);
         const g = await mkGuest({ data: { name: persona.name, email } });
         setGuestId(g.id);
-        const r = await sendEmail({ name: persona.name, email }, message);
+        const r = await sendEmail({ id: g.id, name: persona.name, email }, message);
         await live.reload();
         const bookingId =
           r && "booking_id" in r && typeof r.booking_id === "number" ? r.booking_id : undefined;
@@ -272,12 +293,16 @@ export function DemoPage() {
                 })
               }
               onSend={(text, thread) => guest && run("email", () => sendEmail(guest, text, thread))}
+              pending={
+                pending?.channel === "email" && pending.contactId === guest?.id ? pending : null
+              }
             />
             <NoorPhone
               host={host}
               messages={live.messages}
               busy={!!busy}
               onSend={(t) => host && run("sms", () => sendSms(t))}
+              pending={pending?.channel === "sms" ? pending : null}
             />
           </div>
         </main>

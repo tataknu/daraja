@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { PhoneShell } from "@/components/phone-shell";
-import type { Contact, Message } from "./types";
+import { arrived } from "./pending";
+import type { Contact, Message, Pending } from "./types";
 
 export function NoorPhone(props: {
   host: Contact | undefined;
   messages: Message[];
   busy: boolean;
   onSend: (t: string) => void;
+  /** Noor's SMS while the server handles it. */
+  pending?: Pending | null;
 }) {
   const [text, setText] = useState("");
   const sms = props.messages.filter((m) => m.contact_id === props.host?.id && m.channel === "sms");
@@ -14,7 +17,8 @@ export function NoorPhone(props: {
   useEffect(() => {
     const el = screenRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [sms.length]);
+  }, [sms.length, props.pending]);
+  const pendingShown = props.pending && !arrived(props.pending, sms) ? props.pending : null;
   return (
     <section
       className="flex flex-col items-center gap-3 lg:h-full lg:min-h-0"
@@ -93,6 +97,17 @@ export function NoorPhone(props: {
             )}
           </div>
         ))}
+        {pendingShown && (
+          <div className="mb-2 opacity-70">
+            <div className="text-sm opacity-70">&gt; Mimi · inatuma…</div>
+            <p className="whitespace-pre-wrap break-words pl-3">{pendingShown.text}</p>
+          </div>
+        )}
+        {props.pending && (
+          <p aria-live="polite" className="text-sm opacity-70">
+            &lt; Msaidizi <span className="animate-pulse">…</span>
+          </p>
+        )}
       </PhoneShell>
     </section>
   );
