@@ -50,6 +50,8 @@ export interface GuestCase {
       slot: OneOf<string | null>;
     };
     missing?: OneOf<MissingField[]>;
+    /** Only for replies to a date Noor offered: true accepts it (and confirms the booking). */
+    accepts_offer?: OneOf<boolean | null>;
   };
   note?: string;
 }
@@ -100,6 +102,7 @@ const isRecord = (v: unknown): v is Record<string, unknown> =>
   typeof v === "object" && v !== null && !Array.isArray(v);
 
 const str: Check<string> = (v, p) => (typeof v === "string" && v.trim() ? v : fail(p, "text"));
+const bool: Check<boolean> = (v, p) => (typeof v === "boolean" ? v : fail(p, "true or false"));
 const int: Check<number> = (v, p) =>
   typeof v === "number" && Number.isInteger(v) && v > 0 ? v : fail(p, "positive integer");
 const nullable =
@@ -176,7 +179,13 @@ export function parseGuestDataset(raw: unknown, file = "guest.json"): Dataset<Gu
   const cases = rawCases.map((rc: unknown, i: number): GuestCase => {
     const p = `${file}.cases[${i}]`;
     const c = record(rc, p, ["id", "text", "booking", "labels", "note"]);
-    const l = record(c["labels"], `${p}.labels`, ["intent", "language", "entities", "missing"]);
+    const l = record(c["labels"], `${p}.labels`, [
+      "intent",
+      "language",
+      "entities",
+      "missing",
+      "accepts_offer",
+    ]);
     const labels: GuestCase["labels"] = {
       intent: oneOf(enumOf(GUEST_INTENTS))(l["intent"], `${p}.labels.intent`),
     };
@@ -193,6 +202,8 @@ export function parseGuestDataset(raw: unknown, file = "guest.json"): Dataset<Gu
       labels.missing = oneOf(arrayOf(enumOf(MISSING_FIELDS)))(l["missing"], `${p}.missing`);
     if ((labels.entities === undefined) !== (labels.missing === undefined))
       fail(p, "entities and missing are labelled together");
+    if (l["accepts_offer"] !== undefined)
+      labels.accepts_offer = oneOf(nullable(bool))(l["accepts_offer"], `${p}.accepts_offer`);
     const out: GuestCase = {
       id: str(c["id"], `${p}.id`),
       text: str(c["text"], `${p}.text`),

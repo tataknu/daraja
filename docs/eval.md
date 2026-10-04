@@ -8,8 +8,9 @@ This page scores three of the AI's jobs: it **reads** a guest's email (intent, l
 party size, slot), **reads** Noor's free-text SMS replies, and **reads** reviews. It measures how
 often each reading is right, how often the AI is wrong while sure of itself, and what one call
 costs. A safety suite runs the real engine against chosen attacks, with an AI scripted to say the
-most dangerous thing, and checks every write that confirms a booking. Not yet measured: how well
-the AI reads a guest's answer to a date Noor offered.
+most dangerous thing, and checks every write that confirms a booking. The AI's reading of a
+guest's answer to a date Noor offered, the one path to CONFIRMED that rests on it, is scored on 7
+written replies (3 yes, 4 not yes).
 
 **Not evaluated at all:** `translate`, which writes every email a guest receives in their
 language; `group_ideas` and `write_insights_sms`, which turn reviews into Noor's insights SMS; and
@@ -95,7 +96,8 @@ to CONFIRMED is recorded with the sender of the message being handled, and a sce
 if each one came from Noor's phone and the final booking states are as expected. A control
 scenario (Noor answers `1`) shows the check does see a real confirmation. The engine's other path
 to CONFIRMED, a guest accepting the date Noor offered them, appears only as an attack (another
-guest accepting in the thread); how well the AI reads the real guest's answer is not yet measured.
+guest accepting in the thread); how well the AI reads the real guest's answer is scored in the
+guest table ("Answer to a date Noor offered", 7 replies).
 
 ## The datasets
 
@@ -160,23 +162,24 @@ Each rate shows its counts. A rate over independent cases (one per email, reply 
 
 ### Guest emails (`classify_guest`)
 
-49 labelled cases from `packages/eval/data/guest.json`; model answers from 2026-10-04.
+56 labelled cases from `packages/eval/data/guest.json`; model answers from 2026-10-04.
 
 | Metric                                                    | gpt-5.4-mini, effort low         |
 | --------------------------------------------------------- | -------------------------------- |
-| Intent                                                    | 98.0% (48/49; 95% CI 89.1–99.9%) |
-| Language                                                  | 100.0% (48/48; 95% CI 92.6–100%) |
-| Date                                                      | 100.0% (29/29; 95% CI 88.1–100%) |
-| Party size                                                | 100.0% (29/29; 95% CI 88.1–100%) |
-| Slot (morning / afternoon)                                | 100.0% (29/29; 95% CI 88.1–100%) |
-| Missing fields (not used to decide)                       | 100.0% (29/29; 95% CI 88.1–100%) |
-| Every field right                                         | 98.0% (48/49; 95% CI 89.1–99.9%) |
-| Handed to Noor (AI unsure, not for the farm, or AI error) | 10.2% (5/49; 95% CI 3.4–22.2%)   |
-| Wrong but confident                                       | 2.0% (1/49; 95% CI 0.1–10.9%)    |
-| Intent, labelled booking_request                          | 95.7% (22/23; 95% CI 78.1–99.9%) |
-| Intent, labelled modify                                   | 100.0% (6/6; 95% CI 54.1–100%)   |
+| Intent                                                    | 100.0% (56/56; 95% CI 93.6–100%) |
+| Language                                                  | 100.0% (55/55; 95% CI 93.5–100%) |
+| Date                                                      | 100.0% (33/33; 95% CI 89.4–100%) |
+| Party size                                                | 100.0% (33/33; 95% CI 89.4–100%) |
+| Slot (morning / afternoon)                                | 100.0% (33/33; 95% CI 89.4–100%) |
+| Missing fields (not used to decide)                       | 100.0% (33/33; 95% CI 89.4–100%) |
+| Answer to a date Noor offered                             | 100.0% (7/7; 95% CI 59.0–100%)   |
+| Every field right                                         | 100.0% (56/56; 95% CI 93.6–100%) |
+| Handed to Noor (AI unsure, not for the farm, or AI error) | 12.5% (7/56; 95% CI 5.2–24.1%)   |
+| Wrong but confident                                       | 0.0% (0/56; 95% CI 0–6.4%)       |
+| Intent, labelled booking_request                          | 100.0% (26/26; 95% CI 86.8–100%) |
+| Intent, labelled modify                                   | 100.0% (9/9; 95% CI 66.4–100%)   |
 | Intent, labelled cancel                                   | 100.0% (5/5; 95% CI 47.8–100%)   |
-| Intent, labelled question                                 | 100.0% (7/7; 95% CI 59.0–100%)   |
+| Intent, labelled question                                 | 100.0% (8/8; 95% CI 63.1–100%)   |
 | Intent, labelled feedback                                 | 100.0% (3/3; 95% CI 29.2–100%)   |
 | Intent, labelled unknown                                  | 100.0% (5/5; 95% CI 47.8–100%)   |
 
@@ -213,13 +216,13 @@ Per model call, not per booking. Cost at `gpt-5.4-mini`: $0.75 input, $0.075 cac
 
 | Run                               | Model calls | Failed calls | Avg input tokens | Avg output tokens | Avg reasoning tokens | Latency p50 | Latency p95 | Cost per 1,000 calls |
 | --------------------------------- | ----------- | ------------ | ---------------- | ----------------- | -------------------- | ----------- | ----------- | -------------------- |
-| guest: gpt-5.4-mini, effort low   | 49          | 0            | 488              | 215               | 81                   | 1,826 ms    | 3,011 ms    | $1.34                |
+| guest: gpt-5.4-mini, effort low   | 56          | 0            | 523              | 218               | 83                   | 1,476 ms    | 2,655 ms    | $1.37                |
 | host: gpt-5.4-mini, effort low    | 18          | 0            | 241              | 119               | 60                   | 1,262 ms    | 1,790 ms    | $0.7183              |
 | reviews: gpt-5.4-mini, effort low | 42          | 0            | 548              | 305               | 80                   | 2,349 ms    | 3,379 ms    | $1.79                |
 
 ### Safety (no model calls)
 
-12 of 12 scenarios pass: whatever the AI claimed, every write that set a booking to CONFIRMED was made on a message from Noor's own phone. The engine's rule: no booking reaches CONFIRMED unless Noor approved it, or the guest accepted a date Noor herself offered (that acceptance is read by the AI). Not yet measured: how well the AI reads a guest's answer to a date Noor offered.
+12 of 12 scenarios pass: whatever the AI claimed, every write that set a booking to CONFIRMED was made on a message from Noor's own phone. The engine's rule: no booking reaches CONFIRMED unless Noor approved it, or the guest accepted a date Noor herself offered (that acceptance is read by the AI). The AI's reading of a guest's answer to a date Noor offered is scored in the guest table (7 written replies).
 
 | Scenario                                                           | Attack, and what the AI claims                                                                               | What the engine did                                                            | Writes to CONFIRMED                | Bookings after                      | Result |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ---------------------------------- | ----------------------------------- | ------ |
@@ -245,8 +248,10 @@ above.
 
 - **Not a held-out test.** We ran these cases, read the errors, changed the prompts (a calendar
   line for relative dates; `date_from` is the new date for a change; ideas vs wishes) and re-ran:
-  twice for guest emails, once for Noor's replies and reviews. Idea precision rose from 54% to 100%
-  on the same reviews. Expect lower scores on new messages.
+  three times for guest emails (the third after adding `accepts_offer` and the 7 replies to an
+  offered date), once for Noor's replies and reviews. Idea precision rose from 54% to 100% on the
+  same reviews, and guest emails from 47/49 to 56/56 fully right. Expect lower scores on new
+  messages.
 - **Synthetic data, written by us.** The emails, replies and reviews were written by the team (with
   an AI assistant), not collected from real guests. They are labelled with care and ambiguous
   cases accept several answers, but they only contain what we thought of. Real traffic will
@@ -256,11 +261,12 @@ above.
   wide that leaves things: 48 of 49 right is consistent with a true rate from 89.1% to 99.9%, and 0
   of 18 replies wrong but confident with one as high as 18.5%. Differences of a few points between
   runs are noise.
-- **The hand-offs here are all mail that isn't for the farm.** The 5 guest emails handed to Noor
-  are the 5 labelled `unknown`: SEO spam, a prize scam, a misdirected email, an out-of-office reply
-  and gibberish. 4 of them had confidence 0.84–0.98, so the intent sent them to her, not doubt.
-  Confidence didn't flag errors: the one wrong reading had 0.95, and every booking email had 0.94
-  or more.
+- **Most hand-offs are mail that isn't for the farm.** 5 of the 7 guest emails handed to Noor are
+  the 5 labelled `unknown` (SEO spam, a prize scam, a misdirected email, an out-of-office reply,
+  gibberish), 4 of them at confidence 0.95–0.99: the intent sent them to her, not doubt. The other
+  two are answers to an offered date: a refusal read at 0.69 and an undecided reply. Confidence
+  doesn't flag errors: in an earlier run the one wrong reading (`nl-group-of-twelve`) had 0.95,
+  and in this run every booking or change email had 0.92 or more.
 - **One model unless compared.** Each column is one model at one reasoning effort, each case asked
   once. Models are not deterministic; a second run can differ slightly.
 - **One set of labellers.** No agreement between independent annotators was measured, and the
@@ -276,6 +282,6 @@ above.
 - **Latency** is measured from a laptop to the gateway, not from the production Worker.
 - **Safety is about the code, not the model.** The safety suite shows the engine's rules held in
   each of its scenarios, whatever the AI said; it says nothing about how often the model is right.
-  Safety's 12/12 is a set of chosen attacks (and one control), not a rate. Not yet measured: how
-  well the AI reads a guest's answer to a date Noor offered, the one path to CONFIRMED that rests
-  on the AI's reading.
+  Safety's 12/12 is a set of chosen attacks (and one control), not a rate. The one path to
+  CONFIRMED that rests on the AI's reading, a guest's answer to a date Noor offered, is scored on
+  only 7 written replies (95% CI 59–100%).

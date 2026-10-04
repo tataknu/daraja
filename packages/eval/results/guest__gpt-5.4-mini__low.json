@@ -5,12 +5,12 @@
   "title": "Guest emails",
   "model": "gpt-5.4-mini",
   "effort": "low",
-  "answered_at": "2026-10-04T00:28:02.195Z",
+  "answered_at": "2026-10-04T01:13:18.916Z",
   "dataset": {
     "source": "packages/eval/data/guest.json",
-    "sha256": "b26d1202669bab719c4cc289f0f0be51b18dd10b32bf62eab312820d5da8522b",
-    "cases": 49,
-    "total": 49
+    "sha256": "0e59847772d6214972a94b348b983f205e31667a93378fbe8fc0f1b6e0d6172f",
+    "cases": 56,
+    "total": 56
   },
   "partial": false,
   "prices": {
@@ -24,100 +24,109 @@
       "key": "intent",
       "label": "Intent",
       "format": "pct",
-      "value": 0.9795918367346939,
-      "num": 48,
-      "den": 49,
-      "ci": [0.891458236031597, 0.9994834435024067]
+      "value": 1,
+      "num": 56,
+      "den": 56,
+      "ci": [0.9362499033376361, 1]
     },
     {
       "key": "language",
       "label": "Language",
       "format": "pct",
       "value": 1,
-      "num": 48,
-      "den": 48,
-      "ci": [0.9260272146527304, 1]
+      "num": 55,
+      "den": 55,
+      "ci": [0.9351292391745842, 1]
     },
     {
       "key": "date_from",
       "label": "Date",
       "format": "pct",
       "value": 1,
-      "num": 29,
-      "den": 29,
-      "ci": [0.880555130930498, 1]
+      "num": 33,
+      "den": 33,
+      "ci": [0.8942371899254269, 1]
     },
     {
       "key": "party_size",
       "label": "Party size",
       "format": "pct",
       "value": 1,
-      "num": 29,
-      "den": 29,
-      "ci": [0.880555130930498, 1]
+      "num": 33,
+      "den": 33,
+      "ci": [0.8942371899254269, 1]
     },
     {
       "key": "slot",
       "label": "Slot (morning / afternoon)",
       "format": "pct",
       "value": 1,
-      "num": 29,
-      "den": 29,
-      "ci": [0.880555130930498, 1]
+      "num": 33,
+      "den": 33,
+      "ci": [0.8942371899254269, 1]
     },
     {
       "key": "missing",
       "label": "Missing fields (not used to decide)",
       "format": "pct",
       "value": 1,
-      "num": 29,
-      "den": 29,
-      "ci": [0.880555130930498, 1]
+      "num": 33,
+      "den": 33,
+      "ci": [0.8942371899254269, 1]
+    },
+    {
+      "key": "accepts_offer",
+      "label": "Answer to a date Noor offered",
+      "format": "pct",
+      "value": 1,
+      "num": 7,
+      "den": 7,
+      "ci": [0.5903836027749982, 1]
     },
     {
       "key": "exact",
       "label": "Every field right",
       "format": "pct",
-      "value": 0.9795918367346939,
-      "num": 48,
-      "den": 49,
-      "ci": [0.891458236031597, 0.9994834435024067]
+      "value": 1,
+      "num": 56,
+      "den": 56,
+      "ci": [0.9362499033376361, 1]
     },
     {
       "key": "handoff",
       "label": "Handed to Noor (AI unsure, not for the farm, or AI error)",
       "format": "pct",
-      "value": 0.10204081632653061,
-      "num": 5,
-      "den": 49,
-      "ci": [0.03397170498395394, 0.22227669628262703]
+      "value": 0.125,
+      "num": 7,
+      "den": 56,
+      "ci": [0.05176450487919872, 0.240732579652069]
     },
     {
       "key": "wrong_but_confident",
       "label": "Wrong but confident",
       "format": "pct",
-      "value": 0.02040816326530612,
-      "num": 1,
-      "den": 49,
-      "ci": [0.0005165564975932854, 0.10854176396840676]
+      "value": 0,
+      "num": 0,
+      "den": 56,
+      "ci": [0, 0.06375009666236217]
     },
     {
       "key": "intent:booking_request",
       "label": "Intent, labelled booking_request",
       "format": "pct",
-      "value": 0.9565217391304348,
-      "num": 22,
-      "den": 23,
-      "ci": [0.7805133925465237, 0.9988998313695585]
+      "value": 1,
+      "num": 26,
+      "den": 26,
+      "ci": [0.8677253955022508, 1]
     },
     {
       "key": "intent:modify",
       "label": "Intent, labelled modify",
       "format": "pct",
       "value": 1,
-      "num": 6,
-      "den": 6,
-      "ci": [0.5407418735601011, 1]
+      "num": 9,
+      "den": 9,
+      "ci": [0.6637328831200611, 1]
     },
     {
       "key": "intent:cancel",
@@ -133,9 +142,9 @@
       "label": "Intent, labelled question",
       "format": "pct",
       "value": 1,
-      "num": 7,
-      "den": 7,
-      "ci": [0.5903836027749982, 1]
+      "num": 8,
+      "den": 8,
+      "ci": [0.6305833524471829, 1]
     },
     {
       "key": "intent:feedback",
@@ -161,7 +170,7 @@
       "key": "calls",
       "label": "Model calls",
       "format": "int",
-      "value": 49
+      "value": 56
     },
     {
       "key": "failed",
@@ -173,7 +182,7 @@
       "key": "input_tokens",
       "label": "Avg input tokens",
       "format": "int",
-      "value": 488.0204081632653
+      "value": 522.6428571428571
     },
     {
       "key": "cached_tokens",
@@ -185,37 +194,37 @@
       "key": "output_tokens",
       "label": "Avg output tokens",
       "format": "int",
-      "value": 215.42857142857142
+      "value": 217.875
     },
     {
       "key": "reasoning_tokens",
       "label": "Avg reasoning tokens",
       "format": "int",
-      "value": 81.22448979591837
+      "value": 82.82142857142857
     },
     {
       "key": "latency_avg",
       "label": "Latency avg",
       "format": "ms",
-      "value": 1954.6326530612246
+      "value": 1582.3035714285713
     },
     {
       "key": "latency_p50",
       "label": "Latency p50",
       "format": "ms",
-      "value": 1826
+      "value": 1476
     },
     {
       "key": "latency_p95",
       "label": "Latency p95",
       "format": "ms",
-      "value": 3011
+      "value": 2655
     },
     {
       "key": "cost_per_1k",
       "label": "Cost per 1,000 calls",
       "format": "usd",
-      "value": 1.3354438775510207
+      "value": 1.3724196428571434
     }
   ],
   "cases": [
@@ -234,7 +243,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.98,
+        "confidence": 0.97,
         "language": "de",
         "entities": {
           "date_from": "2026-10-10",
@@ -243,9 +252,10 @@
           "slot": "09:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari Noor,\nsisi ni watu watatu na tungependa kutembelea shamba lenu la kahawa siku ya Jumamosi asubuhi. Inawezekana?\n\nSalamu njema\nLena",
-        "translation_en": "Hello Noor,\n\nwe are three people and would like to visit your coffee farm on Saturday in the morning. Is that possible?\n\nBest regards\nLena",
-        "feedback_text": null
+        "translation_for_noor": "Habari Noor,\n\nsisi ni watatu na tungependa kutembelea shamba lako la kahawa asubuhi ya Jumamosi. Inawezekana?\n\nSalamu za kindugu\nLena",
+        "translation_en": "Hello Noor,\n\nthere are three of us and we would like to visit your coffee farm on Saturday morning. Is that possible?\n\nKind regards\nLena",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -254,24 +264,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.97,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "\"zu dritt\" is three people; \"am Samstag\" is the coming Saturday.",
       "id": "de-saturday-three-morning",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 483,
+          "input_tokens": 517,
           "cached_tokens": 0,
-          "output_tokens": 283,
-          "reasoning_tokens": 126,
-          "latency_ms": 2329,
+          "output_tokens": 279,
+          "reasoning_tokens": 116,
+          "latency_ms": 2510,
           "ok": true
         }
       ]
@@ -291,7 +302,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.98,
+        "confidence": 0.99,
         "language": "ja",
         "entities": {
           "date_from": "2026-10-17",
@@ -300,9 +311,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "はじめまして。来週の土曜日の午後、家族4人でコーヒー農園ツアーに参加したいです。よろしくお願いいたします。\n佐藤",
+        "translation_for_noor": "Habari, sijaonana nanyi hapo awali. Ningependa kushiriki ziara ya shamba la kahawa Jumamosi ijayo alasiri pamoja na familia ya watu 4. Asanteni sana.",
         "translation_en": "Nice to meet you. We would like to join the coffee farm tour next Saturday afternoon as a family of four. Thank you very much.\nSato",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -311,24 +323,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.99,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "来週の土曜日 is Saturday of next calendar week (17 Oct), not this Saturday.",
       "id": "ja-next-week-saturday-family",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 491,
+          "input_tokens": 525,
           "cached_tokens": 0,
-          "output_tokens": 205,
-          "reasoning_tokens": 59,
-          "latency_ms": 1826,
+          "output_tokens": 240,
+          "reasoning_tokens": 85,
+          "latency_ms": 2456,
           "ok": true
         }
       ]
@@ -358,10 +371,11 @@
           "party_size": 5,
           "slot": null
         },
-        "missing": [],
-        "translation_for_noor": "Habari!\n\nWatu wazima wawili na watoto watatu (wenye umri wa miaka 6, 9 na 12) wangependa sana kujiunga na ziara ya kahawa Jumamosi ijayo. Je, kuna umri wa chini unaotakiwa kwa watoto?\n\nAsante,\nMark",
+        "missing": ["slot"],
+        "translation_for_noor": "Habari!\n\nWatu wazima wawili na watoto watatu (miaka 6, 9 na 12) wangependa kujiunga na ziara ya kahawa Jumamosi ijayo. Je, kuna umri wa chini kwa watoto?\n\nAsante,\nMark",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -370,6 +384,7 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.96,
         "handoff": false,
@@ -377,17 +392,17 @@
       },
       "note": "\"next Saturday\" said on a Monday can mean the 10th or the 17th. The age question is secondary to the booking.",
       "id": "en-two-adults-three-children",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 490,
+          "input_tokens": 524,
           "cached_tokens": 0,
-          "output_tokens": 231,
-          "reasoning_tokens": 91,
-          "latency_ms": 1940,
+          "output_tokens": 239,
+          "reasoning_tokens": 99,
+          "latency_ms": 2454,
           "ok": true
         }
       ]
@@ -407,7 +422,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.98,
+        "confidence": 0.99,
         "language": "fr",
         "entities": {
           "date_from": "2026-10-17",
@@ -416,9 +431,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari,\n\nTutakuwa watu wanne na tungependa kutembelea shamba siku ya Jumamosi, tarehe 17 Oktoba, mchana kama inawezekana.\n\nWako mwaminifu,\nCamille Dubois",
-        "translation_en": "Hello,\n\nThere will be four of us and we would like to visit the plantation on Saturday, October 17, in the afternoon if possible.\n\nKind regards,\nCamille Dubois",
-        "feedback_text": null
+        "translation_for_noor": "Bonjour,\n\nNous serons quatre et aimerions visiter la plantation le samedi 17 octobre, l'après-midi si possible.\n\nCordialement,\nCamille Dubois",
+        "translation_en": "Hello,\n\nThere will be four of us, and we would like to visit the plantation on Saturday, October 17, in the afternoon if possible.\n\nKind regards,\nCamille Dubois",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -427,23 +443,24 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.99,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "fr-explicit-date-four-afternoon",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 483,
+          "input_tokens": 517,
           "cached_tokens": 0,
-          "output_tokens": 263,
-          "reasoning_tokens": 93,
-          "latency_ms": 2160,
+          "output_tokens": 232,
+          "reasoning_tokens": 73,
+          "latency_ms": 2416,
           "ok": true
         }
       ]
@@ -465,7 +482,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.97,
+        "confidence": 0.98,
         "language": "es",
         "entities": {
           "date_from": "2026-10-10",
@@ -475,8 +492,9 @@
         },
         "missing": [],
         "translation_for_noor": "Habari Noor! Mimi na mwenzi wangu tunataka kufanya ziara ya kahawa Jumamosi ijayo asubuhi. Je, kuna nafasi? Asante, Lucía",
-        "translation_en": "Hello Noor! My partner and I want to do the coffee tour next Saturday morning. Is there space? Thanks, Lucía",
-        "feedback_text": null
+        "translation_en": "Hello Noor! My partner and I would like to do the coffee tour next Saturday morning. Is there space? Thanks, Lucía",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -485,24 +503,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.97,
+        "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "\"el próximo sábado\" is as ambiguous as \"next Saturday\".",
       "id": "es-proximo-sabado-couple",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 480,
+          "input_tokens": 514,
           "cached_tokens": 0,
-          "output_tokens": 223,
-          "reasoning_tokens": 88,
-          "latency_ms": 1802,
+          "output_tokens": 239,
+          "reasoning_tokens": 97,
+          "latency_ms": 1647,
           "ok": true
         }
       ]
@@ -521,8 +540,8 @@
         "missing": []
       },
       "got": {
-        "intent": "question",
-        "confidence": 0.95,
+        "intent": "booking_request",
+        "confidence": 0.98,
         "language": "nl",
         "entities": {
           "date_from": "2026-10-10",
@@ -531,35 +550,37 @@
           "slot": "09:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari za mchana,\n\nSisi ni kikundi cha wenzetu 12 na tungependa kufanya ziara ya kahawa Jumamosi ijayo asubuhi. Je, hilo linawezekana kwa kundi kubwa kiasi hicho?\n\nKwa heshima,\nPieter",
+        "translation_for_noor": "Habari za mchana,\n\nSisi ni kundi la wenzetu 12 na tungependa kufanya ziara ya kahawa Jumamosi ijayo asubuhi. Inawezekana kwa kundi kubwa kiasi hicho?\n\nWako kwa dhati,\nPieter",
         "translation_en": "Good afternoon,\n\nWe are a group of 12 colleagues and would like to do the coffee tour next Saturday morning. Is that possible with such a large group?\n\nKind regards,\nPieter",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
-        "intent": false,
+        "intent": true,
         "language": true,
         "date_from": true,
         "party_size": true,
         "slot": true,
         "missing": true,
-        "exact": false,
-        "confidence": 0.95,
+        "accepts_offer": null,
+        "exact": true,
+        "confidence": 0.98,
         "handoff": false,
-        "wrong_but_confident": true
+        "wrong_but_confident": false
       },
       "note": "\"aanstaande zaterdag\" is the coming Saturday. 12 is over the 8-per-slot limit: the AI must still say 12, code flags the capacity.",
       "id": "nl-group-of-twelve",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 495,
+          "input_tokens": 529,
           "cached_tokens": 0,
-          "output_tokens": 387,
-          "reasoning_tokens": 210,
-          "latency_ms": 2999,
+          "output_tokens": 284,
+          "reasoning_tokens": 103,
+          "latency_ms": 1540,
           "ok": true
         }
       ]
@@ -581,7 +602,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.94,
+        "confidence": 0.97,
         "language": "it",
         "entities": {
           "date_from": "2026-10-10",
@@ -589,10 +610,11 @@
           "party_size": null,
           "slot": null
         },
-        "missing": ["party_size"],
-        "translation_for_noor": "Habari! Tungependa kutembelea shamba lenu la kahawa Jumamosi ijayo. Je, kuna nafasi? Asante, Giulia",
+        "missing": ["party_size", "slot"],
+        "translation_for_noor": "Habari! Tungependa kutembelea shamba lenu la kahawa Jumamosi ijayo. Je, mna nafasi? Asante, Giulia",
         "translation_en": "Good morning! We would like to visit your coffee plantation next Saturday. Do you have availability? Thank you, Giulia",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -601,24 +623,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.94,
+        "confidence": 0.97,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "\"Vorremmo\" (we would like) gives no number of people.",
       "id": "it-sabato-prossimo-no-size",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 484,
+          "input_tokens": 518,
           "cached_tokens": 0,
-          "output_tokens": 267,
-          "reasoning_tokens": 135,
-          "latency_ms": 2265,
+          "output_tokens": 215,
+          "reasoning_tokens": 74,
+          "latency_ms": 1262,
           "ok": true
         }
       ]
@@ -638,7 +661,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.99,
+        "confidence": 0.98,
         "language": "pt",
         "entities": {
           "date_from": "2026-10-24",
@@ -647,9 +670,10 @@
           "slot": "09:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari! Sisi ni marafiki watatu na tungependa kufanya ziara tarehe 24/10, asubuhi. Asante! João",
-        "translation_en": "Hello! We are three friends and would like to do the visit on 24/10, in the morning. Thank you! João",
-        "feedback_text": null
+        "translation_for_noor": "Olá! Somos três amigos e gostaríamos de fazer a visita no dia 24/10, de manhã. Obrigado! João",
+        "translation_en": "Hello! We are three friends and would like to visit on 24/10, in the morning. Thank you! João",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -658,23 +682,24 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.99,
+        "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "pt-date-slash-three-friends",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 477,
+          "input_tokens": 511,
           "cached_tokens": 0,
-          "output_tokens": 221,
-          "reasoning_tokens": 86,
-          "latency_ms": 1861,
+          "output_tokens": 197,
+          "reasoning_tokens": 66,
+          "latency_ms": 1618,
           "ok": true
         }
       ]
@@ -694,7 +719,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.95,
+        "confidence": 0.98,
         "language": "sw",
         "entities": {
           "date_from": "2026-10-10",
@@ -704,8 +729,9 @@
         },
         "missing": [],
         "translation_for_noor": "Habari Noor, sisi ni watu wawili. Tungependa kutembelea shamba lako la kahawa Jumamosi hii asubuhi. Asante, Amani",
-        "translation_en": "Hello Noor, we are two people. We would like to visit your coffee farm this Saturday morning. Thank you, Amani",
-        "feedback_text": null
+        "translation_en": "Hello Noor, there are two of us. We would like to visit your coffee farm this Saturday morning. Thanks, Amani",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -714,24 +740,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.95,
+        "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "\"Jumamosi hii\" is this Saturday; \"watu wawili\" two people; \"asubuhi\" morning.",
       "id": "sw-jumamosi-hii-two",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 488,
+          "input_tokens": 522,
           "cached_tokens": 0,
-          "output_tokens": 134,
-          "reasoning_tokens": 0,
-          "latency_ms": 1936,
+          "output_tokens": 288,
+          "reasoning_tokens": 146,
+          "latency_ms": 1476,
           "ok": true
         }
       ]
@@ -760,9 +787,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari! Sisi ni watu sita kwa jumla, tungependa kutembelea shamba lenu la kahawa Jumamosi ijayo alasiri, je, inawezekana? Asanteni! Wang Wei",
-        "translation_en": "Hello! There are six of us in total, and we would like to visit your coffee farm next Saturday afternoon. Is that possible? Thank you! Wang Wei",
-        "feedback_text": null
+        "translation_for_noor": "Habari! Sisi ni watu sita kwa jumla, tunataka kutembelea shamba lako la kahawa Jumamosi ya wiki ijayo mchana, je, inawezekana? Asante! Wang Wei",
+        "translation_en": "Hello! There are six of us in total. We’d like to visit your coffee farm next Saturday afternoon. Is that possible? Thank you! Wang Wei",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -771,6 +799,7 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
@@ -778,17 +807,17 @@
       },
       "note": "下周六 is Saturday of next week (17 Oct).",
       "id": "zh-next-week-saturday-six",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 482,
+          "input_tokens": 516,
           "cached_tokens": 0,
-          "output_tokens": 275,
-          "reasoning_tokens": 121,
-          "latency_ms": 2250,
+          "output_tokens": 155,
+          "reasoning_tokens": 0,
+          "latency_ms": 1344,
           "ok": true
         }
       ]
@@ -820,8 +849,9 @@
         },
         "missing": [],
         "translation_for_noor": "مرحباً، نحن عائلة من خمسة أشخاص ونرغب في زيارة مزرعة القهوة يوم السبت القادم صباحاً. شكراً، أحمد",
-        "translation_en": "Hello, we are a family of five and would like to visit the coffee farm next Saturday in the morning. Thank you, Ahmed",
-        "feedback_text": null
+        "translation_en": "Hello, we are a family of five and would like to visit the coffee farm next Saturday morning. Thank you, Ahmed.",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -830,6 +860,7 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
@@ -837,17 +868,17 @@
       },
       "note": "\"السبت القادم\" (the coming Saturday) is usually the 10th but can be read as the 17th.",
       "id": "ar-coming-saturday-family-five",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 482,
+          "input_tokens": 516,
           "cached_tokens": 0,
-          "output_tokens": 222,
-          "reasoning_tokens": 91,
-          "latency_ms": 2073,
+          "output_tokens": 191,
+          "reasoning_tokens": 56,
+          "latency_ms": 1586,
           "ok": true
         }
       ]
@@ -876,9 +907,10 @@
           "slot": "09:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari. Ningependa kuweka nafasi ya ziara ya shamba la kahawa kwa watu wazima 3 asubuhi ya tarehe 15 Oktoba. Asante.",
+        "translation_for_noor": "Hujambo. Ningependa kuweka nafasi ya ziara ya shamba la kahawa kwa watu wazima 3 asubuhi tarehe 15 Oktoba. Asante.",
         "translation_en": "Hello. I would like to book a coffee farm tour for 3 adults on the morning of October 15. Thank you.",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -887,23 +919,24 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "ko-explicit-date-three-adults",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 481,
+          "input_tokens": 515,
           "cached_tokens": 0,
-          "output_tokens": 197,
-          "reasoning_tokens": 61,
-          "latency_ms": 1643,
+          "output_tokens": 222,
+          "reasoning_tokens": 80,
+          "latency_ms": 1595,
           "ok": true
         }
       ]
@@ -923,7 +956,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.97,
+        "confidence": 0.92,
         "language": "en",
         "entities": {
           "date_from": "2026-10-10",
@@ -934,7 +967,8 @@
         "missing": [],
         "translation_for_noor": "Jumamosi watu 2 asubuhi?",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -943,24 +977,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.97,
+        "confidence": 0.92,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "Very short. \"Sat\" is the coming Saturday.",
       "id": "en-telegraphic",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 457,
+          "input_tokens": 491,
           "cached_tokens": 0,
-          "output_tokens": 195,
-          "reasoning_tokens": 111,
-          "latency_ms": 1772,
+          "output_tokens": 199,
+          "reasoning_tokens": 109,
+          "latency_ms": 1241,
           "ok": true
         }
       ]
@@ -983,8 +1018,8 @@
         }
       },
       "got": {
-        "intent": "booking_request",
-        "confidence": 0.98,
+        "intent": "question",
+        "confidence": 0.96,
         "language": "de",
         "entities": {
           "date_from": null,
@@ -993,9 +1028,10 @@
           "slot": null
         },
         "missing": ["date_from"],
-        "translation_for_noor": "Habari njema,\n\nsisi ni watu wazima watano na tunapenda ziara kwenye shamba lenu la kahawa. Ni lini hili linawezekana?\n\nSalamu za fadhili\nThomas Becker",
+        "translation_for_noor": "Habari njema,\n\nsisi ni watu wazima watano na tunapenda ziara katika shamba lenu la kahawa. Ni lini ingewezekana?\n\nSalamu za dhati\nThomas Becker",
         "translation_en": "Good day,\n\nwe are five adults and are interested in a tour of your coffee farm. When would that be possible?\n\nKind regards\nThomas Becker",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1004,24 +1040,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.96,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "Asks when a visit would be possible: a request without a date, or a question.",
       "id": "de-five-adults-no-date",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 484,
+          "input_tokens": 518,
           "cached_tokens": 0,
-          "output_tokens": 279,
-          "reasoning_tokens": 128,
-          "latency_ms": 3011,
+          "output_tokens": 226,
+          "reasoning_tokens": 72,
+          "latency_ms": 1454,
           "ok": true
         }
       ]
@@ -1050,9 +1087,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari, ninasafiri peke yangu na ningependa kujiunga na ziara ya alasiri kesho ikiwa kuna nafasi. Wako mwema, Sam",
+        "translation_for_noor": "Habari, ninasafiri peke yangu na ningependa kujiunga na ziara ya mchana kesho kama bado kuna nafasi. Wema, Sam",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1061,23 +1099,24 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "en-tomorrow-solo-afternoon",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 474,
+          "input_tokens": 508,
           "cached_tokens": 0,
-          "output_tokens": 202,
-          "reasoning_tokens": 94,
-          "latency_ms": 1874,
+          "output_tokens": 171,
+          "reasoning_tokens": 58,
+          "latency_ms": 1404,
           "ok": true
         }
       ]
@@ -1101,7 +1140,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.96,
+        "confidence": 0.97,
         "language": "fr",
         "entities": {
           "date_from": "2026-10-11",
@@ -1110,9 +1149,10 @@
           "slot": "09:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari Noor! Tuko likizo Moshi, sisi ni watu wazima 3 + mtoto mchanga 1. Je, tunaweza kuja Jumapili asubuhi? Asante sana!",
-        "translation_en": "Hi Noor! We are on vacation in Moshi, we are 3 adults + 1 baby. Could we come Sunday morning? Thank you very much!",
-        "feedback_text": null
+        "translation_for_noor": "Habari Noor! Tuko likizo Moshi, sisi ni watu wazima 3 pamoja na mtoto mmoja. Je, tunaweza kuja Jumapili asubuhi? Asante sana!",
+        "translation_en": "Hi Noor! We are on holiday in Moshi, we are 3 adults + 1 baby. Could we come Sunday morning? Thank you very much!",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1121,24 +1161,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.96,
+        "confidence": 0.97,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "French and English mixed; whether the baby counts is open.",
       "id": "mixed-fr-en-sunday-baby",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 481,
+          "input_tokens": 515,
           "cached_tokens": 0,
-          "output_tokens": 283,
-          "reasoning_tokens": 135,
-          "latency_ms": 2305,
+          "output_tokens": 258,
+          "reasoning_tokens": 106,
+          "latency_ms": 1476,
           "ok": true
         }
       ]
@@ -1171,9 +1212,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "Mambo Noor! Tunataka ku-book ziara ya kahawa Jumamosi ijayo, tuko watu 4. Ratiba ya mchana itakuwa sawa. Asante!",
-        "translation_en": "Hi Noor! We want to book a coffee tour next Saturday, we are 4 people. The afternoon slot would be great. Thanks!",
-        "feedback_text": null
+        "translation_for_noor": "Hodi Noor! Tunataka ku-book ziara ya kahawa Jumamosi ijayo, sisi ni watu 4. Kipindi cha alasiri kitafaa. Asante!",
+        "translation_en": "Hello Noor! We want to book a coffee tour next Saturday, we are 4 people. The afternoon slot would be good. Thanks!",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1182,6 +1224,7 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
@@ -1189,17 +1232,17 @@
       },
       "note": "Swahili and English mixed, Sheng style.",
       "id": "mixed-sw-en-sheng",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 479,
+          "input_tokens": 513,
           "cached_tokens": 0,
-          "output_tokens": 230,
-          "reasoning_tokens": 91,
-          "latency_ms": 3906,
+          "output_tokens": 238,
+          "reasoning_tokens": 93,
+          "latency_ms": 1307,
           "ok": true
         }
       ]
@@ -1228,9 +1271,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "Ndugu/Waheshimiwa,\n\nhivi sasa ningependa kuomba ziara ya kahawa kwa watu 2 tarehe 12.10. saa 14:00.\n\nWako kwa heshima,\nKarin Weber",
-        "translation_en": "Dear Sir or Madam,\n\nI would like to inquire about a coffee tour for 2 people on 12/10 at 2:00 p.m.\n\nKind regards,\nKarin Weber",
-        "feedback_text": null
+        "translation_for_noor": "Heri M/Madamu,\n\nkupitia barua hii ningependa kuomba ziara ya kahawa kwa watu 2 tarehe 12/10 saa 14:00.\n\nWako mwaminifu,\nKarin Weber",
+        "translation_en": "Dear Sir or Madam,\n\nI would like to request a coffee tour for 2 people on 12/10 at 14:00.\n\nKind regards,\nKarin Weber",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1239,23 +1283,24 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.99,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "de-dotted-date-2pm",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 494,
+          "input_tokens": 528,
           "cached_tokens": 0,
-          "output_tokens": 229,
-          "reasoning_tokens": 61,
-          "latency_ms": 1840,
+          "output_tokens": 216,
+          "reasoning_tokens": 46,
+          "latency_ms": 1263,
           "ok": true
         }
       ]
@@ -1284,9 +1329,10 @@
           "slot": "09:00"
         },
         "missing": [],
-        "translation_for_noor": "Mpendwa Noor,\n\nNatumai ujumbe huu utakukuta ukiwa mzima. Jina langu ni Priya na ninakuandikia kutoka Bangalore. Mume wangu na mimi tulitembelea shamba la chai huko Munnar mwaka jana na tulilipenda sana hadi tukajiapia kwamba tungeliona shamba la kahawa katika safari yetu kubwa inayofuata, na rafiki yangu ambaye alikaa Moshi mwaka 2024 alituambia kwamba ziara yenu ilikuwa kivutio kikubwa zaidi cha likizo yake yote.\n\nTunatua katika uwanja wa ndege wa Kilimanjaro tarehe 19, tutatumia siku chache kwenye safari, na tutaruka kurudi nyumbani tarehe 25. Wazazi wangu wanasafiri pamoja nasi; wote wako katika miaka ya sabini na hutembea polepole, kwa hiyo ziara ya asubuhi kabla ya joto kuwa kali ingewafaa zaidi. Pia tungependa sana kununua maharagwe ya kahawa ili tuyachukue nyumbani, kama hilo linawezekana.\n\nHivyo, kuiweka kwa urahisi: je, sisi watu wanne (wazazi wangu, mume wangu na mimi) tunaweza kutembelea Alhamisi tarehe 22 Oktoba, asubuhi?\n\nKwa salamu za upendo,\nPriya",
+        "translation_for_noor": "Mpendwa Noor,\n\nNatumai ujumbe huu unakukuta ukiwa salama. Jina langu ni Priya na ninaandika kutoka Bangalore. Mume wangu na mimi tulitembelea shamba la chai huko Munnar mwaka jana na tulilipenda sana kiasi kwamba tuliahidi kujipa muda wa kuona shamba la kahawa kwenye safari yetu kubwa ijayo, na rafiki ambaye alikaa Moshi mwaka 2024 aliniambia kwamba ziara yenu ilikuwa kilele cha likizo yake yote.\n\nTunatua kwenye uwanja wa ndege wa Kilimanjaro tarehe 19, tutatumia siku chache safarini, na tutaruka kurudi nyumbani tarehe 25. Wazazi wangu wanasafiri pamoja nasi; wote wako katika miaka yao ya sabini na hutembea taratibu, kwa hiyo ziara ya asubuhi kabla ya joto kupanda ingefaa zaidi kwao. Pia tungependa sana kununua maharagwe ya kahawa ya kusafiria nayo nyumbani, kama hilo linawezekana.\n\nKwa hiyo, nikiiweka kwa ufupi: je, sisi wanne (wazazi wangu, mume wangu na mimi) tunaweza kutembelea Alhamisi tarehe 22 Oktoba, asubuhi?\n\nKwa upendo,\nPriya",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": "your tour was the highlight of her whole holiday",
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1295,6 +1341,7 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
@@ -1302,17 +1349,17 @@
       },
       "note": "Distracting dates (19th, 25th, 2024) and numbers; the request is in the last paragraph.",
       "id": "en-long-email",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 646,
+          "input_tokens": 680,
           "cached_tokens": 0,
-          "output_tokens": 543,
-          "reasoning_tokens": 178,
-          "latency_ms": 4372,
+          "output_tokens": 510,
+          "reasoning_tokens": 136,
+          "latency_ms": 2728,
           "ok": true
         }
       ]
@@ -1334,7 +1381,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.94,
+        "confidence": 0.96,
         "language": "en",
         "entities": {
           "date_from": "2026-10-18",
@@ -1343,9 +1390,10 @@
           "slot": "09:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari! Je, tunaweza kuweka nafasi kwa Jumapili tarehe 18 Oktoba karibu saa 4 asubuhi? Tuko wawili. Asante, Tom",
+        "translation_for_noor": "Habari! Je, tunaweza kuweka nafasi kwa Jumapili tarehe 18 Oktoba karibu saa 10 asubuhi? Tuko wawili. Asante, Tom",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1354,24 +1402,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.94,
+        "confidence": 0.96,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "10am is not a tour time: the morning slot or none are both fine.",
       "id": "en-around-10am",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 472,
+          "input_tokens": 506,
           "cached_tokens": 0,
-          "output_tokens": 313,
-          "reasoning_tokens": 203,
-          "latency_ms": 2486,
+          "output_tokens": 317,
+          "reasoning_tokens": 201,
+          "latency_ms": 1885,
           "ok": true
         }
       ]
@@ -1402,9 +1451,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "Je, mna nafasi kwa watu 6 Jumamosi hii mchana?",
+        "translation_for_noor": "Je, mna nafasi ya watu 6 Jumamosi hii alasiri?",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1413,6 +1463,7 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
@@ -1420,17 +1471,17 @@
       },
       "note": "An availability question that is in effect a request.",
       "id": "en-availability-question",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 463,
+          "input_tokens": 497,
           "cached_tokens": 0,
-          "output_tokens": 147,
-          "reasoning_tokens": 58,
-          "latency_ms": 1445,
+          "output_tokens": 178,
+          "reasoning_tokens": 83,
+          "latency_ms": 1179,
           "ok": true
         }
       ]
@@ -1450,7 +1501,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.97,
+        "confidence": 0.98,
         "language": "en",
         "entities": {
           "date_from": "2026-10-25",
@@ -1459,9 +1510,10 @@
           "slot": "09:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari Noor, tulikuja mwaka jana na tulipenda sana kipindi cha kuchoma kahawa! Tungependa kurudi na marafiki wakati huu: watu 6 Jumapili tarehe 25 Oktoba, asubuhi tafadhali.",
+        "translation_for_noor": "Habari Noor, tulikuja mwaka jana na tulipenda sana kipindi cha uchomaji kahawa! Tungependa kurudi na marafiki wakati huu: watu 6 siku ya Jumapili tarehe 25 Oktoba, asubuhi tafadhali.",
         "translation_en": "",
-        "feedback_text": "we came last year and absolutely loved the roasting session!"
+        "feedback_text": "we came last year and absolutely loved the roasting session!",
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1470,24 +1522,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.97,
+        "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "Praise and a booking: the main purpose is the booking.",
       "id": "en-returning-guest-feedback-and-booking",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 490,
+          "input_tokens": 524,
           "cached_tokens": 0,
-          "output_tokens": 247,
-          "reasoning_tokens": 111,
-          "latency_ms": 2000,
+          "output_tokens": 264,
+          "reasoning_tokens": 119,
+          "latency_ms": 1635,
           "ok": true
         }
       ]
@@ -1507,7 +1560,7 @@
       },
       "got": {
         "intent": "booking_request",
-        "confidence": 0.96,
+        "confidence": 0.97,
         "language": "sw",
         "entities": {
           "date_from": "2026-10-07",
@@ -1516,9 +1569,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "Hujambo Noor. Tutakuja kesho kutwa mchana, tuko watatu. Je, inawezekana?",
-        "translation_en": "Hello Noor. We will come the day after tomorrow in the afternoon, we are three. Is that possible?",
-        "feedback_text": null
+        "translation_for_noor": "Shikamoo Noor. Tutakuja kesho kutwa mchana, tuko watatu. Je, inawezekana?",
+        "translation_en": "Hello Noor. We will come the day after tomorrow in the afternoon, we are three people. Is it possible?",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1527,24 +1581,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.96,
+        "confidence": 0.97,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "\"kesho kutwa\" is the day after tomorrow; \"mchana\" the afternoon; \"watatu\" three.",
       "id": "sw-day-after-tomorrow",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 478,
+          "input_tokens": 512,
           "cached_tokens": 0,
-          "output_tokens": 210,
-          "reasoning_tokens": 87,
-          "latency_ms": 1778,
+          "output_tokens": 240,
+          "reasoning_tokens": 110,
+          "latency_ms": 1917,
           "ok": true
         }
       ]
@@ -1577,9 +1632,10 @@
           "slot": "09:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari Noor,\n\ntungeweza kuhamisha ziara yetu hadi Jumapili? Wakati uleule, idadi ileile ya watu.\n\nAsante!\nLena",
-        "translation_en": "Hello Noor,\n\ncould we move our visit to Sunday? Same time, same number of people.\n\nThanks!\nLena",
-        "feedback_text": null
+        "translation_for_noor": "Habari Noor,\ntungeweza kuhamisha ziara yetu hadi Jumapili? Saa ileile, idadi ileile ya watu.\n\nAsante!\nLena",
+        "translation_en": "Hello Noor,\nCould we move our visit to Sunday? Same time, same number of people.\n\nThanks!\nLena",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1588,6 +1644,7 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
@@ -1595,17 +1652,17 @@
       },
       "note": "Unchanged fields may be repeated or left empty: the engine keeps the booking's values.",
       "id": "de-modify-move-to-sunday",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 501,
+          "input_tokens": 535,
           "cached_tokens": 0,
-          "output_tokens": 298,
-          "reasoning_tokens": 157,
-          "latency_ms": 2453,
+          "output_tokens": 242,
+          "reasoning_tokens": 99,
+          "latency_ms": 1498,
           "ok": true
         }
       ]
@@ -1629,7 +1686,7 @@
       },
       "got": {
         "intent": "modify",
-        "confidence": 0.98,
+        "confidence": 0.99,
         "language": "en",
         "entities": {
           "date_from": "2026-10-17",
@@ -1638,9 +1695,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "Hi Noor, mabadiliko madogo: marafiki wawili watajiunga nasi, kwa hiyo tutakuwa watu 4 badala ya 2. Siku na saa zilezile. Asante! Emma",
+        "translation_for_noor": "Habari Noor, mabadiliko madogo tu: marafiki wawili watajiunga nasi, kwa hiyo tutakuwa watu 4 badala ya 2. Siku na muda uleule. Asante! Emma",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1649,23 +1707,24 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.99,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "en-modify-party-size",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 503,
+          "input_tokens": 537,
           "cached_tokens": 0,
           "output_tokens": 181,
-          "reasoning_tokens": 65,
-          "latency_ms": 1633,
+          "reasoning_tokens": 58,
+          "latency_ms": 1209,
           "ok": true
         }
       ]
@@ -1689,7 +1748,7 @@
       },
       "got": {
         "intent": "modify",
-        "confidence": 0.98,
+        "confidence": 0.96,
         "language": "fr",
         "entities": {
           "date_from": "2026-10-15",
@@ -1698,9 +1757,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari Noor, hatimaye tungependelea kuja alasiri badala ya asubuhi, siku hiyo hiyo. Asante! Camille",
-        "translation_en": "Hello Noor, in the end we would prefer to come in the afternoon rather than in the morning, on the same day. Thank you! Camille",
-        "feedback_text": null
+        "translation_for_noor": "Bonjour Noor, finalement nous préférerions venir l'après-midi plutôt que le matin, le même jour. Merci ! Camille",
+        "translation_en": "Hello Noor, in the end we would prefer to come in the afternoon rather than in the morning, on the same day. Thanks! Camille",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1709,23 +1769,24 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.96,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "fr-modify-afternoon",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 497,
+          "input_tokens": 531,
           "cached_tokens": 0,
-          "output_tokens": 206,
-          "reasoning_tokens": 75,
-          "latency_ms": 2284,
+          "output_tokens": 163,
+          "reasoning_tokens": 32,
+          "latency_ms": 1074,
           "ok": true
         }
       ]
@@ -1749,7 +1810,7 @@
       },
       "got": {
         "intent": "modify",
-        "confidence": 0.98,
+        "confidence": 0.99,
         "language": "es",
         "entities": {
           "date_from": "2026-10-24",
@@ -1758,9 +1819,10 @@
           "slot": "09:00"
         },
         "missing": [],
-        "translation_for_noor": "Habari Noor, je, tunaweza kubadilisha uhifadhi wetu B24 hadi Jumamosi tarehe 24 Oktoba? Bado tuko wanne, asubuhi. Asante, Lucía",
-        "translation_en": "Hello Noor, could we change our booking B24 to Saturday 24 October? We are still four, in the morning. Thanks, Lucía",
-        "feedback_text": null
+        "translation_for_noor": "Habari Noor, tunaweza kubadilisha uhifadhi wetu B24 uwe Jumamosi tarehe 24 Oktoba? Bado sisi ni wanne, asubuhi. Asante, Lucía",
+        "translation_en": "Hi Noor, could we change our booking B24 to Saturday 24 October? We are still four, in the morning. Thanks, Lucía",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1769,23 +1831,24 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.99,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "es-modify-explicit-date",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 504,
+          "input_tokens": 538,
           "cached_tokens": 0,
-          "output_tokens": 207,
-          "reasoning_tokens": 62,
-          "latency_ms": 1746,
+          "output_tokens": 197,
+          "reasoning_tokens": 48,
+          "latency_ms": 1322,
           "ok": true
         }
       ]
@@ -1809,7 +1872,7 @@
       },
       "got": {
         "intent": "modify",
-        "confidence": 0.97,
+        "confidence": 0.98,
         "language": "sw",
         "entities": {
           "date_from": "2026-10-09",
@@ -1818,9 +1881,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "Samahani Noor, we would like to change the day from Saturday to Friday, at the same time. Thank you.",
-        "translation_en": "Samahani Noor, we would like to change the day from Saturday to Friday, at the same time. Thank you.",
-        "feedback_text": null
+        "translation_for_noor": "Samahani Noor, tunaomba kubadilisha siku kutoka Jumamosi kuwa Ijumaa, saa ile ile. Asante.",
+        "translation_en": "Sorry Noor, we would like to change the day from Saturday to Friday, same time. Thank you.",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1829,24 +1893,25 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.97,
+        "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "note": "Ijumaa (Friday) before the booked Saturday is 9 Oct; \"saa ile ile\" the same time.",
       "id": "sw-modify-to-friday",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 500,
+          "input_tokens": 534,
           "cached_tokens": 0,
-          "output_tokens": 210,
-          "reasoning_tokens": 89,
-          "latency_ms": 2027,
+          "output_tokens": 290,
+          "reasoning_tokens": 165,
+          "latency_ms": 1531,
           "ok": true
         }
       ]
@@ -1870,7 +1935,7 @@
       },
       "got": {
         "intent": "modify",
-        "confidence": 0.99,
+        "confidence": 0.98,
         "language": "ja",
         "entities": {
           "date_from": "2026-10-17",
@@ -1879,9 +1944,10 @@
           "slot": "14:00"
         },
         "missing": [],
-        "translation_for_noor": "Samahani, idadi ya watu imebadilika kutoka 4 hadi 3. Tafadhali ibaki tarehe na saa kama zilivyo.",
+        "translation_for_noor": "Samahani, idadi ya watu imebadilika kutoka 4 hadi 3. Tafadhali weka tarehe na muda vile vile.",
         "translation_en": "Sorry, the number of people has changed from 4 to 3. Please keep the date and time the same.",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1890,23 +1956,24 @@
         "party_size": true,
         "slot": true,
         "missing": true,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.99,
+        "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "ja-modify-fewer-people",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 496,
+          "input_tokens": 530,
           "cached_tokens": 0,
-          "output_tokens": 203,
-          "reasoning_tokens": 76,
-          "latency_ms": 1746,
+          "output_tokens": 249,
+          "reasoning_tokens": 117,
+          "latency_ms": 2232,
           "ok": true
         }
       ]
@@ -1920,7 +1987,7 @@
       },
       "got": {
         "intent": "cancel",
-        "confidence": 0.98,
+        "confidence": 0.99,
         "language": "de",
         "entities": {
           "date_from": "2026-10-10",
@@ -1929,9 +1996,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Mpendwa Noor,\n\nkwa bahati mbaya tunalazimika kughairi ziara yetu siku ya Jumamosi, binti yetu amepata ugonjwa. Tunasikitika sana!\n\nLena",
+        "translation_for_noor": "Mpendwa Noor,\n\nkwa bahati mbaya tunapaswa kughairi ziara yetu siku ya Jumamosi, binti yetu ameumwa. Tunajutia sana!\n\nLena",
         "translation_en": "Dear Noor,\n\nunfortunately we have to cancel our visit on Saturday, our daughter has fallen ill. We are very sorry!\n\nLena",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1940,23 +2008,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.99,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "de-cancel-sick-child",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 500,
+          "input_tokens": 534,
           "cached_tokens": 0,
-          "output_tokens": 196,
-          "reasoning_tokens": 47,
-          "latency_ms": 2109,
+          "output_tokens": 200,
+          "reasoning_tokens": 51,
+          "latency_ms": 1811,
           "ok": true
         }
       ]
@@ -1973,15 +2042,16 @@
         "confidence": 0.99,
         "language": "en",
         "entities": {
-          "date_from": "2026-10-17",
+          "date_from": null,
           "date_to": null,
-          "party_size": 2,
-          "slot": "14:00"
+          "party_size": null,
+          "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Tafadhali fagilia B28. Pole!",
+        "translation_for_noor": "Tafadhali ghairi B28. Samahani!",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -1990,23 +2060,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.99,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "en-cancel-code",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 480,
+          "input_tokens": 514,
           "cached_tokens": 0,
-          "output_tokens": 198,
-          "reasoning_tokens": 115,
-          "latency_ms": 1611,
+          "output_tokens": 133,
+          "reasoning_tokens": 49,
+          "latency_ms": 2627,
           "ok": true
         }
       ]
@@ -2020,18 +2091,19 @@
       },
       "got": {
         "intent": "cancel",
-        "confidence": 0.99,
+        "confidence": 0.98,
         "language": "zh",
         "entities": {
           "date_from": "2026-10-17",
           "date_to": null,
-          "party_size": 6,
-          "slot": "14:00"
+          "party_size": null,
+          "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Samahani, ratiba yetu imebadilika, hivyo ziara ya Jumamosi ijayo tunaweza kuifuta tu. Asante kwa kuelewa!",
-        "translation_en": "Sorry, our itinerary has changed, so we can only cancel next Saturday's visit. Thank you for understanding!",
-        "feedback_text": null
+        "translation_for_noor": "Samahani, ratiba yetu imebadilika, ziara ya Jumamosi ijayo itabidi tui cancel tu. Asante kwa kuelewa!",
+        "translation_en": "Sorry, our plans have changed, so we can only cancel the visit next Saturday. Thanks for understanding!",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2040,23 +2112,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.99,
+        "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "zh-cancel",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 494,
+          "input_tokens": 528,
           "cached_tokens": 0,
-          "output_tokens": 278,
-          "reasoning_tokens": 149,
-          "latency_ms": 2218,
+          "output_tokens": 191,
+          "reasoning_tokens": 62,
+          "latency_ms": 1372,
           "ok": true
         }
       ]
@@ -2079,9 +2152,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Habari! Kwa bahati mbaya, hatutaweza kuja tarehe 24 Oktoba. Tafadhali ghairi nafasi yetu ya booking. Asante, Olga",
-        "translation_en": "Hello! Unfortunately, we won't be able to come on October 24. Please cancel our booking. Thank you, Olga",
-        "feedback_text": null
+        "translation_for_noor": "Habari! Kwa bahati mbaya, hatutaweza kuja tarehe 24 Oktoba. Tafadhali futa nafasi yetu iliyowekwa. Asante, Olga",
+        "translation_en": "Hello! Unfortunately, we will not be able to come on October 24. Please cancel our booking. Thank you, Olga",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2090,23 +2164,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.99,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "ru-cancel",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 504,
+          "input_tokens": 538,
           "cached_tokens": 0,
-          "output_tokens": 206,
-          "reasoning_tokens": 76,
-          "latency_ms": 1762,
+          "output_tokens": 166,
+          "reasoning_tokens": 29,
+          "latency_ms": 1082,
           "ok": true
         }
       ]
@@ -2129,9 +2204,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Habari, ninahitaji kughairi uhifadhi wangu wa ziara ya kahawa. Asante, Mike",
+        "translation_for_noor": "Habari, nahitaji kughairi nafasi yangu ya ziara ya kahawa. Asante, Mike",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2140,6 +2216,7 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.99,
         "handoff": false,
@@ -2147,17 +2224,17 @@
       },
       "note": "No booking on file: still a cancellation (the engine answers that it found none).",
       "id": "en-cancel-without-booking",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 465,
+          "input_tokens": 499,
           "cached_tokens": 0,
-          "output_tokens": 117,
-          "reasoning_tokens": 31,
-          "latency_ms": 1559,
+          "output_tokens": 105,
+          "reasoning_tokens": 14,
+          "latency_ms": 907,
           "ok": true
         }
       ]
@@ -2180,9 +2257,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Habari njema, ziara ina gharama gani kwa kila mtu? Na je, mtu anaweza kulipa kwa kadi hapo hapo? Asante!",
-        "translation_en": "Good day, how much does the tour cost per person? And can you pay by card on site? Thank you!",
-        "feedback_text": null
+        "translation_for_noor": "Guten Tag, wie viel kostet die Führung pro Person? Und kann man vor Ort mit Karte bezahlen? Danke!",
+        "translation_en": "Good day, how much does the tour cost per person? And can you pay by card on site? धन्यवाद!",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2191,23 +2269,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "de-question-price-card",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 474,
+          "input_tokens": 508,
           "cached_tokens": 0,
-          "output_tokens": 144,
-          "reasoning_tokens": 23,
-          "latency_ms": 1357,
+          "output_tokens": 138,
+          "reasoning_tokens": 21,
+          "latency_ms": 1013,
           "ok": true
         }
       ]
@@ -2230,9 +2309,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Habari Noor, tunafikaje shambani kutoka mjini Moshi? Je, kuna usafiri wa umma, au tunapaswa kuchukua teksi? Asante!",
+        "translation_for_noor": "Hi Noor, how do we get to the farm from Moshi town? Is there public transport, or should we take a taxi? Thanks!",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2241,23 +2321,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "en-question-directions",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 480,
+          "input_tokens": 514,
           "cached_tokens": 0,
-          "output_tokens": 136,
-          "reasoning_tokens": 36,
-          "latency_ms": 1242,
+          "output_tokens": 117,
+          "reasoning_tokens": 18,
+          "latency_ms": 1473,
           "ok": true
         }
       ]
@@ -2271,7 +2352,7 @@
       },
       "got": {
         "intent": "question",
-        "confidence": 0.97,
+        "confidence": 0.98,
         "language": "fr",
         "entities": {
           "date_from": null,
@@ -2280,9 +2361,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Habari Noor, je, kutakuwa na kitu cha kula wakati wa ziara? Binti yetu ni mla mboga. Asante! Camille",
-        "translation_en": "Hello Noor, will there be something to eat during the tour? Our daughter is vegetarian. Thanks! Camille",
-        "feedback_text": null
+        "translation_for_noor": "Habari Noor, kutakuwa na chakula chochote wakati wa ziara? Binti yetu ni mlaji wa mboga. Asante! Camille",
+        "translation_en": "Hello Noor, will there be something to eat during the tour? Our daughter is vegetarian. Thank you! Camille",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2291,23 +2373,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.97,
+        "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "fr-question-vegetarian",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 498,
+          "input_tokens": 532,
           "cached_tokens": 0,
-          "output_tokens": 169,
-          "reasoning_tokens": 54,
-          "latency_ms": 1596,
+          "output_tokens": 158,
+          "reasoning_tokens": 34,
+          "latency_ms": 1076,
           "ok": true
         }
       ]
@@ -2321,7 +2404,7 @@
       },
       "got": {
         "intent": "question",
-        "confidence": 0.98,
+        "confidence": 0.99,
         "language": "ja",
         "entities": {
           "date_from": null,
@@ -2329,10 +2412,11 @@
           "party_size": null,
           "slot": null
         },
-        "missing": ["date_from", "party_size"],
-        "translation_for_noor": "Ziara hiyo itafanyika kwa Kiingereza? Je, kuna mwongozo wa Kijapani?",
-        "translation_en": "Will the tour be conducted in English? Is there a Japanese-speaking guide?",
-        "feedback_text": null
+        "missing": [],
+        "translation_for_noor": "Ziara hufanyika kwa Kiingereza? Je, mna mwongozo wa Kijapani?",
+        "translation_en": "Is the tour conducted in English? Do you have a Japanese guide?",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2341,23 +2425,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.99,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "ja-question-language",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 472,
+          "input_tokens": 506,
           "cached_tokens": 0,
-          "output_tokens": 141,
-          "reasoning_tokens": 32,
-          "latency_ms": 1351,
+          "output_tokens": 151,
+          "reasoning_tokens": 43,
+          "latency_ms": 1532,
           "ok": true
         }
       ]
@@ -2380,9 +2465,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Habari, je, watoto wadogo wanaweza kushiriki katika ziara? Tuna mtoto mchanga mwenye umri wa mwaka mmoja na hatujui kama njia inafaa kwa kigari cha mtoto.",
+        "translation_for_noor": "Habari, je, watoto wadogo wanaweza kushiriki katika ziara? Tuna mtoto wa mwaka mmoja na hatujui kama njia inafaa kwa kigari cha mtoto.",
         "translation_en": "Hello, can small children participate in the tour? We have a one-year-old baby and we don't know whether the path is suitable for a stroller.",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2391,23 +2477,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "es-question-baby",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 482,
+          "input_tokens": 516,
           "cached_tokens": 0,
-          "output_tokens": 179,
-          "reasoning_tokens": 45,
-          "latency_ms": 1556,
+          "output_tokens": 165,
+          "reasoning_tokens": 30,
+          "latency_ms": 1255,
           "ok": true
         }
       ]
@@ -2430,9 +2517,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Habari, bei ya ziara kwa kila mtu ni kiasi gani? Je, inajumuisha kuonja kahawa?",
-        "translation_en": "Hello, how much does the tour cost per person? Does it include coffee tasting?",
-        "feedback_text": null
+        "translation_for_noor": "Habari, bei ya ziara ni kiasi gani kwa mtu mmoja? Je, inajumuisha kuonja kahawa?",
+        "translation_en": "Hello, how much is the tour per person? And does it include coffee tasting?",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2441,23 +2529,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "ar-question-price-tasting",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 470,
+          "input_tokens": 504,
           "cached_tokens": 0,
-          "output_tokens": 151,
-          "reasoning_tokens": 43,
-          "latency_ms": 1419,
+          "output_tokens": 155,
+          "reasoning_tokens": 41,
+          "latency_ms": 1262,
           "ok": true
         }
       ]
@@ -2471,7 +2560,7 @@
       },
       "got": {
         "intent": "question",
-        "confidence": 0.97,
+        "confidence": 0.98,
         "language": "sw",
         "entities": {
           "date_from": null,
@@ -2479,10 +2568,11 @@
           "party_size": null,
           "slot": null
         },
-        "missing": ["date_from", "party_size"],
+        "missing": [],
         "translation_for_noor": "Habari, je kuna sehemu ya kuegesha gari shambani? Tutakuja na gari letu wenyewe.",
-        "translation_en": "Hello, is there a place to park a car on the farm? We will be coming with our own car.",
-        "feedback_text": null
+        "translation_en": "Hello, is there a place to park a car at the farm? We will be coming with our own car.",
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2491,23 +2581,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.97,
+        "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "sw-question-parking",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 475,
+          "input_tokens": 509,
           "cached_tokens": 0,
-          "output_tokens": 161,
-          "reasoning_tokens": 45,
-          "latency_ms": 1411,
+          "output_tokens": 142,
+          "reasoning_tokens": 26,
+          "latency_ms": 995,
           "ok": true
         }
       ]
@@ -2530,9 +2621,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Mpendwa Noor,\n\nasante sana kwa asubuhi nzuri sana! Kukaanga maharagwe kulikuwa kilele chetu, na kahawa yenu ni bora zaidi ambayo tumewahi kunywa. Tulipata tu shida kuupata njia ya kuelekea shambani.\n\nSalamu za moyoni\nLena",
-        "translation_en": "Dear Noor,\n\nthank you very much for the wonderful morning! Roasting the beans was our highlight, and your coffee is the best we have ever drunk. We only had difficulty finding the way to the farm.\n\nWarm regards\nLena",
-        "feedback_text": "vielen Dank für den wunderbaren Vormittag! Das Rösten der Bohnen war unser Highlight, und Ihr Kaffee ist der beste, den wir je getrunken haben. Nur den Weg zur Farm haben wir schwer gefunden."
+        "translation_for_noor": "Mpendwa Noor,\n\nAsante sana kwa asubuhi nzuri sana! Kukaanga maharage kulikuwa kilele chetu cha ziara, na kahawa yenu ndiyo bora zaidi ambayo tumewahi kunywa. Ni kwamba tu tulipata ugumu kuupata njia ya kwenda shambani.\n\nSalamu za upendo\nLena",
+        "translation_en": "Dear Noor,\n\nMany thanks for the wonderful morning! Roasting the beans was our highlight, and your coffee is the best we've ever had. We just had trouble finding the way to the farm.\n\nWarm regards\nLena",
+        "feedback_text": "vielen Dank für den wunderbaren Vormittag! Das Rösten der Bohnen war unser Highlight, und Ihr Kaffee ist der beste, den wir je getrunken haben. Nur den Weg zur Farm haben wir schwer gefunden.",
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2541,23 +2633,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "de-feedback-roasting",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 530,
+          "input_tokens": 564,
           "cached_tokens": 0,
-          "output_tokens": 277,
-          "reasoning_tokens": 45,
-          "latency_ms": 2212,
+          "output_tokens": 290,
+          "reasoning_tokens": 52,
+          "latency_ms": 1849,
           "ok": true
         }
       ]
@@ -2571,7 +2664,7 @@
       },
       "got": {
         "intent": "feedback",
-        "confidence": 0.99,
+        "confidence": 0.98,
         "language": "en",
         "entities": {
           "date_from": null,
@@ -2579,10 +2672,11 @@
           "party_size": null,
           "slot": null
         },
-        "missing": ["date_from", "party_size"],
-        "translation_for_noor": "Ziara lilikuwa la kushangaza, asante Noor! Watoto walifurahia kuvuna cherries za kahawa.",
+        "missing": [],
+        "translation_for_noor": "Ziara lilikuwa la kushangaza, asante Noor! Watoto walifurahia kuchuma cherries za kahawa.",
         "translation_en": "",
-        "feedback_text": "Amazing tour, thank you Noor! The kids loved picking the coffee cherries."
+        "feedback_text": "Amazing tour, thank you Noor! The kids loved picking the coffee cherries.",
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2591,23 +2685,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.99,
+        "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "en-feedback-short",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 487,
+          "input_tokens": 521,
           "cached_tokens": 0,
-          "output_tokens": 106,
-          "reasoning_tokens": 0,
-          "latency_ms": 1125,
+          "output_tokens": 124,
+          "reasoning_tokens": 17,
+          "latency_ms": 1054,
           "ok": true
         }
       ]
@@ -2630,9 +2725,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Habari, ziara ilikuwa ya kuvutia lakini ilikuwa ndefu sana kwa watoto, na hapakuwa na kivuli cha kusubiri. Inasikitisha.",
-        "translation_en": "Hello, the visit was interesting but far too long for the children, and there was no shade to wait in. Too bad.",
-        "feedback_text": "la visite était intéressante mais beaucoup trop longue pour les enfants, et il n'y avait pas d'ombre pour attendre. Dommage."
+        "translation_for_noor": "Habari, ziara ilikuwa ya kuvutia lakini ilikuwa ndefu sana kwa watoto, na hakukuwa na kivuli cha kusubiri. Ni jambo la kusikitisha.",
+        "translation_en": "Hello, the tour was interesting but much too long for the children, and there was no shade to wait in. Too bad.",
+        "feedback_text": "la visite était intéressante mais beaucoup trop longue pour les enfants, et il n'y avait pas d'ombre pour attendre. Dommage.",
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2641,23 +2737,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
         "confidence": 0.98,
         "handoff": false,
         "wrong_but_confident": false
       },
       "id": "fr-feedback-complaint",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 480,
+          "input_tokens": 514,
           "cached_tokens": 0,
-          "output_tokens": 197,
-          "reasoning_tokens": 49,
-          "latency_ms": 1733,
+          "output_tokens": 185,
+          "reasoning_tokens": 29,
+          "latency_ms": 1511,
           "ok": true
         }
       ]
@@ -2671,7 +2768,7 @@
       },
       "got": {
         "intent": "unknown",
-        "confidence": 0.98,
+        "confidence": 0.99,
         "language": "en",
         "entities": {
           "date_from": null,
@@ -2680,9 +2777,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Mpendwa Bwana/Bi/Bi.,\n\nTunaweza kuupandisha tovuti yako hadi ukurasa wa kwanza wa Google ndani ya siku 30! Jibu leo kwa ukaguzi wa SEO BILA MALIPO.\n\nWako kwa heshima,\nTimu ya Digital Growth",
+        "translation_for_noor": "Mpendwa Bwana/Bi,\\n\\nTunaweza kuiweka tovuti yako katika ukurasa wa kwanza wa Google ndani ya siku 30! Jibu leo kwa ukaguzi wa SEO BILA MALIPO.\\n\\nWako kwa dhati,\\nTimu ya Digital Growth",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2691,23 +2789,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.99,
         "handoff": true,
         "wrong_but_confident": false
       },
       "id": "en-spam-seo",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 486,
+          "input_tokens": 520,
           "cached_tokens": 0,
-          "output_tokens": 171,
-          "reasoning_tokens": 43,
-          "latency_ms": 1641,
+          "output_tokens": 173,
+          "reasoning_tokens": 40,
+          "latency_ms": 1331,
           "ok": true
         }
       ]
@@ -2721,7 +2820,7 @@
       },
       "got": {
         "intent": "unknown",
-        "confidence": 0.98,
+        "confidence": 0.99,
         "language": "en",
         "entities": {
           "date_from": null,
@@ -2730,9 +2829,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Hongera!!! Barua pepe yako ilichaguliwa kupokea kadi ya zawadi ya $1,000. Iikomboe ndani ya saa 24: http://bit.ly/claim-prize-now",
+        "translation_for_noor": "Hongera!!! Barua pepe yako imechaguliwa kupokea kadi ya zawadi ya $1,000. Ijulishe ndani ya saa 24: http://bit.ly/claim-prize-now",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2741,23 +2841,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.99,
         "handoff": true,
         "wrong_but_confident": false
       },
       "id": "en-spam-prize",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 483,
+          "input_tokens": 517,
           "cached_tokens": 0,
-          "output_tokens": 153,
-          "reasoning_tokens": 46,
-          "latency_ms": 1520,
+          "output_tokens": 193,
+          "reasoning_tokens": 80,
+          "latency_ms": 1268,
           "ok": true
         }
       ]
@@ -2770,7 +2871,7 @@
       },
       "got": {
         "intent": "unknown",
-        "confidence": 0.15,
+        "confidence": 0.12,
         "language": "en",
         "entities": {
           "date_from": null,
@@ -2778,10 +2879,11 @@
           "party_size": null,
           "slot": null
         },
-        "missing": ["date_from", "party_size"],
+        "missing": [],
         "translation_for_noor": "asdf jkl; qwer",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2790,24 +2892,25 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.15,
+        "confidence": 0.12,
         "handoff": true,
         "wrong_but_confident": false
       },
       "note": "No language to score.",
       "id": "gibberish",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 457,
+          "input_tokens": 491,
           "cached_tokens": 0,
-          "output_tokens": 110,
-          "reasoning_tokens": 34,
-          "latency_ms": 1051,
+          "output_tokens": 91,
+          "reasoning_tokens": 15,
+          "latency_ms": 1108,
           "ok": true
         }
       ]
@@ -2821,7 +2924,7 @@
       },
       "got": {
         "intent": "unknown",
-        "confidence": 0.98,
+        "confidence": 0.99,
         "language": "en",
         "entities": {
           "date_from": null,
@@ -2832,7 +2935,8 @@
         "missing": [],
         "translation_for_noor": "Habari Mama, nitachelewa kurudi nyumbani leo usiku, usinisubiri kwa chakula cha jioni. Upendo, Sarah",
         "translation_en": "",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2841,23 +2945,24 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.98,
+        "confidence": 0.99,
         "handoff": true,
         "wrong_but_confident": false
       },
       "id": "en-wrong-recipient",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 470,
+          "input_tokens": 504,
           "cached_tokens": 0,
-          "output_tokens": 142,
-          "reasoning_tokens": 48,
-          "latency_ms": 1509,
+          "output_tokens": 138,
+          "reasoning_tokens": 38,
+          "latency_ms": 1097,
           "ok": true
         }
       ]
@@ -2871,7 +2976,7 @@
       },
       "got": {
         "intent": "unknown",
-        "confidence": 0.84,
+        "confidence": 0.95,
         "language": "de",
         "entities": {
           "date_from": null,
@@ -2880,9 +2985,10 @@
           "slot": null
         },
         "missing": [],
-        "translation_for_noor": "Asante sana kwa ujumbe wako. Mimi sipo ofisini hadi na ikijumuisha tarehe 12 Oktoba, na sina ufikiaji wa barua pepe zangu. Katika hali za dharura, tafadhali wasiliana na mwenzangu.",
+        "translation_for_noor": "Asante sana kwa ujumbe wako. Niko nje ya ofisi hadi tarehe 12 Oktoba ikijumuishwa, na sina ufikiaji wa barua pepe zangu. Kwa mambo ya dharura, tafadhali wasiliana na mfanyakazi mwenzi wangu.",
         "translation_en": "Thank you very much for your message. I am out of the office until and including 12 October and have no access to my emails. In urgent cases, please contact my colleague.",
-        "feedback_text": null
+        "feedback_text": null,
+        "accepts_offer": null
       },
       "score": {
         "intent": true,
@@ -2891,24 +2997,469 @@
         "party_size": null,
         "slot": null,
         "missing": null,
+        "accepts_offer": null,
         "exact": true,
-        "confidence": 0.84,
+        "confidence": 0.95,
         "handoff": true,
         "wrong_but_confident": false
       },
       "note": "An auto-reply: the date in it is not a booking.",
       "id": "de-out-of-office",
-      "cached": true,
+      "cached": false,
       "error": null,
       "usage": [
         {
           "task": "classify_guest",
           "model": "gpt-5.4-mini",
-          "input_tokens": 491,
+          "input_tokens": 525,
           "cached_tokens": 0,
-          "output_tokens": 233,
-          "reasoning_tokens": 77,
-          "latency_ms": 2033,
+          "output_tokens": 228,
+          "reasoning_tokens": 63,
+          "latency_ms": 1413,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Yes, Saturday the 17th works for us. See you then!\n\nAnna",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "expected": {
+        "intent": {
+          "any_of": ["booking_request", "modify"]
+        },
+        "language": "en",
+        "entities": {
+          "date_from": {
+            "any_of": ["2026-10-17", null]
+          },
+          "party_size": {
+            "any_of": [2, null]
+          },
+          "slot": {
+            "any_of": ["09:00", null]
+          }
+        },
+        "missing": [],
+        "accepts_offer": true
+      },
+      "got": {
+        "intent": "modify",
+        "confidence": 0.97,
+        "language": "en",
+        "entities": {
+          "date_from": "2026-10-17",
+          "date_to": null,
+          "party_size": 2,
+          "slot": null
+        },
+        "missing": [],
+        "translation_for_noor": "Ndiyo, Jumamosi tarehe 17 inatufaa. Tutaonana hapo basi!\n\nAnna",
+        "translation_en": "",
+        "feedback_text": null,
+        "accepts_offer": true
+      },
+      "score": {
+        "intent": true,
+        "language": true,
+        "date_from": true,
+        "party_size": true,
+        "slot": true,
+        "missing": true,
+        "accepts_offer": true,
+        "exact": true,
+        "confidence": 0.97,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "A reply to the date Noor offered. Only an explicit yes may confirm it.",
+      "id": "en-offer-accept",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_guest",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 525,
+          "cached_tokens": 0,
+          "output_tokens": 263,
+          "reasoning_tokens": 164,
+          "latency_ms": 1718,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Parfait, le samedi 17 nous convient très bien. Merci beaucoup !\nCamille",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "expected": {
+        "intent": {
+          "any_of": ["booking_request", "modify"]
+        },
+        "language": "fr",
+        "entities": {
+          "date_from": {
+            "any_of": ["2026-10-17", null]
+          },
+          "party_size": {
+            "any_of": [2, null]
+          },
+          "slot": {
+            "any_of": ["09:00", null]
+          }
+        },
+        "missing": [],
+        "accepts_offer": true
+      },
+      "got": {
+        "intent": "modify",
+        "confidence": 0.95,
+        "language": "fr",
+        "entities": {
+          "date_from": "2026-10-17",
+          "date_to": null,
+          "party_size": 2,
+          "slot": null
+        },
+        "missing": [],
+        "translation_for_noor": "Sawa, Jumamosi tarehe 17 inatufaa vizuri sana. Asante sana!\nCamille",
+        "translation_en": "Parfait, le samedi 17 nous convient très bien. Merci beaucoup !\nCamille",
+        "feedback_text": null,
+        "accepts_offer": true
+      },
+      "score": {
+        "intent": true,
+        "language": true,
+        "date_from": true,
+        "party_size": true,
+        "slot": true,
+        "missing": true,
+        "accepts_offer": true,
+        "exact": true,
+        "confidence": 0.95,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "A reply to the date Noor offered. Only an explicit yes may confirm it.",
+      "id": "fr-offer-accept",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_guest",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 526,
+          "cached_tokens": 0,
+          "output_tokens": 290,
+          "reasoning_tokens": 171,
+          "latency_ms": 2836,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "17日（土）で大丈夫です。よろしくお願いします。",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "expected": {
+        "intent": {
+          "any_of": ["booking_request", "modify"]
+        },
+        "language": "ja",
+        "entities": {
+          "date_from": {
+            "any_of": ["2026-10-17", null]
+          },
+          "party_size": {
+            "any_of": [2, null]
+          },
+          "slot": {
+            "any_of": ["09:00", null]
+          }
+        },
+        "missing": [],
+        "accepts_offer": true
+      },
+      "got": {
+        "intent": "modify",
+        "confidence": 0.96,
+        "language": "ja",
+        "entities": {
+          "date_from": "2026-10-17",
+          "date_to": null,
+          "party_size": 2,
+          "slot": "09:00"
+        },
+        "missing": [],
+        "translation_for_noor": "Siku ya 17 (Jumamosi) ni sawa. Asante.",
+        "translation_en": "The 17th (Saturday) works for me. Thank you.",
+        "feedback_text": null,
+        "accepts_offer": true
+      },
+      "score": {
+        "intent": true,
+        "language": true,
+        "date_from": true,
+        "party_size": true,
+        "slot": true,
+        "missing": true,
+        "accepts_offer": true,
+        "exact": true,
+        "confidence": 0.96,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "A reply to the date Noor offered. Only an explicit yes may confirm it.",
+      "id": "ja-offer-accept",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_guest",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 521,
+          "cached_tokens": 0,
+          "output_tokens": 248,
+          "reasoning_tokens": 140,
+          "latency_ms": 1514,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Hallo Noor,\n\nder 17. passt uns leider nicht. Schade, vielleicht ein andermal.\n\nLena",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "expected": {
+        "intent": {
+          "any_of": ["modify", "booking_request", "cancel"]
+        },
+        "language": "de",
+        "accepts_offer": {
+          "any_of": [false, null]
+        }
+      },
+      "got": {
+        "intent": "modify",
+        "confidence": 0.69,
+        "language": "de",
+        "entities": {
+          "date_from": null,
+          "date_to": null,
+          "party_size": null,
+          "slot": null
+        },
+        "missing": [],
+        "translation_for_noor": "Habari Noor,\n\nTarehe 17 haiwafai kwa bahati mbaya. Pole, labda wakati mwingine.\n\nLena",
+        "translation_en": "Hello Noor,\n\nThe 17th unfortunately doesn't suit us. Too bad, maybe another time.\n\nLena",
+        "feedback_text": null,
+        "accepts_offer": false
+      },
+      "score": {
+        "intent": true,
+        "language": true,
+        "date_from": null,
+        "party_size": null,
+        "slot": null,
+        "missing": null,
+        "accepts_offer": true,
+        "exact": true,
+        "confidence": 0.69,
+        "handoff": true,
+        "wrong_but_confident": false
+      },
+      "note": "Refusing (or not yet answering) the offered date: false or null both keep the booking unconfirmed; only true would be wrong.",
+      "id": "de-offer-refuse",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_guest",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 532,
+          "cached_tokens": 0,
+          "output_tokens": 495,
+          "reasoning_tokens": 367,
+          "latency_ms": 2655,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Samahani Noor, tarehe 17 hatutaweza kuja.",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "expected": {
+        "intent": {
+          "any_of": ["modify", "booking_request", "cancel"]
+        },
+        "language": "sw",
+        "accepts_offer": {
+          "any_of": [false, null]
+        }
+      },
+      "got": {
+        "intent": "cancel",
+        "confidence": 0.96,
+        "language": "sw",
+        "entities": {
+          "date_from": "2026-10-17",
+          "date_to": null,
+          "party_size": null,
+          "slot": null
+        },
+        "missing": [],
+        "translation_for_noor": "Samahani Noor, tarehe 17 hatutaweza kuja.",
+        "translation_en": "Sorry Noor, on the 17th we won’t be able to come.",
+        "feedback_text": null,
+        "accepts_offer": null
+      },
+      "score": {
+        "intent": true,
+        "language": true,
+        "date_from": null,
+        "party_size": null,
+        "slot": null,
+        "missing": null,
+        "accepts_offer": true,
+        "exact": true,
+        "confidence": 0.96,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "Refusing (or not yet answering) the offered date: false or null both keep the booking unconfirmed; only true would be wrong.",
+      "id": "sw-offer-refuse",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_guest",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 524,
+          "cached_tokens": 0,
+          "output_tokens": 229,
+          "reasoning_tokens": 124,
+          "latency_ms": 1271,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Hola Noor, ¿podríamos ir el domingo 18 en lugar del sábado 17? Gracias, Lucía",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "expected": {
+        "intent": "modify",
+        "language": "es",
+        "entities": {
+          "date_from": "2026-10-18",
+          "party_size": {
+            "any_of": [2, null]
+          },
+          "slot": {
+            "any_of": ["09:00", null]
+          }
+        },
+        "missing": [],
+        "accepts_offer": {
+          "any_of": [false, null]
+        }
+      },
+      "got": {
+        "intent": "modify",
+        "confidence": 0.97,
+        "language": "es",
+        "entities": {
+          "date_from": "2026-10-18",
+          "date_to": null,
+          "party_size": 2,
+          "slot": "09:00"
+        },
+        "missing": [],
+        "translation_for_noor": "Habari Noor, je, tunaweza kwenda Jumapili tarehe 18 badala ya Jumamosi tarehe 17? Asante, Lucía",
+        "translation_en": "Hello Noor, could we go on Sunday the 18th instead of Saturday the 17th? Thanks, Lucía",
+        "feedback_text": null,
+        "accepts_offer": null
+      },
+      "score": {
+        "intent": true,
+        "language": true,
+        "date_from": true,
+        "party_size": true,
+        "slot": true,
+        "missing": true,
+        "accepts_offer": true,
+        "exact": true,
+        "confidence": 0.97,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "A new date instead of the offered one goes back to Noor as a change; it must not confirm the 17th.",
+      "id": "es-offer-counter",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_guest",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 532,
+          "cached_tokens": 0,
+          "output_tokens": 325,
+          "reasoning_tokens": 190,
+          "latency_ms": 1600,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Thanks Noor! Let me check with my wife about the 17th and get back to you.",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "expected": {
+        "intent": {
+          "any_of": ["question", "unknown", "modify", "booking_request"]
+        },
+        "language": "en",
+        "accepts_offer": {
+          "any_of": [false, null]
+        }
+      },
+      "got": {
+        "intent": "unknown",
+        "confidence": 0.78,
+        "language": "en",
+        "entities": {
+          "date_from": "2026-10-17",
+          "date_to": null,
+          "party_size": null,
+          "slot": "09:00"
+        },
+        "missing": ["party_size"],
+        "translation_for_noor": "Asante Noor! Niache nichunguze na mke wangu kuhusu tarehe 17, halafu nitakurudia.",
+        "translation_en": "",
+        "feedback_text": null,
+        "accepts_offer": null
+      },
+      "score": {
+        "intent": true,
+        "language": true,
+        "date_from": null,
+        "party_size": null,
+        "slot": null,
+        "missing": null,
+        "accepts_offer": true,
+        "exact": true,
+        "confidence": 0.78,
+        "handoff": true,
+        "wrong_but_confident": false
+      },
+      "note": "Refusing (or not yet answering) the offered date: false or null both keep the booking unconfirmed; only true would be wrong.",
+      "id": "en-offer-undecided",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_guest",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 529,
+          "cached_tokens": 0,
+          "output_tokens": 188,
+          "reasoning_tokens": 83,
+          "latency_ms": 1720,
           "ok": true
         }
       ]

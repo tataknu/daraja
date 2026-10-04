@@ -85,6 +85,8 @@ export interface GuestScore {
   slot: boolean | null;
   /** Reported on its own: guest.ts works out what is missing from the fields, not from this list. */
   missing: boolean | null;
+  /** Labelled only for answers to a date Noor offered. */
+  accepts_offer: boolean | null;
   /** Intent, language, date, party size and slot: each one labelled for this case is right. */
   exact: boolean;
   confidence: number | null;
@@ -122,11 +124,22 @@ export function scoreGuest(
     labels.missing === undefined
       ? null
       : ok && acceptsBy(labels.missing, normMissing(out.missing), normMissing);
+  const accepts_offer =
+    labels.accepts_offer === undefined
+      ? null
+      : ok && options(labels.accepts_offer).includes(out.accepts_offer ?? null);
   // Not `missing`: guest.ts only logs it, and works out what is missing from the fields.
-  const exact = [intent, language, date_from, party_size, slot].every((x) => x !== false);
+  const exact = [intent, language, date_from, party_size, slot, accepts_offer].every(
+    (x) => x !== false,
+  );
   // guest.ts: below CONF_MIN or "unknown" goes to Noor as a question; an AI error goes to her as is.
   const handoff = !ok || out.confidence < CONF_MIN || out.intent === "unknown";
-  const wrong = !intent || date_from === false || party_size === false || slot === false;
+  const wrong =
+    !intent ||
+    date_from === false ||
+    party_size === false ||
+    slot === false ||
+    accepts_offer === false;
   return {
     intent,
     language,
@@ -134,6 +147,7 @@ export function scoreGuest(
     party_size,
     slot,
     missing,
+    accepts_offer,
     exact,
     confidence: ok ? out.confidence : null,
     handoff,
@@ -325,6 +339,7 @@ export function guestMetrics(cases: GuestCase[], scores: GuestScore[]): Metric[]
     rate("party_size", "Party size", pick("party_size")),
     rate("slot", "Slot (morning / afternoon)", pick("slot")),
     rate("missing", "Missing fields (not used to decide)", pick("missing")),
+    rate("accepts_offer", "Answer to a date Noor offered", pick("accepts_offer")),
     rate("exact", "Every field right", pick("exact")),
     rate("handoff", "Handed to Noor (AI unsure, not for the farm, or AI error)", pick("handoff")),
     rate("wrong_but_confident", "Wrong but confident", pick("wrong_but_confident")),

@@ -9,7 +9,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "de",
-        "entities": { "date_from": "2026-10-10", "party_size": 3, "slot": "09:00" },
+        "entities": {
+          "date_from": "2026-10-10",
+          "party_size": 3,
+          "slot": "09:00"
+        },
         "missing": []
       },
       "note": "\"zu dritt\" is three people; \"am Samstag\" is the coming Saturday."
@@ -21,7 +25,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "ja",
-        "entities": { "date_from": "2026-10-17", "party_size": 4, "slot": "14:00" },
+        "entities": {
+          "date_from": "2026-10-17",
+          "party_size": 4,
+          "slot": "14:00"
+        },
         "missing": []
       },
       "note": "来週の土曜日 is Saturday of next calendar week (17 Oct), not this Saturday."
@@ -34,7 +42,9 @@
         "intent": "booking_request",
         "language": "en",
         "entities": {
-          "date_from": { "any_of": ["2026-10-10", "2026-10-17"] },
+          "date_from": {
+            "any_of": ["2026-10-10", "2026-10-17"]
+          },
           "party_size": 5,
           "slot": null
         },
@@ -49,7 +59,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "fr",
-        "entities": { "date_from": "2026-10-17", "party_size": 4, "slot": "14:00" },
+        "entities": {
+          "date_from": "2026-10-17",
+          "party_size": 4,
+          "slot": "14:00"
+        },
         "missing": []
       }
     },
@@ -61,7 +75,9 @@
         "intent": "booking_request",
         "language": "es",
         "entities": {
-          "date_from": { "any_of": ["2026-10-10", "2026-10-17"] },
+          "date_from": {
+            "any_of": ["2026-10-10", "2026-10-17"]
+          },
           "party_size": 2,
           "slot": "09:00"
         },
@@ -76,7 +92,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "nl",
-        "entities": { "date_from": "2026-10-10", "party_size": 12, "slot": "09:00" },
+        "entities": {
+          "date_from": "2026-10-10",
+          "party_size": 12,
+          "slot": "09:00"
+        },
         "missing": []
       },
       "note": "\"aanstaande zaterdag\" is the coming Saturday. 12 is over the 8-per-slot limit: the AI must still say 12, code flags the capacity."
@@ -89,7 +109,9 @@
         "intent": "booking_request",
         "language": "it",
         "entities": {
-          "date_from": { "any_of": ["2026-10-10", "2026-10-17"] },
+          "date_from": {
+            "any_of": ["2026-10-10", "2026-10-17"]
+          },
           "party_size": null,
           "slot": null
         },
@@ -104,7 +126,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "pt",
-        "entities": { "date_from": "2026-10-24", "party_size": 3, "slot": "09:00" },
+        "entities": {
+          "date_from": "2026-10-24",
+          "party_size": 3,
+          "slot": "09:00"
+        },
         "missing": []
       }
     },
@@ -115,7 +141,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "sw",
-        "entities": { "date_from": "2026-10-10", "party_size": 2, "slot": "09:00" },
+        "entities": {
+          "date_from": "2026-10-10",
+          "party_size": 2,
+          "slot": "09:00"
+        },
         "missing": []
       },
       "note": "\"Jumamosi hii\" is this Saturday; \"watu wawili\" two people; \"asubuhi\" morning."
@@ -127,7 +157,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "zh",
-        "entities": { "date_from": "2026-10-17", "party_size": 6, "slot": "14:00" },
+        "entities": {
+          "date_from": "2026-10-17",
+          "party_size": 6,
+          "slot": "14:00"
+        },
         "missing": []
       },
       "note": "下周六 is Saturday of next week (17 Oct)."
@@ -140,7 +174,9 @@
         "intent": "booking_request",
         "language": "ar",
         "entities": {
-          "date_from": { "any_of": ["2026-10-10", "2026-10-17"] },
+          "date_from": {
+            "any_of": ["2026-10-10", "2026-10-17"]
+          },
           "party_size": 5,
           "slot": "09:00"
         },
@@ -155,7 +191,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "ko",
-        "entities": { "date_from": "2026-10-15", "party_size": 3, "slot": "09:00" },
+        "entities": {
+          "date_from": "2026-10-15",
+          "party_size": 3,
+          "slot": "09:00"
+        },
         "missing": []
       }
     },
@@ -166,7 +206,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "en",
-        "entities": { "date_from": "2026-10-10", "party_size": 2, "slot": "09:00" },
+        "entities": {
+          "date_from": "2026-10-10",
+          "party_size": 2,
+          "slot": "09:00"
+        },
         "missing": []
       },
       "note": "Very short. \"Sat\" is the coming Saturday."
@@ -176,10 +220,18 @@
       "text": "Guten Tag,\n\nwir sind fünf Erwachsene und interessieren uns für eine Führung auf Ihrer Kaffeefarm. Wann wäre das möglich?\n\nFreundliche Grüße\nThomas Becker",
       "booking": "none",
       "labels": {
-        "intent": { "any_of": ["booking_request", "question"] },
+        "intent": {
+          "any_of": ["booking_request", "question"]
+        },
         "language": "de",
-        "entities": { "date_from": null, "party_size": 5, "slot": null },
-        "missing": { "any_of": [["date_from"], []] }
+        "entities": {
+          "date_from": null,
+          "party_size": 5,
+          "slot": null
+        },
+        "missing": {
+          "any_of": [["date_from"], []]
+        }
       },
       "note": "Asks when a visit would be possible: a request without a date, or a question."
     },
@@ -190,7 +242,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "en",
-        "entities": { "date_from": "2026-10-06", "party_size": 1, "slot": "14:00" },
+        "entities": {
+          "date_from": "2026-10-06",
+          "party_size": 1,
+          "slot": "14:00"
+        },
         "missing": []
       }
     },
@@ -200,10 +256,14 @@
       "booking": "none",
       "labels": {
         "intent": "booking_request",
-        "language": { "any_of": ["fr", "en"] },
+        "language": {
+          "any_of": ["fr", "en"]
+        },
         "entities": {
           "date_from": "2026-10-11",
-          "party_size": { "any_of": [3, 4] },
+          "party_size": {
+            "any_of": [3, 4]
+          },
           "slot": "09:00"
         },
         "missing": []
@@ -216,9 +276,13 @@
       "booking": "none",
       "labels": {
         "intent": "booking_request",
-        "language": { "any_of": ["sw", "en"] },
+        "language": {
+          "any_of": ["sw", "en"]
+        },
         "entities": {
-          "date_from": { "any_of": ["2026-10-10", "2026-10-17"] },
+          "date_from": {
+            "any_of": ["2026-10-10", "2026-10-17"]
+          },
           "party_size": 4,
           "slot": "14:00"
         },
@@ -233,7 +297,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "de",
-        "entities": { "date_from": "2026-10-12", "party_size": 2, "slot": "14:00" },
+        "entities": {
+          "date_from": "2026-10-12",
+          "party_size": 2,
+          "slot": "14:00"
+        },
         "missing": []
       }
     },
@@ -244,7 +312,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "en",
-        "entities": { "date_from": "2026-10-22", "party_size": 4, "slot": "09:00" },
+        "entities": {
+          "date_from": "2026-10-22",
+          "party_size": 4,
+          "slot": "09:00"
+        },
         "missing": []
       },
       "note": "Distracting dates (19th, 25th, 2024) and numbers; the request is in the last paragraph."
@@ -259,7 +331,9 @@
         "entities": {
           "date_from": "2026-10-18",
           "party_size": 2,
-          "slot": { "any_of": ["09:00", null] }
+          "slot": {
+            "any_of": ["09:00", null]
+          }
         },
         "missing": []
       },
@@ -270,9 +344,15 @@
       "text": "Do you have space for 6 people this Saturday afternoon?",
       "booking": "none",
       "labels": {
-        "intent": { "any_of": ["booking_request", "question"] },
+        "intent": {
+          "any_of": ["booking_request", "question"]
+        },
         "language": "en",
-        "entities": { "date_from": "2026-10-10", "party_size": 6, "slot": "14:00" },
+        "entities": {
+          "date_from": "2026-10-10",
+          "party_size": 6,
+          "slot": "14:00"
+        },
         "missing": []
       },
       "note": "An availability question that is in effect a request."
@@ -284,7 +364,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "en",
-        "entities": { "date_from": "2026-10-25", "party_size": 6, "slot": "09:00" },
+        "entities": {
+          "date_from": "2026-10-25",
+          "party_size": 6,
+          "slot": "09:00"
+        },
         "missing": []
       },
       "note": "Praise and a booking: the main purpose is the booking."
@@ -296,7 +380,11 @@
       "labels": {
         "intent": "booking_request",
         "language": "sw",
-        "entities": { "date_from": "2026-10-07", "party_size": 3, "slot": "14:00" },
+        "entities": {
+          "date_from": "2026-10-07",
+          "party_size": 3,
+          "slot": "14:00"
+        },
         "missing": []
       },
       "note": "\"kesho kutwa\" is the day after tomorrow; \"mchana\" the afternoon; \"watatu\" three."
@@ -310,8 +398,12 @@
         "language": "de",
         "entities": {
           "date_from": "2026-10-11",
-          "party_size": { "any_of": [3, null] },
-          "slot": { "any_of": ["09:00", null] }
+          "party_size": {
+            "any_of": [3, null]
+          },
+          "slot": {
+            "any_of": ["09:00", null]
+          }
         },
         "missing": []
       },
@@ -325,9 +417,13 @@
         "intent": "modify",
         "language": "en",
         "entities": {
-          "date_from": { "any_of": ["2026-10-17", null] },
+          "date_from": {
+            "any_of": ["2026-10-17", null]
+          },
           "party_size": 4,
-          "slot": { "any_of": ["14:00", null] }
+          "slot": {
+            "any_of": ["14:00", null]
+          }
         },
         "missing": []
       }
@@ -340,8 +436,12 @@
         "intent": "modify",
         "language": "fr",
         "entities": {
-          "date_from": { "any_of": ["2026-10-15", null] },
-          "party_size": { "any_of": [2, null] },
+          "date_from": {
+            "any_of": ["2026-10-15", null]
+          },
+          "party_size": {
+            "any_of": [2, null]
+          },
           "slot": "14:00"
         },
         "missing": []
@@ -356,8 +456,12 @@
         "language": "es",
         "entities": {
           "date_from": "2026-10-24",
-          "party_size": { "any_of": [4, null] },
-          "slot": { "any_of": ["09:00", null] }
+          "party_size": {
+            "any_of": [4, null]
+          },
+          "slot": {
+            "any_of": ["09:00", null]
+          }
         },
         "missing": []
       }
@@ -371,8 +475,12 @@
         "language": "sw",
         "entities": {
           "date_from": "2026-10-09",
-          "party_size": { "any_of": [2, null] },
-          "slot": { "any_of": ["14:00", null] }
+          "party_size": {
+            "any_of": [2, null]
+          },
+          "slot": {
+            "any_of": ["14:00", null]
+          }
         },
         "missing": []
       },
@@ -386,9 +494,13 @@
         "intent": "modify",
         "language": "ja",
         "entities": {
-          "date_from": { "any_of": ["2026-10-17", null] },
+          "date_from": {
+            "any_of": ["2026-10-17", null]
+          },
           "party_size": 3,
-          "slot": { "any_of": ["14:00", null] }
+          "slot": {
+            "any_of": ["14:00", null]
+          }
         },
         "missing": []
       }
@@ -397,124 +509,326 @@
       "id": "de-cancel-sick-child",
       "text": "Liebe Noor,\n\nleider müssen wir unseren Besuch am Samstag absagen, unsere Tochter ist krank geworden. Es tut uns sehr leid!\n\nLena",
       "booking": "B27 status=CONFIRMED date=2026-10-10 slot=09:00 party=3",
-      "labels": { "intent": "cancel", "language": "de" }
+      "labels": {
+        "intent": "cancel",
+        "language": "de"
+      }
     },
     {
       "id": "en-cancel-code",
       "text": "Please cancel B28. Sorry!",
       "booking": "B28 status=PENDING_NOOR date=2026-10-17 slot=14:00 party=2",
-      "labels": { "intent": "cancel", "language": "en" }
+      "labels": {
+        "intent": "cancel",
+        "language": "en"
+      }
     },
     {
       "id": "zh-cancel",
       "text": "不好意思，我们的行程有变，下周六的参观只能取消了。谢谢理解！",
       "booking": "B30 status=PENDING_NOOR date=2026-10-17 slot=14:00 party=6",
-      "labels": { "intent": "cancel", "language": "zh" }
+      "labels": {
+        "intent": "cancel",
+        "language": "zh"
+      }
     },
     {
       "id": "ru-cancel",
       "text": "Здравствуйте! К сожалению, мы не сможем приехать 24 октября. Пожалуйста, отмените нашу бронь. Спасибо, Ольга",
       "booking": "B31 status=CONFIRMED date=2026-10-24 slot=09:00 party=2",
-      "labels": { "intent": "cancel", "language": "ru" }
+      "labels": {
+        "intent": "cancel",
+        "language": "ru"
+      }
     },
     {
       "id": "en-cancel-without-booking",
       "text": "Hi, I need to cancel my coffee tour booking. Thanks, Mike",
       "booking": "none",
-      "labels": { "intent": "cancel", "language": "en" },
+      "labels": {
+        "intent": "cancel",
+        "language": "en"
+      },
       "note": "No booking on file: still a cancellation (the engine answers that it found none)."
     },
     {
       "id": "de-question-price-card",
       "text": "Guten Tag, wie viel kostet die Führung pro Person? Und kann man vor Ort mit Karte bezahlen? Danke!",
       "booking": "none",
-      "labels": { "intent": "question", "language": "de" }
+      "labels": {
+        "intent": "question",
+        "language": "de"
+      }
     },
     {
       "id": "en-question-directions",
       "text": "Hi Noor, how do we get to the farm from Moshi town? Is there public transport, or should we take a taxi? Thanks!",
       "booking": "none",
-      "labels": { "intent": "question", "language": "en" }
+      "labels": {
+        "intent": "question",
+        "language": "en"
+      }
     },
     {
       "id": "fr-question-vegetarian",
       "text": "Bonjour Noor, y aura-t-il quelque chose à manger pendant la visite ? Notre fille est végétarienne. Merci ! Camille",
       "booking": "B32 status=CONFIRMED date=2026-10-17 slot=09:00 party=4",
-      "labels": { "intent": "question", "language": "fr" }
+      "labels": {
+        "intent": "question",
+        "language": "fr"
+      }
     },
     {
       "id": "ja-question-language",
       "text": "ツアーは英語で行われますか？日本語のガイドはいますか？",
       "booking": "none",
-      "labels": { "intent": "question", "language": "ja" }
+      "labels": {
+        "intent": "question",
+        "language": "ja"
+      }
     },
     {
       "id": "es-question-baby",
       "text": "Hola, ¿pueden participar niños pequeños en el tour? Tenemos un bebé de un año y no sabemos si el camino es apto para un carrito.",
       "booking": "none",
-      "labels": { "intent": "question", "language": "es" }
+      "labels": {
+        "intent": "question",
+        "language": "es"
+      }
     },
     {
       "id": "ar-question-price-tasting",
       "text": "مرحباً، كم سعر الجولة للشخص الواحد؟ وهل تشمل تذوق القهوة؟",
       "booking": "none",
-      "labels": { "intent": "question", "language": "ar" }
+      "labels": {
+        "intent": "question",
+        "language": "ar"
+      }
     },
     {
       "id": "sw-question-parking",
       "text": "Habari, je kuna sehemu ya kuegesha gari shambani? Tutakuja na gari letu wenyewe.",
       "booking": "none",
-      "labels": { "intent": "question", "language": "sw" }
+      "labels": {
+        "intent": "question",
+        "language": "sw"
+      }
     },
     {
       "id": "de-feedback-roasting",
       "text": "Liebe Noor,\n\nvielen Dank für den wunderbaren Vormittag! Das Rösten der Bohnen war unser Highlight, und Ihr Kaffee ist der beste, den wir je getrunken haben. Nur den Weg zur Farm haben wir schwer gefunden.\n\nHerzliche Grüße\nLena",
       "booking": "B33 status=FEEDBACK_REQUESTED date=2026-10-03 slot=09:00 party=3",
-      "labels": { "intent": "feedback", "language": "de" }
+      "labels": {
+        "intent": "feedback",
+        "language": "de"
+      }
     },
     {
       "id": "en-feedback-short",
       "text": "Amazing tour, thank you Noor! The kids loved picking the coffee cherries.",
       "booking": "B34 status=VISITED date=2026-10-04 slot=14:00 party=5",
-      "labels": { "intent": "feedback", "language": "en" }
+      "labels": {
+        "intent": "feedback",
+        "language": "en"
+      }
     },
     {
       "id": "fr-feedback-complaint",
       "text": "Bonjour, la visite était intéressante mais beaucoup trop longue pour les enfants, et il n'y avait pas d'ombre pour attendre. Dommage.",
       "booking": "none",
-      "labels": { "intent": "feedback", "language": "fr" }
+      "labels": {
+        "intent": "feedback",
+        "language": "fr"
+      }
     },
     {
       "id": "en-spam-seo",
       "text": "Dear Sir/Madam,\n\nWe can get your website on the first page of Google in 30 days! Reply today for a FREE SEO audit.\n\nBest regards,\nDigital Growth Team",
       "booking": "none",
-      "labels": { "intent": "unknown", "language": "en" }
+      "labels": {
+        "intent": "unknown",
+        "language": "en"
+      }
     },
     {
       "id": "en-spam-prize",
       "text": "Congratulations!!! Your email was selected to receive a $1,000 gift card. Claim it within 24 hours: http://bit.ly/claim-prize-now",
       "booking": "none",
-      "labels": { "intent": "unknown", "language": "en" }
+      "labels": {
+        "intent": "unknown",
+        "language": "en"
+      }
     },
     {
       "id": "gibberish",
       "text": "asdf jkl; qwer",
       "booking": "none",
-      "labels": { "intent": "unknown" },
+      "labels": {
+        "intent": "unknown"
+      },
       "note": "No language to score."
     },
     {
       "id": "en-wrong-recipient",
       "text": "Hi Mum, I'll be home late tonight, don't wait for me for dinner. Love, Sarah",
       "booking": "none",
-      "labels": { "intent": "unknown", "language": "en" }
+      "labels": {
+        "intent": "unknown",
+        "language": "en"
+      }
     },
     {
       "id": "de-out-of-office",
       "text": "Vielen Dank für Ihre Nachricht. Ich bin bis einschließlich 12. Oktober nicht im Büro und habe keinen Zugriff auf meine E-Mails. In dringenden Fällen wenden Sie sich bitte an meine Kollegin.",
       "booking": "none",
-      "labels": { "intent": "unknown", "language": "de" },
+      "labels": {
+        "intent": "unknown",
+        "language": "de"
+      },
       "note": "An auto-reply: the date in it is not a booking."
+    },
+    {
+      "id": "en-offer-accept",
+      "text": "Yes, Saturday the 17th works for us. See you then!\n\nAnna",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "labels": {
+        "intent": {
+          "any_of": ["booking_request", "modify"]
+        },
+        "language": "en",
+        "entities": {
+          "date_from": {
+            "any_of": ["2026-10-17", null]
+          },
+          "party_size": {
+            "any_of": [2, null]
+          },
+          "slot": {
+            "any_of": ["09:00", null]
+          }
+        },
+        "missing": [],
+        "accepts_offer": true
+      },
+      "note": "A reply to the date Noor offered. Only an explicit yes may confirm it."
+    },
+    {
+      "id": "fr-offer-accept",
+      "text": "Parfait, le samedi 17 nous convient très bien. Merci beaucoup !\nCamille",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "labels": {
+        "intent": {
+          "any_of": ["booking_request", "modify"]
+        },
+        "language": "fr",
+        "entities": {
+          "date_from": {
+            "any_of": ["2026-10-17", null]
+          },
+          "party_size": {
+            "any_of": [2, null]
+          },
+          "slot": {
+            "any_of": ["09:00", null]
+          }
+        },
+        "missing": [],
+        "accepts_offer": true
+      },
+      "note": "A reply to the date Noor offered. Only an explicit yes may confirm it."
+    },
+    {
+      "id": "ja-offer-accept",
+      "text": "17日（土）で大丈夫です。よろしくお願いします。",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "labels": {
+        "intent": {
+          "any_of": ["booking_request", "modify"]
+        },
+        "language": "ja",
+        "entities": {
+          "date_from": {
+            "any_of": ["2026-10-17", null]
+          },
+          "party_size": {
+            "any_of": [2, null]
+          },
+          "slot": {
+            "any_of": ["09:00", null]
+          }
+        },
+        "missing": [],
+        "accepts_offer": true
+      },
+      "note": "A reply to the date Noor offered. Only an explicit yes may confirm it."
+    },
+    {
+      "id": "de-offer-refuse",
+      "text": "Hallo Noor,\n\nder 17. passt uns leider nicht. Schade, vielleicht ein andermal.\n\nLena",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "labels": {
+        "intent": {
+          "any_of": ["modify", "booking_request", "cancel"]
+        },
+        "language": "de",
+        "accepts_offer": {
+          "any_of": [false, null]
+        }
+      },
+      "note": "Refusing (or not yet answering) the offered date: false or null both keep the booking unconfirmed; only true would be wrong."
+    },
+    {
+      "id": "sw-offer-refuse",
+      "text": "Samahani Noor, tarehe 17 hatutaweza kuja.",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "labels": {
+        "intent": {
+          "any_of": ["modify", "booking_request", "cancel"]
+        },
+        "language": "sw",
+        "accepts_offer": {
+          "any_of": [false, null]
+        }
+      },
+      "note": "Refusing (or not yet answering) the offered date: false or null both keep the booking unconfirmed; only true would be wrong."
+    },
+    {
+      "id": "es-offer-counter",
+      "text": "Hola Noor, ¿podríamos ir el domingo 18 en lugar del sábado 17? Gracias, Lucía",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "labels": {
+        "intent": "modify",
+        "language": "es",
+        "entities": {
+          "date_from": "2026-10-18",
+          "party_size": {
+            "any_of": [2, null]
+          },
+          "slot": {
+            "any_of": ["09:00", null]
+          }
+        },
+        "missing": [],
+        "accepts_offer": {
+          "any_of": [false, null]
+        }
+      },
+      "note": "A new date instead of the offered one goes back to Noor as a change; it must not confirm the 17th."
+    },
+    {
+      "id": "en-offer-undecided",
+      "text": "Thanks Noor! Let me check with my wife about the 17th and get back to you.",
+      "booking": "B31 status=COUNTER_OFFERED date=2026-10-17 slot=09:00 party=2",
+      "labels": {
+        "intent": {
+          "any_of": ["question", "unknown", "modify", "booking_request"]
+        },
+        "language": "en",
+        "accepts_offer": {
+          "any_of": [false, null]
+        }
+      },
+      "note": "Refusing (or not yet answering) the offered date: false or null both keep the booking unconfirmed; only true would be wrong."
     }
   ]
 }

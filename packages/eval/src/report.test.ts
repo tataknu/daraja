@@ -100,7 +100,7 @@ describe("docs", () => {
       "no booking reaches CONFIRMED unless Noor approved it, or the guest accepted a date Noor herself offered (that acceptance is read by the AI).",
     );
     expect(md).toContain(
-      "Not yet measured: how well the AI reads a guest's answer to a date Noor offered.",
+      "The AI's reading of a guest's answer to a date Noor offered is scored in the guest table (7 written replies).",
     );
     expect(md).toContain("| B14 on a message from Noor's phone | B14 CONFIRMED | pass |");
   });

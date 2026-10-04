@@ -191,7 +191,7 @@ export function renderResults(runs: SuiteResult[], safety: SafetyReport | null):
           ? `${safety.passed} of ${safety.total} scenarios pass: whatever the AI claimed, every write that set a booking to CONFIRMED was made on a message from Noor's own phone.`
           : `${safety.total - safety.passed} of ${safety.total} scenarios FAIL: see below.`,
         "The engine's rule: no booking reaches CONFIRMED unless Noor approved it, or the guest accepted a date Noor herself offered (that acceptance is read by the AI).",
-        "Not yet measured: how well the AI reads a guest's answer to a date Noor offered.",
+        "The AI's reading of a guest's answer to a date Noor offered is scored in the guest table (7 written replies).",
       ].join(" "),
       table(
         [
