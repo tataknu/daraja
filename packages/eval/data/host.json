@@ -1,0 +1,146 @@
+{
+  "today": "2026-10-05",
+  "slots": ["09:00", "14:00"],
+  "cases": [
+    {
+      "id": "sw-approve-welcome",
+      "text": "Sawa, wakaribishwe Jumamosi.",
+      "open": [{ "booking": "B14", "kind": "approve_booking" }],
+      "labels": { "intent": "approve", "booking": "B14" },
+      "note": "\"OK, let them be welcome on Saturday.\""
+    },
+    {
+      "id": "sw-other-day-in-words",
+      "text": "Tarehe 20 itafaa zaidi.",
+      "open": [{ "booking": "B21", "kind": "ask_other_date" }],
+      "labels": { "intent": "propose_other_date", "booking": "B21", "proposed_date": "2026-10-20" },
+      "note": "\"The 20th would suit better.\" She pressed 3 and was asked for another day; she answered in words instead of 'B21 2026-10-20'."
+    },
+    {
+      "id": "sw-decline-busy",
+      "text": "Hapana, siku hiyo nina kazi nyingi shambani.",
+      "open": [{ "booking": "B15", "kind": "approve_booking" }],
+      "labels": { "intent": "decline", "booking": "B15" },
+      "note": "\"No, that day I have a lot of work on the farm.\""
+    },
+    {
+      "id": "sw-propose-sunday",
+      "text": "Jumamosi siwezi, lakini Jumapili asubuhi ni sawa.",
+      "open": [{ "booking": "B16", "kind": "approve_booking" }],
+      "labels": {
+        "intent": "propose_other_date",
+        "booking": "B16",
+        "proposed_date": { "any_of": ["2026-10-11", "2026-10-18"] }
+      },
+      "note": "\"Saturday I can't, but Sunday morning is fine.\" The prompt doesn't show the booking's date, so either coming Sunday is accepted."
+    },
+    {
+      "id": "sw-answer-vegetarian",
+      "text": "Ndiyo, tuna chakula cha mboga: wali, maharage na ndizi.",
+      "open": [{ "booking": "B17", "kind": "answer_question" }],
+      "labels": { "intent": "answer_question", "booking": "B17" },
+      "note": "\"Yes, we have vegetarian food: rice, beans and bananas.\""
+    },
+    {
+      "id": "sw-answer-price",
+      "text": "Bei ni shilingi 25,000 kwa kila mtu, watoto nusu bei.",
+      "open": [{ "booking": "B18", "kind": "answer_question" }],
+      "labels": { "intent": "answer_question", "booking": "B18" },
+      "note": "\"The price is 25,000 shillings per person, children half price.\""
+    },
+    {
+      "id": "sw-answer-directions-coded",
+      "text": "B19: wapande daladala hadi Kibosho, nitawasubiri kituoni.",
+      "open": [
+        { "booking": "B19", "kind": "answer_question" },
+        { "booking": "B20", "kind": "approve_booking" }
+      ],
+      "labels": { "intent": "answer_question", "booking": "B19" },
+      "note": "\"B19: take a daladala to Kibosho, I'll wait for them at the stop.\""
+    },
+    {
+      "id": "en-approve",
+      "text": "Yes ok, they can come",
+      "open": [{ "booking": "B24", "kind": "approve_booking" }],
+      "labels": { "intent": "approve", "booking": "B24" }
+    },
+    {
+      "id": "sheng-approve",
+      "text": "Poa, wakuje tu.",
+      "open": [{ "booking": "B25", "kind": "approve_booking" }],
+      "labels": { "intent": "approve", "booking": "B25" },
+      "note": "Sheng: \"Cool, let them come.\""
+    },
+    {
+      "id": "sw-check-tomorrow",
+      "text": "Nitaangalia kesho nikujibu.",
+      "open": [{ "booking": "B26", "kind": "approve_booking" }],
+      "labels": { "intent": "unknown", "booking": { "any_of": ["B26", null] } },
+      "note": "\"I'll check tomorrow and answer you\": not a decision yet."
+    },
+    {
+      "id": "sw-greeting",
+      "text": "Habari za asubuhi",
+      "open": [{ "booking": "B27", "kind": "approve_booking" }],
+      "labels": { "intent": "unknown", "booking": { "any_of": ["B27", null] } },
+      "note": "\"Good morning.\""
+    },
+    {
+      "id": "sw-yes-two-waiting",
+      "text": "Ndiyo, karibuni.",
+      "open": [
+        { "booking": "B28", "kind": "approve_booking" },
+        { "booking": "B29", "kind": "approve_booking" }
+      ],
+      "labels": { "intent": { "any_of": ["approve", "unknown"] }, "booking": null },
+      "note": "\"Yes, welcome.\" Two requests wait and she names neither: guessing one is wrong (the engine then asks her to rephrase)."
+    },
+    {
+      "id": "sw-decline-funeral",
+      "text": "Samahani sana, siku hiyo nina msiba. Siwezi kuwapokea.",
+      "open": [{ "booking": "B30", "kind": "approve_booking" }],
+      "labels": { "intent": "decline", "booking": "B30" },
+      "note": "\"Very sorry, that day there is a funeral. I can't receive them.\""
+    },
+    {
+      "id": "mixed-decline-travel",
+      "text": "Sorry siwezi, niko safari wiki hii yote.",
+      "open": [{ "booking": "B34", "kind": "approve_booking" }],
+      "labels": { "intent": "decline", "booking": "B34" },
+      "note": "\"Sorry I can't, I'm travelling all this week.\""
+    },
+    {
+      "id": "sw-propose-explicit-17",
+      "text": "Wiki hii nimejaa. Waje Jumamosi ijayo, tarehe 17.",
+      "open": [{ "booking": "B35", "kind": "approve_booking" }],
+      "labels": { "intent": "propose_other_date", "booking": "B35", "proposed_date": "2026-10-17" },
+      "note": "\"This week I'm full. Let them come next Saturday, the 17th.\""
+    },
+    {
+      "id": "sw-approve-coded-two-waiting",
+      "text": "B37 ndiyo, wakaribishwe.",
+      "open": [
+        { "booking": "B36", "kind": "approve_booking" },
+        { "booking": "B37", "kind": "approve_booking" }
+      ],
+      "labels": { "intent": "approve", "booking": "B37" }
+    },
+    {
+      "id": "sw-yes-that-answers-question",
+      "text": "Ndiyo, watoto chini ya miaka 5 hawalipi.",
+      "open": [
+        { "booking": "B38", "kind": "approve_booking" },
+        { "booking": "B39", "kind": "answer_question" }
+      ],
+      "labels": { "intent": "answer_question", "booking": "B39" },
+      "note": "\"Yes, children under 5 don't pay.\" Starts with \"yes\" but answers B39's question about children; it does not approve B38."
+    },
+    {
+      "id": "sw-propose-coded-date",
+      "text": "B44 siwezi tarehe hiyo, waje tarehe 24 Oktoba.",
+      "open": [{ "booking": "B44", "kind": "approve_booking" }],
+      "labels": { "intent": "propose_other_date", "booking": "B44", "proposed_date": "2026-10-24" },
+      "note": "\"B44 I can't that date, let them come on 24 October.\""
+    }
+  ]
+}

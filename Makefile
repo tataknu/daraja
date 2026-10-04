@@ -20,7 +20,7 @@ WITH_ENV  := set -a && . ./$(ENV_LOCAL) && set +a &&
 
 .DEFAULT_GOAL := help
 .PHONY: help setup install env db-up db-down db-status db-migrate db-reset dev test lint format check build \
-        deploy-local e2e e2e-worker clean require-env require-docker
+        deploy-local e2e e2e-worker eval clean require-env require-docker
 
 help: ## List targets
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
@@ -90,6 +90,11 @@ e2e: require-env ## End-to-end through the real webhooks, against a fresh dev se
 e2e-worker: build ## Same end-to-end test against the built Worker in workerd
 	grep -v '^VITE_\|^#' $(ENV_LOCAL) > $(WORKER)/.dev.vars
 	node scripts/e2e-local.mjs --serve worker
+
+# ---- evaluation --------------------------------------------------------------------------------
+
+eval: ## Score the AI on labelled data (docs/eval.md); cached, prints the paid calls first. ARGS="--help"
+	$(BUN) run eval $(ARGS)
 
 # Deletes only these build folders, by absolute path inside this repo.
 CLEAN_PATHS := $(CURDIR)/apps/web/.output $(CURDIR)/apps/web/.wrangler $(CURDIR)/apps/web/.turbo $(CURDIR)/.turbo

@@ -37,3 +37,6 @@ dist-ssr
 # Supabase CLI local state
 packages/db/supabase/.branches
 packages/db/supabase/.temp
+
+# Eval cache: model answers, never paid for twice (packages/eval)
+packages/eval/results/.cache/

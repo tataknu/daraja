@@ -1,0 +1,520 @@
+{
+  "today": "2026-10-05",
+  "slots": ["09:00", "14:00"],
+  "cases": [
+    {
+      "id": "de-saturday-three-morning",
+      "text": "Hallo Noor,\n\nwir sind zu dritt und würden am Samstag gerne vormittags Ihre Kaffeefarm besuchen. Geht das?\n\nViele Grüße\nLena",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "de",
+        "entities": { "date_from": "2026-10-10", "party_size": 3, "slot": "09:00" },
+        "missing": []
+      },
+      "note": "\"zu dritt\" is three people; \"am Samstag\" is the coming Saturday."
+    },
+    {
+      "id": "ja-next-week-saturday-family",
+      "text": "はじめまして。来週の土曜日の午後、家族4人でコーヒー農園ツアーに参加したいです。よろしくお願いいたします。\n佐藤",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "ja",
+        "entities": { "date_from": "2026-10-17", "party_size": 4, "slot": "14:00" },
+        "missing": []
+      },
+      "note": "来週の土曜日 is Saturday of next calendar week (17 Oct), not this Saturday."
+    },
+    {
+      "id": "en-two-adults-three-children",
+      "text": "Hi there!\n\nTwo adults and three children (6, 9 and 12) would love to join the coffee tour next Saturday. Is there a minimum age for the kids?\n\nThanks,\nMark",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "en",
+        "entities": {
+          "date_from": { "any_of": ["2026-10-10", "2026-10-17"] },
+          "party_size": 5,
+          "slot": null
+        },
+        "missing": []
+      },
+      "note": "\"next Saturday\" said on a Monday can mean the 10th or the 17th. The age question is secondary to the booking."
+    },
+    {
+      "id": "fr-explicit-date-four-afternoon",
+      "text": "Bonjour,\n\nNous serons quatre et aimerions visiter la plantation le samedi 17 octobre, l'après-midi si possible.\n\nCordialement,\nCamille Dubois",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "fr",
+        "entities": { "date_from": "2026-10-17", "party_size": 4, "slot": "14:00" },
+        "missing": []
+      }
+    },
+    {
+      "id": "es-proximo-sabado-couple",
+      "text": "¡Hola Noor! Mi pareja y yo queremos hacer el tour del café el próximo sábado por la mañana. ¿Hay sitio? Gracias, Lucía",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "es",
+        "entities": {
+          "date_from": { "any_of": ["2026-10-10", "2026-10-17"] },
+          "party_size": 2,
+          "slot": "09:00"
+        },
+        "missing": []
+      },
+      "note": "\"el próximo sábado\" is as ambiguous as \"next Saturday\"."
+    },
+    {
+      "id": "nl-group-of-twelve",
+      "text": "Goedemiddag,\n\nWij zijn een groep van 12 collega's en willen graag aanstaande zaterdag 's ochtends de koffietour doen. Kan dat met zo'n grote groep?\n\nMet vriendelijke groet,\nPieter",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "nl",
+        "entities": { "date_from": "2026-10-10", "party_size": 12, "slot": "09:00" },
+        "missing": []
+      },
+      "note": "\"aanstaande zaterdag\" is the coming Saturday. 12 is over the 8-per-slot limit: the AI must still say 12, code flags the capacity."
+    },
+    {
+      "id": "it-sabato-prossimo-no-size",
+      "text": "Buongiorno! Vorremmo visitare la vostra piantagione di caffè sabato prossimo. Avete posto? Grazie, Giulia",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "it",
+        "entities": {
+          "date_from": { "any_of": ["2026-10-10", "2026-10-17"] },
+          "party_size": null,
+          "slot": null
+        },
+        "missing": ["party_size"]
+      },
+      "note": "\"Vorremmo\" (we would like) gives no number of people."
+    },
+    {
+      "id": "pt-date-slash-three-friends",
+      "text": "Olá! Somos três amigos e gostaríamos de fazer a visita no dia 24/10, de manhã. Obrigado! João",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "pt",
+        "entities": { "date_from": "2026-10-24", "party_size": 3, "slot": "09:00" },
+        "missing": []
+      }
+    },
+    {
+      "id": "sw-jumamosi-hii-two",
+      "text": "Habari Noor, sisi ni watu wawili. Tungependa kutembelea shamba lako la kahawa Jumamosi hii asubuhi. Asante, Amani",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "sw",
+        "entities": { "date_from": "2026-10-10", "party_size": 2, "slot": "09:00" },
+        "missing": []
+      },
+      "note": "\"Jumamosi hii\" is this Saturday; \"watu wawili\" two people; \"asubuhi\" morning."
+    },
+    {
+      "id": "zh-next-week-saturday-six",
+      "text": "您好！我们一共六个人，想在下周六下午参观您的咖啡农场，请问可以吗？谢谢！王伟",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "zh",
+        "entities": { "date_from": "2026-10-17", "party_size": 6, "slot": "14:00" },
+        "missing": []
+      },
+      "note": "下周六 is Saturday of next week (17 Oct)."
+    },
+    {
+      "id": "ar-coming-saturday-family-five",
+      "text": "مرحباً، نحن عائلة من خمسة أشخاص ونرغب في زيارة مزرعة القهوة يوم السبت القادم صباحاً. شكراً، أحمد",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "ar",
+        "entities": {
+          "date_from": { "any_of": ["2026-10-10", "2026-10-17"] },
+          "party_size": 5,
+          "slot": "09:00"
+        },
+        "missing": []
+      },
+      "note": "\"السبت القادم\" (the coming Saturday) is usually the 10th but can be read as the 17th."
+    },
+    {
+      "id": "ko-explicit-date-three-adults",
+      "text": "안녕하세요. 10월 15일 오전에 성인 3명 커피 농장 투어를 예약하고 싶습니다. 감사합니다.",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "ko",
+        "entities": { "date_from": "2026-10-15", "party_size": 3, "slot": "09:00" },
+        "missing": []
+      }
+    },
+    {
+      "id": "en-telegraphic",
+      "text": "Sat 2 ppl morning?",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "en",
+        "entities": { "date_from": "2026-10-10", "party_size": 2, "slot": "09:00" },
+        "missing": []
+      },
+      "note": "Very short. \"Sat\" is the coming Saturday."
+    },
+    {
+      "id": "de-five-adults-no-date",
+      "text": "Guten Tag,\n\nwir sind fünf Erwachsene und interessieren uns für eine Führung auf Ihrer Kaffeefarm. Wann wäre das möglich?\n\nFreundliche Grüße\nThomas Becker",
+      "booking": "none",
+      "labels": {
+        "intent": { "any_of": ["booking_request", "question"] },
+        "language": "de",
+        "entities": { "date_from": null, "party_size": 5, "slot": null },
+        "missing": { "any_of": [["date_from"], []] }
+      },
+      "note": "Asks when a visit would be possible: a request without a date, or a question."
+    },
+    {
+      "id": "en-tomorrow-solo-afternoon",
+      "text": "Hello, I'm travelling on my own and would like to join the afternoon tour tomorrow if there's space. Best, Sam",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "en",
+        "entities": { "date_from": "2026-10-06", "party_size": 1, "slot": "14:00" },
+        "missing": []
+      }
+    },
+    {
+      "id": "mixed-fr-en-sunday-baby",
+      "text": "Hi Noor! On est en vacances à Moshi, we are 3 adults + 1 bébé. Could we come dimanche matin? Merci beaucoup!",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": { "any_of": ["fr", "en"] },
+        "entities": {
+          "date_from": "2026-10-11",
+          "party_size": { "any_of": [3, 4] },
+          "slot": "09:00"
+        },
+        "missing": []
+      },
+      "note": "French and English mixed; whether the baby counts is open."
+    },
+    {
+      "id": "mixed-sw-en-sheng",
+      "text": "Mambo Noor! Tunataka ku-book coffee tour next Saturday, tuko watu 4. Afternoon itakuwa poa. Asante!",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": { "any_of": ["sw", "en"] },
+        "entities": {
+          "date_from": { "any_of": ["2026-10-10", "2026-10-17"] },
+          "party_size": 4,
+          "slot": "14:00"
+        },
+        "missing": []
+      },
+      "note": "Swahili and English mixed, Sheng style."
+    },
+    {
+      "id": "de-dotted-date-2pm",
+      "text": "Sehr geehrte Damen und Herren,\n\nhiermit möchte ich für den 12.10. eine Kaffeeführung für 2 Personen um 14 Uhr anfragen.\n\nMit freundlichen Grüßen\nKarin Weber",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "de",
+        "entities": { "date_from": "2026-10-12", "party_size": 2, "slot": "14:00" },
+        "missing": []
+      }
+    },
+    {
+      "id": "en-long-email",
+      "text": "Dear Noor,\n\nI hope this message finds you well. My name is Priya and I'm writing from Bangalore. My husband and I visited a tea estate in Munnar last year and loved it so much that we promised ourselves we would see a coffee farm on our next big trip, and a friend who stayed in Moshi in 2024 told us your tour was the highlight of her whole holiday.\n\nWe land at Kilimanjaro airport on the 19th, spend a few days on safari, and fly home on the 25th. My parents are travelling with us; they are both in their seventies and walk slowly, so a morning visit before it gets hot would suit them best. We would also love to buy some beans to take home, if that's possible.\n\nSo, to put it simply: could the four of us (my parents, my husband and I) visit on Thursday 22 October, in the morning?\n\nWith warm regards,\nPriya",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "en",
+        "entities": { "date_from": "2026-10-22", "party_size": 4, "slot": "09:00" },
+        "missing": []
+      },
+      "note": "Distracting dates (19th, 25th, 2024) and numbers; the request is in the last paragraph."
+    },
+    {
+      "id": "en-around-10am",
+      "text": "Hi! Could we book for Sunday 18 October around 10am? We're two. Cheers, Tom",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "en",
+        "entities": {
+          "date_from": "2026-10-18",
+          "party_size": 2,
+          "slot": { "any_of": ["09:00", null] }
+        },
+        "missing": []
+      },
+      "note": "10am is not a tour time: the morning slot or none are both fine."
+    },
+    {
+      "id": "en-availability-question",
+      "text": "Do you have space for 6 people this Saturday afternoon?",
+      "booking": "none",
+      "labels": {
+        "intent": { "any_of": ["booking_request", "question"] },
+        "language": "en",
+        "entities": { "date_from": "2026-10-10", "party_size": 6, "slot": "14:00" },
+        "missing": []
+      },
+      "note": "An availability question that is in effect a request."
+    },
+    {
+      "id": "en-returning-guest-feedback-and-booking",
+      "text": "Hi Noor, we came last year and absolutely loved the roasting session! We'd like to come back with friends this time: 6 of us on Sunday 25 October, in the morning please.",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "en",
+        "entities": { "date_from": "2026-10-25", "party_size": 6, "slot": "09:00" },
+        "missing": []
+      },
+      "note": "Praise and a booking: the main purpose is the booking."
+    },
+    {
+      "id": "sw-day-after-tomorrow",
+      "text": "Shikamoo Noor. Tutakuja kesho kutwa mchana, tuko watatu. Je, inawezekana?",
+      "booking": "none",
+      "labels": {
+        "intent": "booking_request",
+        "language": "sw",
+        "entities": { "date_from": "2026-10-07", "party_size": 3, "slot": "14:00" },
+        "missing": []
+      },
+      "note": "\"kesho kutwa\" is the day after tomorrow; \"mchana\" the afternoon; \"watatu\" three."
+    },
+    {
+      "id": "de-modify-move-to-sunday",
+      "text": "Hallo Noor,\n\nkönnten wir unseren Besuch auf Sonntag verschieben? Gleiche Uhrzeit, gleiche Personenzahl.\n\nDanke!\nLena",
+      "booking": "B21 status=PENDING_NOOR date=2026-10-10 slot=09:00 party=3",
+      "labels": {
+        "intent": "modify",
+        "language": "de",
+        "entities": {
+          "date_from": "2026-10-11",
+          "party_size": { "any_of": [3, null] },
+          "slot": { "any_of": ["09:00", null] }
+        },
+        "missing": []
+      },
+      "note": "Unchanged fields may be repeated or left empty: the engine keeps the booking's values."
+    },
+    {
+      "id": "en-modify-party-size",
+      "text": "Hi Noor, small change: two friends will join us, so we'll be 4 instead of 2. Same day and time. Thanks! Emma",
+      "booking": "B22 status=CONFIRMED date=2026-10-17 slot=14:00 party=2",
+      "labels": {
+        "intent": "modify",
+        "language": "en",
+        "entities": {
+          "date_from": { "any_of": ["2026-10-17", null] },
+          "party_size": 4,
+          "slot": { "any_of": ["14:00", null] }
+        },
+        "missing": []
+      }
+    },
+    {
+      "id": "fr-modify-afternoon",
+      "text": "Bonjour Noor, finalement nous préférerions venir l'après-midi plutôt que le matin, le même jour. Merci ! Camille",
+      "booking": "B23 status=PENDING_NOOR date=2026-10-15 slot=09:00 party=2",
+      "labels": {
+        "intent": "modify",
+        "language": "fr",
+        "entities": {
+          "date_from": { "any_of": ["2026-10-15", null] },
+          "party_size": { "any_of": [2, null] },
+          "slot": "14:00"
+        },
+        "missing": []
+      }
+    },
+    {
+      "id": "es-modify-explicit-date",
+      "text": "Hola Noor, ¿podemos cambiar nuestra reserva B24 al sábado 24 de octubre? Seguimos siendo cuatro, por la mañana. Gracias, Lucía",
+      "booking": "B24 status=CONFIRMED date=2026-10-10 slot=09:00 party=4",
+      "labels": {
+        "intent": "modify",
+        "language": "es",
+        "entities": {
+          "date_from": "2026-10-24",
+          "party_size": { "any_of": [4, null] },
+          "slot": { "any_of": ["09:00", null] }
+        },
+        "missing": []
+      }
+    },
+    {
+      "id": "sw-modify-to-friday",
+      "text": "Samahani Noor, tunaomba kubadilisha siku kutoka Jumamosi kuwa Ijumaa, saa ile ile. Asante.",
+      "booking": "B25 status=PENDING_NOOR date=2026-10-10 slot=14:00 party=2",
+      "labels": {
+        "intent": "modify",
+        "language": "sw",
+        "entities": {
+          "date_from": "2026-10-09",
+          "party_size": { "any_of": [2, null] },
+          "slot": { "any_of": ["14:00", null] }
+        },
+        "missing": []
+      },
+      "note": "Ijumaa (Friday) before the booked Saturday is 9 Oct; \"saa ile ile\" the same time."
+    },
+    {
+      "id": "ja-modify-fewer-people",
+      "text": "すみません、人数が4人から3人に変わりました。日時はそのままでお願いします。",
+      "booking": "B26 status=PENDING_NOOR date=2026-10-17 slot=14:00 party=4",
+      "labels": {
+        "intent": "modify",
+        "language": "ja",
+        "entities": {
+          "date_from": { "any_of": ["2026-10-17", null] },
+          "party_size": 3,
+          "slot": { "any_of": ["14:00", null] }
+        },
+        "missing": []
+      }
+    },
+    {
+      "id": "de-cancel-sick-child",
+      "text": "Liebe Noor,\n\nleider müssen wir unseren Besuch am Samstag absagen, unsere Tochter ist krank geworden. Es tut uns sehr leid!\n\nLena",
+      "booking": "B27 status=CONFIRMED date=2026-10-10 slot=09:00 party=3",
+      "labels": { "intent": "cancel", "language": "de" }
+    },
+    {
+      "id": "en-cancel-code",
+      "text": "Please cancel B28. Sorry!",
+      "booking": "B28 status=PENDING_NOOR date=2026-10-17 slot=14:00 party=2",
+      "labels": { "intent": "cancel", "language": "en" }
+    },
+    {
+      "id": "zh-cancel",
+      "text": "不好意思，我们的行程有变，下周六的参观只能取消了。谢谢理解！",
+      "booking": "B30 status=PENDING_NOOR date=2026-10-17 slot=14:00 party=6",
+      "labels": { "intent": "cancel", "language": "zh" }
+    },
+    {
+      "id": "ru-cancel",
+      "text": "Здравствуйте! К сожалению, мы не сможем приехать 24 октября. Пожалуйста, отмените нашу бронь. Спасибо, Ольга",
+      "booking": "B31 status=CONFIRMED date=2026-10-24 slot=09:00 party=2",
+      "labels": { "intent": "cancel", "language": "ru" }
+    },
+    {
+      "id": "en-cancel-without-booking",
+      "text": "Hi, I need to cancel my coffee tour booking. Thanks, Mike",
+      "booking": "none",
+      "labels": { "intent": "cancel", "language": "en" },
+      "note": "No booking on file: still a cancellation (the engine answers that it found none)."
+    },
+    {
+      "id": "de-question-price-card",
+      "text": "Guten Tag, wie viel kostet die Führung pro Person? Und kann man vor Ort mit Karte bezahlen? Danke!",
+      "booking": "none",
+      "labels": { "intent": "question", "language": "de" }
+    },
+    {
+      "id": "en-question-directions",
+      "text": "Hi Noor, how do we get to the farm from Moshi town? Is there public transport, or should we take a taxi? Thanks!",
+      "booking": "none",
+      "labels": { "intent": "question", "language": "en" }
+    },
+    {
+      "id": "fr-question-vegetarian",
+      "text": "Bonjour Noor, y aura-t-il quelque chose à manger pendant la visite ? Notre fille est végétarienne. Merci ! Camille",
+      "booking": "B32 status=CONFIRMED date=2026-10-17 slot=09:00 party=4",
+      "labels": { "intent": "question", "language": "fr" }
+    },
+    {
+      "id": "ja-question-language",
+      "text": "ツアーは英語で行われますか？日本語のガイドはいますか？",
+      "booking": "none",
+      "labels": { "intent": "question", "language": "ja" }
+    },
+    {
+      "id": "es-question-baby",
+      "text": "Hola, ¿pueden participar niños pequeños en el tour? Tenemos un bebé de un año y no sabemos si el camino es apto para un carrito.",
+      "booking": "none",
+      "labels": { "intent": "question", "language": "es" }
+    },
+    {
+      "id": "ar-question-price-tasting",
+      "text": "مرحباً، كم سعر الجولة للشخص الواحد؟ وهل تشمل تذوق القهوة؟",
+      "booking": "none",
+      "labels": { "intent": "question", "language": "ar" }
+    },
+    {
+      "id": "sw-question-parking",
+      "text": "Habari, je kuna sehemu ya kuegesha gari shambani? Tutakuja na gari letu wenyewe.",
+      "booking": "none",
+      "labels": { "intent": "question", "language": "sw" }
+    },
+    {
+      "id": "de-feedback-roasting",
+      "text": "Liebe Noor,\n\nvielen Dank für den wunderbaren Vormittag! Das Rösten der Bohnen war unser Highlight, und Ihr Kaffee ist der beste, den wir je getrunken haben. Nur den Weg zur Farm haben wir schwer gefunden.\n\nHerzliche Grüße\nLena",
+      "booking": "B33 status=FEEDBACK_REQUESTED date=2026-10-03 slot=09:00 party=3",
+      "labels": { "intent": "feedback", "language": "de" }
+    },
+    {
+      "id": "en-feedback-short",
+      "text": "Amazing tour, thank you Noor! The kids loved picking the coffee cherries.",
+      "booking": "B34 status=VISITED date=2026-10-04 slot=14:00 party=5",
+      "labels": { "intent": "feedback", "language": "en" }
+    },
+    {
+      "id": "fr-feedback-complaint",
+      "text": "Bonjour, la visite était intéressante mais beaucoup trop longue pour les enfants, et il n'y avait pas d'ombre pour attendre. Dommage.",
+      "booking": "none",
+      "labels": { "intent": "feedback", "language": "fr" }
+    },
+    {
+      "id": "en-spam-seo",
+      "text": "Dear Sir/Madam,\n\nWe can get your website on the first page of Google in 30 days! Reply today for a FREE SEO audit.\n\nBest regards,\nDigital Growth Team",
+      "booking": "none",
+      "labels": { "intent": "unknown", "language": "en" }
+    },
+    {
+      "id": "en-spam-prize",
+      "text": "Congratulations!!! Your email was selected to receive a $1,000 gift card. Claim it within 24 hours: http://bit.ly/claim-prize-now",
+      "booking": "none",
+      "labels": { "intent": "unknown", "language": "en" }
+    },
+    {
+      "id": "gibberish",
+      "text": "asdf jkl; qwer",
+      "booking": "none",
+      "labels": { "intent": "unknown" },
+      "note": "No language to score."
+    },
+    {
+      "id": "en-wrong-recipient",
+      "text": "Hi Mum, I'll be home late tonight, don't wait for me for dinner. Love, Sarah",
+      "booking": "none",
+      "labels": { "intent": "unknown", "language": "en" }
+    },
+    {
+      "id": "de-out-of-office",
+      "text": "Vielen Dank für Ihre Nachricht. Ich bin bis einschließlich 12. Oktober nicht im Büro und habe keinen Zugriff auf meine E-Mails. In dringenden Fällen wenden Sie sich bitte an meine Kollegin.",
+      "booking": "none",
+      "labels": { "intent": "unknown", "language": "de" },
+      "note": "An auto-reply: the date in it is not a booking."
+    }
+  ]
+}

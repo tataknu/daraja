@@ -1,0 +1,23 @@
+{
+  "name": "@daraja/eval",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "eval": "bun src/run.ts"
+  },
+  "dependencies": {
+    "@daraja/engine": "workspace:*"
+  },
+  "devDependencies": {
+    "@daraja/eslint-config": "workspace:*",
+    "@daraja/typescript-config": "workspace:*",
+    "@types/node": "^22.16.5",
+    "eslint": "^9.32.0",
+    "prettier": "^3.7.3",
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.10"
+  }
+}

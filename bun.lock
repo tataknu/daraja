@@ -92,6 +92,21 @@
         "eslint": "^9.32.0",
       },
     },
+    "packages/eval": {
+      "name": "@daraja/eval",
+      "dependencies": {
+        "@daraja/engine": "workspace:*",
+      },
+      "devDependencies": {
+        "@daraja/eslint-config": "workspace:*",
+        "@daraja/typescript-config": "workspace:*",
+        "@types/node": "^22.16.5",
+        "eslint": "^9.32.0",
+        "prettier": "^3.7.3",
+        "typescript": "^5.8.3",
+        "vitest": "^4.1.10",
+      },
+    },
     "packages/typescript-config": {
       "name": "@daraja/typescript-config",
     },
@@ -181,6 +196,8 @@
     "@daraja/engine": ["@daraja/engine@workspace:packages/engine"],
 
     "@daraja/eslint-config": ["@daraja/eslint-config@workspace:packages/eslint-config"],
+
+    "@daraja/eval": ["@daraja/eval@workspace:packages/eval"],
 
     "@daraja/typescript-config": ["@daraja/typescript-config@workspace:packages/typescript-config"],
 
