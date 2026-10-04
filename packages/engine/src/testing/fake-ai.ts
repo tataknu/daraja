@@ -5,6 +5,8 @@ import type {
   AiUsage,
   GuestClassification,
   HostClassification,
+  IdeaGroups,
+  InsightsSms,
   ReviewAnalysis,
   UsageListener,
 } from "../ai/types";
@@ -57,6 +59,17 @@ export function reviewSays(overrides: Partial<ReviewAnalysis> = {}): ReviewAnaly
   };
 }
 
+/** Ideas grouped by identical text: the fake's idea of "the same meaning". */
+function groupsByText(ideas: { id: string; idea: string }[]): IdeaGroups {
+  const groups = new Map<string, IdeaGroups["groups"][number]>();
+  for (const { id, idea } of ideas) {
+    const g = groups.get(idea) ?? { label_en: idea, label_sw: `[sw] ${idea}`, ids: [] };
+    g.ids.push(id);
+    groups.set(idea, g);
+  }
+  return { groups: [...groups.values()] };
+}
+
 /** Every fake call reports this usage, so metering can be tested. */
 export const FAKE_USAGE = {
   input_tokens: 100,
@@ -70,6 +83,8 @@ export function fakeAi() {
   const guest: (GuestClassification | Error)[] = [];
   const host: (HostClassification | Error)[] = [];
   const reviews: (ReviewAnalysis | Error)[] = [];
+  const ideaGroups: (IdeaGroups | Error)[] = [];
+  const sms: (InsightsSms | Error)[] = [];
   const next = <T>(queue: (T | Error)[], what: string): T => {
     const item = queue.shift();
     if (!item) throw new Error(`fakeAi: no scripted ${what}`);
@@ -90,27 +105,23 @@ export function fakeAi() {
       classifyHost: async () => used("classify_host", next(host, "host classification")),
       translate: async (text, from, to) =>
         from === to ? text : used("translate", `[${to}] ${text}`),
-      analyzeFeedback: async (text) =>
-        used("analyze_feedback", {
-          translation_en: `[en] ${text}`,
-          themes: ["roasting"],
-          sentiment: "positive" as const,
-        }),
-      summarizeFeedback: async () =>
-        used("summarize_feedback", {
-          lines: ["Wageni wanapenda kuchoma kahawa.", "Boresha: alama barabarani."],
-        }),
       analyzeReview: async () =>
         used("analyze_review", reviews.length ? next(reviews, "review analysis") : reviewSays()),
       groupIdeas: async (ideas) =>
-        used("group_ideas", {
-          groups: ideas.map((i) => ({ label_en: i.idea, label_sw: i.idea, ids: [i.id] })),
-        }),
+        used(
+          "group_ideas",
+          ideaGroups.length ? next(ideaGroups, "idea groups") : groupsByText(ideas),
+        ),
       writeInsightsSms: async () =>
-        used("write_insights_sms", {
-          lines_sw: ["Wageni wanapenda kuchoma kahawa."],
-          lines_en: ["Visitors love roasting coffee."],
-        }),
+        used(
+          "write_insights_sms",
+          sms.length
+            ? next(sms, "insights SMS")
+            : {
+                lines_sw: ["Wageni wanapenda kuchoma kahawa."],
+                lines_en: ["Visitors love roasting coffee."],
+              },
+        ),
     };
   };
   const ai = make();
@@ -122,5 +133,9 @@ export function fakeAi() {
     host: (c: HostClassification | Error) => host.push(c),
     /** Queue the analysis of the next review (default: reviewSays()). */
     review: (r: ReviewAnalysis | Error) => reviews.push(r),
+    /** Queue the next grouping of ideas (default: groupsByText()). */
+    ideaGroups: (g: IdeaGroups | Error) => ideaGroups.push(g),
+    /** Queue the next insights SMS (default: one line about roasting). */
+    sms: (s: InsightsSms | Error) => sms.push(s),
   };
 }

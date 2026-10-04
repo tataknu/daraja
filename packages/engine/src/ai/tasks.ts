@@ -1,14 +1,7 @@
 // The AI tasks the engine uses. Each keeps its prompt and output schema together; the transport
 // is passed in, so the same tasks run on Lovable's gateway, OpenAI, or a test fake.
 import { analyzeReview, groupIdeas, writeInsightsSms } from "./review-tasks";
-import type {
-  Ai,
-  CallTool,
-  FeedbackAnalysis,
-  GuestClassification,
-  HostClassification,
-  UsageListener,
-} from "./types";
+import type { Ai, CallTool, GuestClassification, HostClassification, UsageListener } from "./types";
 
 export async function classifyGuest(
   call: CallTool,
@@ -100,39 +93,6 @@ export async function translate(
   return r.translation;
 }
 
-export async function analyzeFeedback(call: CallTool, text: string): Promise<FeedbackAnalysis> {
-  return call<FeedbackAnalysis>(
-    "Analyse guest feedback for a coffee-farm tour. Give an English translation, 1-4 short lowercase themes, and sentiment.",
-    text,
-    "analyze_feedback",
-    {
-      type: "object",
-      properties: {
-        translation_en: { type: "string" },
-        themes: { type: "array", items: { type: "string" } },
-        sentiment: { type: "string", enum: ["positive", "neutral", "negative"] },
-      },
-      required: ["translation_en", "themes", "sentiment"],
-    },
-  );
-}
-
-export async function summarizeFeedback(
-  call: CallTool,
-  items: string,
-): Promise<{ lines: string[] }> {
-  return call<{ lines: string[] }>(
-    "Summarise guest feedback for Noor in Swahili: 2-3 lines, each under 160 characters: main themes, then what to improve. Use only the given feedback.",
-    items,
-    "summarize_feedback",
-    {
-      type: "object",
-      properties: { lines: { type: "array", items: { type: "string" } } },
-      required: ["lines"],
-    },
-  );
-}
-
 /** An Ai over any transport. `onUsage` hears about every call; `withUsage` makes a metered copy. */
 export function createAi(transport: CallTool, model: string, onUsage?: UsageListener): Ai {
   const call: CallTool = (system, user, name, parameters) =>
@@ -143,8 +103,6 @@ export function createAi(transport: CallTool, model: string, onUsage?: UsageList
     classifyGuest: (text, ctx) => classifyGuest(call, text, ctx),
     classifyHost: (text, ctx) => classifyHost(call, text, ctx),
     translate: (text, from, to) => translate(call, text, from, to),
-    analyzeFeedback: (text) => analyzeFeedback(call, text),
-    summarizeFeedback: (items) => summarizeFeedback(call, items),
     analyzeReview: (text) => analyzeReview(call, text),
     groupIdeas: (ideas) => groupIdeas(call, ideas),
     writeInsightsSms: (summary) => writeInsightsSms(call, summary),

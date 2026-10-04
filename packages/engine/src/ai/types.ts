@@ -27,12 +27,6 @@ export interface HostClassification {
   answer_text_for_guest: string | null;
 }
 
-export interface FeedbackAnalysis {
-  translation_en: string;
-  themes: string[];
-  sentiment: "positive" | "neutral" | "negative";
-}
-
 /** Aspects of a farm visit a review can talk about. Counted in code, so they are a fixed list. */
 export const ASPECTS = [
   "host", // the host or guide: warmth, knowledge, stories
@@ -117,8 +111,6 @@ export interface Ai {
     ctx: { today: string; openPrompts: string },
   ): Promise<HostClassification>;
   translate(text: string, from: string, to: string): Promise<string>;
-  analyzeFeedback(text: string): Promise<FeedbackAnalysis>;
-  summarizeFeedback(items: string): Promise<{ lines: string[] }>;
   /** One review, any language: what the visitor loved, wished, and suggests. */
   analyzeReview(text: string): Promise<ReviewAnalysis>;
   /** Groups ideas from many reviews by meaning. */

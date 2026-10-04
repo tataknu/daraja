@@ -231,19 +231,25 @@ describe("timers", () => {
 });
 
 describe("feedback and insights", () => {
-  it("saves feedback in any language and summarises it for Noor", async () => {
+  it("analyses feedback in any language and tells Noor what visitors love", async () => {
     const t = setup();
-    expect(await t.engine.monthlyInsights()).toEqual([]);
+    expect((await t.engine.monthlyInsights()).review_count).toBe(0);
     expect(t.toNoor().at(-1)).toBe("Bado hakuna maoni ya wageni mwezi huu.");
 
-    t.script.guest(guestSays({ intent: "feedback", feedback_text: "Die Röstung war toll!" }));
-    await t.engine.handleInbound(t.email("lena@example.de", "Die Röstung war toll!"));
+    const text = "Es war toll, die Bohnen selbst zu rösten!";
+    t.script.guest(guestSays({ intent: "feedback", feedback_text: text }));
+    await t.engine.handleInbound(t.email("lena@example.de", text));
     expect(t.data.feedback).toHaveLength(1);
+    expect(t.data.feedback[0]).toMatchObject({ lang: "de", themes: ["coffee_process"] });
 
-    expect(await t.engine.monthlyInsights()).toHaveLength(2);
-    expect(t.toNoor().slice(-2)).toEqual([
-      "Wageni wanapenda kuchoma kahawa.",
-      "Boresha: alama barabarani.",
-    ]);
+    const report = await t.engine.monthlyInsights();
+    expect(report).toMatchObject({ review_count: 1, sentiment: { positive: 1 } });
+    expect(report.keep[0]).toMatchObject({ key: "coffee_process", count: 1, share: 1 });
+    expect(report.keep[0]?.quotes[0]).toMatchObject({
+      lang: "de",
+      quote: "Bohnen selbst zu rösten",
+    });
+    expect(t.toNoor().at(-1)).toBe("Wageni wanapenda kuchoma kahawa.");
+    expect(t.data.insightReports).toHaveLength(1);
   });
 });

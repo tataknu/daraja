@@ -1,5 +1,6 @@
 // Reviews in: every piece of feedback is analysed once, when it arrives, and stored with what the
 // visitor loved, wished and suggested. The insights report (insights.ts) only counts and quotes.
+import type { ReviewAnalysis } from "./ai/types";
 import type { Ctx } from "./context";
 import type { ReviewInput } from "./types";
 
@@ -10,6 +11,26 @@ export interface IngestedReview {
   language: string;
 }
 
+/** Reviews analysed at the same time during an import. */
+const IMPORT_CONCURRENCY = 4;
+
+/** Lowercase, one space between words, the same quote marks, no punctuation at either end. */
+function normalise(s: string): string {
+  return s
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[‘’‛`´]/g, "'")
+    .replace(/[“”„‟«»]/g, '"')
+    .replace(/\s+/g, " ")
+    .replace(/^[\s\p{P}]+|[\s\p{P}]+$/gu, "");
+}
+
+/** True when `quote` appears in `text`: the AI may only quote what the visitor wrote. */
+export function quoteInText(quote: string, text: string): boolean {
+  const q = normalise(quote);
+  return q.length > 0 && normalise(text).includes(q);
+}
+
 /** Analyses one review and stores it. Never throws on AI failure: the review is kept untranslated. */
 export async function ingestFeedback(
   ctx: Ctx,
@@ -18,26 +39,57 @@ export async function ingestFeedback(
   lang: string,
   source: "guest" | "sample" = "guest",
 ): Promise<IngestedReview> {
-  const a = await ctx.ai
-    .analyzeFeedback(text)
-    .catch(() => ({ translation_en: text, themes: [] as string[], sentiment: "neutral" as const }));
-  const { id } = await ctx.repo.saveFeedback({
-    booking_id: bookingId,
-    text_original: text,
-    lang,
-    text_translated: a.translation_en,
-    themes: a.themes,
-    sentiment: a.sentiment,
-    source,
-  });
-  return { id, sentiment: a.sentiment, language: lang };
+  const analysis = await ctx.ai.analyzeReview(text).catch(() => null);
+  return save(ctx, { bookingId, text, lang, source }, analysis);
 }
 
 /** Imports reviews that didn't arrive by email (a sample set, another platform). */
 export async function importReviews(
-  _ctx: Ctx,
-  _reviews: ReviewInput[],
-  _source: "guest" | "sample",
+  ctx: Ctx,
+  reviews: ReviewInput[],
+  source: "guest" | "sample",
 ): Promise<{ imported: number; analysed: number }> {
-  throw new Error("importReviews is not implemented yet");
+  let analysed = 0;
+  await inParallel(reviews, IMPORT_CONCURRENCY, async (r) => {
+    let analysis = r.analysis ?? null;
+    if (!analysis) {
+      analysed++;
+      analysis = await ctx.ai.analyzeReview(r.text).catch(() => null);
+    }
+    const lang = r.lang ?? analysis?.language ?? "und";
+    await save(ctx, { bookingId: null, text: r.text, lang, source }, analysis);
+  });
+  return { imported: reviews.length, analysed };
+}
+
+/** Stores a review with the points and ideas whose quotes check out; without analysis, as neutral. */
+async function save(
+  ctx: Ctx,
+  review: { bookingId: number | null; text: string; lang: string; source: "guest" | "sample" },
+  analysis: ReviewAnalysis | null,
+): Promise<IngestedReview> {
+  const points = analysis?.points.filter((p) => quoteInText(p.quote, review.text)) ?? [];
+  const ideas = analysis?.ideas.filter((i) => quoteInText(i.quote, review.text)) ?? [];
+  const sentiment = analysis?.sentiment ?? "neutral";
+  const { id } = await ctx.repo.saveFeedback({
+    booking_id: review.bookingId,
+    text_original: review.text,
+    lang: review.lang,
+    text_translated: analysis?.translation_en ?? review.text,
+    themes: [...new Set(points.map((p) => p.aspect))],
+    sentiment,
+    points,
+    ideas,
+    source: review.source,
+  });
+  return { id, sentiment, language: review.lang };
+}
+
+/** Runs `fn` on every item, at most `limit` at a time. */
+async function inParallel<T>(items: T[], limit: number, fn: (item: T) => Promise<void>) {
+  const queue = items.values(); // shared by the workers, so each item is taken once
+  const worker = async () => {
+    for (const item of queue) await fn(item);
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
 }
