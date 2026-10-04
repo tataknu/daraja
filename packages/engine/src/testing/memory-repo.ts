@@ -261,7 +261,16 @@ export function memoryRepo(clock: () => Date) {
       return c ? copy(c) : null;
     },
     async logAiCalls(calls) {
-      data.aiCalls.push(...copy(calls));
+      // As in Postgres with the retry: a link to a booking or message that doesn't exist is dropped.
+      const linked = <T>(id: T | null, rows: { id: T }[]) =>
+        id !== null && rows.some((r) => r.id === id) ? id : null;
+      data.aiCalls.push(
+        ...copy(calls).map((c) => ({
+          ...c,
+          booking_id: linked(c.booking_id, data.bookings),
+          message_id: linked(c.message_id, data.messages),
+        })),
+      );
     },
     async recordReminder(bookingId, kind) {
       const key = `${bookingId}:${kind}`;

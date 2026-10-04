@@ -151,11 +151,15 @@ export function createCallTool(config: GatewayConfig): CallTool {
             continue;
           }
           if (ev.type === "response.output_text.delta") out += ev.delta ?? "";
-          else if (ev.type === "response.completed") usage = ev.response?.usage;
-          else if (ev.type === "error" || ev.type === "response.failed")
+          // An incomplete or failed response is billed too: its usage is reported with the failure.
+          else if (ev.type === "response.completed" || ev.type === "response.incomplete")
+            usage = ev.response?.usage ?? usage;
+          else if (ev.type === "error" || ev.type === "response.failed") {
+            usage = ev.response?.usage ?? usage;
             throw new Error(
               `AI stream error: ${JSON.stringify(ev.error ?? ev.response?.error ?? ev)}`,
             );
+          }
         }
       }
       if (!out) throw new Error("AI returned empty output");

@@ -7,6 +7,7 @@ type Db = typeof supabaseAdmin;
 
 const CLOSED_STATUSES = "(DECLINED,EXPIRED,CANCELLED,CLOSED)";
 const UNIQUE_VIOLATION = "23505";
+const FOREIGN_KEY_VIOLATION = "23503";
 
 export function supabaseRepo(db: Db): Repo {
   return {
@@ -250,9 +251,18 @@ export function supabaseRepo(db: Db): Repo {
       return data;
     },
     async logAiCalls(calls) {
-      if (!calls.length) return;
+      // A call about a booking or message that doesn't exist (Noor's "B99 1 sawa") was still
+      // billed: on a foreign-key error the batch is stored again without the broken link.
+      let rows = calls;
       try {
-        await db.from("ai_calls").insert(calls);
+        for (let attempt = 0; rows.length && attempt < 3; attempt++) {
+          const { error } = await db.from("ai_calls").insert(rows);
+          if (error?.code !== FOREIGN_KEY_VIOLATION) return;
+          const onMessage = `${error.message} ${error.details}`.includes("message_id");
+          rows = rows.map((c) =>
+            onMessage ? { ...c, message_id: null } : { ...c, booking_id: null },
+          );
+        }
       } catch {
         // Usage logging must never break a workflow.
       }

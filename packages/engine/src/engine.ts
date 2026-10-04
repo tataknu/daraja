@@ -22,7 +22,15 @@ export function createEngine(deps: EngineDeps) {
       }
     },
     /** Reminders, expiries and feedback requests that are due at `asOf`. */
-    runTimers: (asOf: Date = deps.now()) => runTimers(createContext(deps), asOf),
+    async runTimers(asOf: Date = deps.now()) {
+      const ctx = createContext(deps);
+      try {
+        return await runTimers(ctx, asOf);
+      } finally {
+        // Each booking's calls are flushed as it is done; this logs what a failed run left.
+        await ctx.flushUsage("timers");
+      }
+    },
     /** Reviews in, the brief's three questions answered, and Noor's SMS sent. */
     async monthlyInsights() {
       const ctx = createContext(deps);

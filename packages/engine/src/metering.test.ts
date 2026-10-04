@@ -5,12 +5,31 @@ import { FAKE_USAGE, fakeAi, guestSays } from "./testing/fake-ai";
 import { NOOR_PHONE, memoryRepo } from "./testing/memory-repo";
 
 function setup() {
-  const clock = () => new Date("2026-10-05T08:00:00Z");
+  let now = new Date("2026-10-05T08:00:00Z");
+  const clock = () => now;
   const { repo, data, noor } = memoryRepo(clock);
   const script = fakeAi();
   const engine = createEngine({ repo, ai: script.ai, now: clock });
-  return { engine, data, script, noor };
+  const advance = (hours: number) => {
+    now = new Date(now.getTime() + hours * 3600e3);
+  };
+  return { engine, repo, data, script, noor, advance };
 }
+
+/** Lena's request for Saturday 10 Oct (B14). */
+const request = (id = "m1") => ({
+  channel: "email" as const,
+  sender: "lena@example.de",
+  sender_name: "Lena Schulz",
+  text: "Hallo! Wir sind 3 Personen und möchten am Samstag morgens kommen.",
+  provider_msg_id: id,
+});
+const noorTexts = (text: string, id: string) => ({
+  channel: "sms" as const,
+  sender: NOOR_PHONE,
+  text,
+  provider_msg_id: id,
+});
 
 describe("AI calls per booking", () => {
   it("classifies the request and writes the guest's two emails; nothing else", async () => {
@@ -89,5 +108,43 @@ describe("AI usage metering", () => {
 
     const ids = new Set(data.messages.filter((m) => m.direction === "in").map((m) => m.id));
     expect(new Set(data.aiCalls.map((c) => c.message_id))).toEqual(ids);
+  });
+
+  it("keeps the usage of Noor's reply about a booking that doesn't exist", async () => {
+    const { engine, data } = setup();
+    await engine.handleInbound(noorTexts("B99 1 sawa", "n1")); // translated: it has words
+
+    const reply = data.messages.find((m) => m.provider_msg_id === "n1");
+    expect(data.aiCalls).toMatchObject([
+      { task: "translate", source: "inbound", message_id: reply?.id, booking_id: null },
+    ]);
+  });
+
+  it("logs each call of a timer run once", async () => {
+    const { engine, data, script, advance } = setup();
+    script.guest(guestSays());
+    await engine.handleInbound(request());
+    await engine.handleInbound(noorTexts("1", "n1"));
+    advance(6 * 24); // past the visit
+
+    expect(await engine.runTimers()).toEqual(["B14 feedback requested"]);
+    const timers = data.aiCalls.filter((c) => c.source === "timers");
+    expect(timers).toMatchObject([{ task: "translate", booking_id: 14, message_id: null }]);
+  });
+
+  it("logs the calls of a timer run that fails half-way", async () => {
+    const { engine, repo, data, script, advance } = setup();
+    script.guest(guestSays());
+    await engine.handleInbound(request());
+    advance(49); // B14 expires: the guest's email is translated, then can't be stored
+    const insert = repo.insertMessage;
+    repo.insertMessage = async (m) => {
+      if (m.direction === "out") throw new Error("outbox down");
+      return insert(m);
+    };
+
+    await expect(engine.runTimers()).rejects.toThrow("outbox down");
+    const timers = data.aiCalls.filter((c) => c.source === "timers");
+    expect(timers).toMatchObject([{ task: "translate", booking_id: 14 }]);
   });
 });
