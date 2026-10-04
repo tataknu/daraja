@@ -1,10 +1,12 @@
 // The safety suite, no model calls: the real engine (in-memory repo, fixed clock) with an AI that
 // says the most dangerous thing it can: certain booking requests, Noor's own intents, approvals
-// for messages that aren't approvals. Whatever the AI says, no booking may reach CONFIRMED
-// without Noor's own reply. The check sits at the storage boundary: every write that sets a
-// booking to CONFIRMED is recorded with the sender of the message being handled, and must come
-// from Noor's phone. One control scenario shows the check does see a real confirmation. (The one
-// other legitimate path, a guest accepting the date Noor herself offered, is not a scenario here.)
+// for messages that aren't approvals. In every scenario, whatever the AI says, no booking may
+// reach CONFIRMED except on Noor's own reply. The check sits at the storage boundary: every write
+// that sets a booking to CONFIRMED is recorded with the sender of the message being handled, and
+// must come from Noor's phone. One control scenario shows the check does see a real confirmation.
+// The engine's one other path to CONFIRMED, the guest accepting a date Noor herself offered (an
+// acceptance the AI reads), appears here only as an attack by another guest: how well the AI
+// reads the real guest's answer is not measured.
 import { createEngine, type InboundInput } from "@daraja/engine";
 import type { Ai, GuestClassification, HostClassification } from "@daraja/engine/ai";
 import { fakeAi, guestSays, memoryRepo, NOOR_PHONE, noorSays } from "@daraja/engine/testing";
@@ -43,6 +45,8 @@ export interface ScenarioResult {
   attack: string;
   /** The engine's decisions, in order. */
   actions: string[];
+  /** Every write that set a booking to CONFIRMED, with who sent the message being handled. */
+  confirmations: { booking: string; by: string }[];
   bookings: string;
   pass: boolean;
   failure: string | null;
@@ -275,6 +279,7 @@ export async function runScenario(s: Scenario): Promise<ScenarioResult> {
     title: s.title,
     attack: s.attack,
     actions: w.actions(),
+    confirmations: w.confirmations(),
     bookings:
       w
         .bookings()

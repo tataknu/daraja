@@ -7,6 +7,7 @@ import type {
   HostClassification,
   ReviewAnalysis,
 } from "@daraja/engine/ai";
+import { callCost, type ModelPrice } from "@daraja/engine/metrics";
 import type { SampleReview } from "@daraja/engine/samples";
 import { MISSING_FIELDS, options, type GuestCase, type HostCase, type OneOf } from "./labels";
 
@@ -82,11 +83,15 @@ export interface GuestScore {
   date_from: boolean | null;
   party_size: boolean | null;
   slot: boolean | null;
+  /** Reported on its own: guest.ts works out what is missing from the fields, not from this list. */
   missing: boolean | null;
-  /** Every scored field right. */
+  /** Intent, language, date, party size and slot: each one labelled for this case is right. */
   exact: boolean;
   confidence: number | null;
-  /** The engine would pass the message to Noor instead of acting on it. */
+  /**
+   * The engine would pass the message to Noor instead of acting on it: the AI is unsure, the
+   * message is not for the farm (intent unknown), or the AI call failed.
+   */
   handoff: boolean;
   /** The engine would act on it, and the intent, date, party size or slot is wrong. */
   wrong_but_confident: boolean;
@@ -117,7 +122,8 @@ export function scoreGuest(
     labels.missing === undefined
       ? null
       : ok && acceptsBy(labels.missing, normMissing(out.missing), normMissing);
-  const exact = [intent, language, date_from, party_size, slot, missing].every((x) => x !== false);
+  // Not `missing`: guest.ts only logs it, and works out what is missing from the fields.
+  const exact = [intent, language, date_from, party_size, slot].every((x) => x !== false);
   // guest.ts: below CONF_MIN or "unknown" goes to Noor as a question; an AI error goes to her as is.
   const handoff = !ok || out.confidence < CONF_MIN || out.intent === "unknown";
   const wrong = !intent || date_from === false || party_size === false || slot === false;
@@ -217,16 +223,80 @@ export interface Metric {
   /** For rates: the counts behind the value, shown next to it. */
   num?: number;
   den?: number;
+  /**
+   * For rates over independent cases (one per email, reply or review): the exact 95% confidence
+   * interval, as fractions. Not for counts of points or quotes, several of which share a review.
+   */
+  ci?: [number, number];
 }
 
-export function ratio(key: string, label: string, num: number, den: number): Metric {
-  return { key, label, format: "pct", value: den ? num / den : null, num, den };
+/**
+ * num ÷ den. `interval` adds the exact 95% confidence interval: only for den independent cases,
+ * one per email, reply or review.
+ */
+export function ratio(
+  key: string,
+  label: string,
+  num: number,
+  den: number,
+  interval = false,
+): Metric {
+  const ci = interval ? clopperPearson(num, den) : null;
+  return { key, label, format: "pct", value: den ? num / den : null, num, den, ...(ci && { ci }) };
 }
 
-/** The share of `true` among the scored (non-null) values. */
+/** The share of `true` among the scored (non-null) values, one per case, with its interval. */
 export function rate(key: string, label: string, xs: (boolean | null)[]): Metric {
   const scored = xs.filter((x): x is boolean => x !== null);
-  return ratio(key, label, scored.filter(Boolean).length, scored.length);
+  return ratio(key, label, scored.filter(Boolean).length, scored.length, true);
+}
+
+// ---- exact binomial confidence interval -----------------------------------------------------------
+
+/** ln(k!) for k = 0..n, summed exactly enough for the few hundred cases here. */
+function logFactorials(n: number): number[] {
+  const out = [0];
+  for (let k = 1; k <= n; k++) out.push(out[k - 1]! + Math.log(k));
+  return out;
+}
+
+/** P(X ≤ k) for X ~ Binomial(n, p), 0 < p < 1. */
+function binomialCdf(k: number, n: number, p: number, lnFact: number[]): number {
+  if (k < 0) return 0;
+  if (k >= n) return 1;
+  const lnP = Math.log(p);
+  const lnQ = Math.log1p(-p);
+  let sum = 0;
+  for (let i = 0; i <= k; i++)
+    sum += Math.exp(lnFact[n]! - lnFact[i]! - lnFact[n - i]! + i * lnP + (n - i) * lnQ);
+  return Math.min(1, sum);
+}
+
+/** The p in (0, 1) where `f`, decreasing in p, crosses `target`: bisection to float precision. */
+function solveDecreasing(f: (p: number) => number, target: number): number {
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 100; i++) {
+    const mid = (lo + hi) / 2;
+    if (f(mid) > target) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+/**
+ * The exact (Clopper–Pearson) confidence interval of a rate of `num` in `den`: from the p at which
+ * `num` or more successes have probability (1 − level) / 2, to the p at which `num` or fewer have.
+ * 0/n starts at 0 and n/n ends at 1. Null when there are no cases.
+ */
+export function clopperPearson(num: number, den: number, level = 0.95): [number, number] | null {
+  if (den <= 0 || num < 0 || num > den) return null;
+  const tail = (1 - level) / 2;
+  const lnFact = logFactorials(den);
+  const lower =
+    num === 0 ? 0 : solveDecreasing((p) => binomialCdf(num - 1, den, p, lnFact), 1 - tail);
+  const upper = num === den ? 1 : solveDecreasing((p) => binomialCdf(num, den, p, lnFact), tail);
+  return [lower, upper];
 }
 
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
@@ -254,9 +324,9 @@ export function guestMetrics(cases: GuestCase[], scores: GuestScore[]): Metric[]
     rate("date_from", "Date", pick("date_from")),
     rate("party_size", "Party size", pick("party_size")),
     rate("slot", "Slot (morning / afternoon)", pick("slot")),
-    rate("missing", "Missing fields", pick("missing")),
+    rate("missing", "Missing fields (not used to decide)", pick("missing")),
     rate("exact", "Every field right", pick("exact")),
-    rate("handoff", "Handed to Noor (unsure)", pick("handoff")),
+    rate("handoff", "Handed to Noor (AI unsure, not for the farm, or AI error)", pick("handoff")),
     rate("wrong_but_confident", "Wrong but confident", pick("wrong_but_confident")),
     ...byIntent,
   ];
@@ -317,17 +387,20 @@ export function reviewMetrics(scores: ReviewScore[]): Metric[] {
     ratio("points_precision", "Points precision", tp, predicted),
     ratio("points_recall", "Points recall", tp, gold),
     { key: "points_f1", label: "Points F1", format: "pct", value: f1 },
+    // One yes/no per review, so these are rates over independent cases.
     ratio(
       "idea_precision",
       "Idea detection precision",
       ideaTp,
       scores.filter((s) => s.has_idea).length,
+      true,
     ),
     ratio(
       "idea_recall",
       "Idea detection recall",
       ideaTp,
       scores.filter((s) => s.idea_labelled).length,
+      true,
     ),
     ratio(
       "quote_verbatim",
@@ -338,27 +411,18 @@ export function reviewMetrics(scores: ReviewScore[]): Metric[] {
   ];
 }
 
-export interface Prices {
-  /** USD per million input tokens. */
-  in: number;
-  /** USD per million output tokens (reasoning tokens are billed as output). */
-  out: number;
-}
-
-/** Calls, tokens, latency and cost. `perCase` holds the usage of each case's call(s). */
-export function usageMetrics(perCase: AiUsage[][], prices: Prices | null): Metric[] {
+/**
+ * Calls, tokens, latency and cost. `perCase` holds the usage of each case's call(s). Cost is the
+ * engine's callCost (cached input at its own price, reasoning inside output) at `price`, averaged
+ * over every call, failed ones included: one call, not one booking.
+ */
+export function usageMetrics(perCase: AiUsage[][], price: ModelPrice | null): Metric[] {
   const calls = perCase.flat();
   const ok = calls.filter((u) => u.ok);
   const latency = ok.map((u) => u.latency_ms).sort((a, b) => a - b);
   const avg = (k: "input_tokens" | "cached_tokens" | "output_tokens" | "reasoning_tokens") =>
     mean(ok.map((u) => u[k]));
-  const costPerMessage = prices
-    ? mean(
-        perCase.map((us) =>
-          sum(us.map((u) => (u.input_tokens * prices.in + u.output_tokens * prices.out) / 1e6)),
-        ),
-      )
-    : null;
+  const costPerCall = price ? mean(calls.map((u) => callCost(u, price))) : null;
   return [
     { key: "calls", label: "Model calls", format: "int", value: calls.length },
     { key: "failed", label: "Failed calls", format: "int", value: calls.length - ok.length },
@@ -381,9 +445,9 @@ export function usageMetrics(perCase: AiUsage[][], prices: Prices | null): Metri
     { key: "latency_p95", label: "Latency p95", format: "ms", value: percentile(latency, 0.95) },
     {
       key: "cost_per_1k",
-      label: "Cost per 1,000 messages",
+      label: "Cost per 1,000 calls",
       format: "usd",
-      value: costPerMessage === null ? null : costPerMessage * 1000,
+      value: costPerCall === null ? null : costPerCall * 1000,
     },
   ];
 }

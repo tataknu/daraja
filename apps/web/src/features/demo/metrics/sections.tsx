@@ -3,11 +3,14 @@
 import { Fragment, type ReactNode } from "react";
 import {
   AI_ERROR,
-  AI_UNSURE_ACTIONS,
+  APPROVE_PROMPT,
+  HANDOFF_ACTIONS,
   HOST_ANSWER_RESOLUTIONS,
   KEYPAD_MODEL,
   PRICES,
   PRICING_SOURCE,
+  READBACK_ANSWER_INTENTS,
+  SENT_TO_HOST_STATUSES,
   priceOf,
   type Metrics,
   type UsageGroup,
@@ -53,27 +56,39 @@ function KpiRow({
   );
 }
 
+/** What the per-booking numbers are divided by, and what they include. */
+function perBookingIntro(pb: Metrics["perBooking"]): string {
+  if (!pb.bookings)
+    return "No booking has been sent to Noor yet: per-booking numbers start with the first one.";
+  const one = pb.notSent === 1;
+  return [
+    `All AI spend in this demo ÷ the ${count(pb.bookings, "booking")} sent to Noor for a decision.`,
+    pb.notSent
+      ? `${count(pb.notSent, "other booking")}, opened by a question, spam, an unfinished request or an AI error, ${one ? "isn't" : "aren't"} counted, but ${one ? "its" : "their"} AI calls are.`
+      : "",
+    pb.withoutAiCalls
+      ? `Left out: ${count(pb.withoutAiCalls, "older booking")} with no logged AI calls.`
+      : "",
+    `Counting every message sent, that is ${fmtAvg(pb.smsToHost)} SMS to Noor and ${fmtAvg(pb.emailsToGuest)} emails to guests per booking.`,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
 export function CostKpis({ m }: { m: Metrics }) {
   const { perBooking: pb, totals } = m;
-  const atLeast = pb.usage.unpricedCalls > 0;
+  const atLeast = totals.unpricedCalls > 0;
   return (
-    <KpiRow
-      title="What a booking costs"
-      intro={
-        pb.bookings
-          ? `Averages over ${count(pb.bookings, "booking")}${pb.withoutAiCalls ? ` (leaving out ${count(pb.withoutAiCalls, "older booking")} with no logged AI calls)` : ""}. Each one sends Noor ${fmtAvg(pb.smsToHost)} SMS and the guest ${fmtAvg(pb.emailsToGuest)} emails.`
-          : "No bookings yet: per-booking numbers start with the first one."
-      }
-    >
+    <KpiRow title="What a booking costs" intro={perBookingIntro(pb)}>
       <Kpi
         label="AI cost per booking"
         value={fmtUsd(pb.cost, atLeast)}
         detail={
           !pb.bookings
-            ? "No bookings yet"
-            : pb.usage.cost === null
+            ? "No booking sent to Noor yet"
+            : totals.cost === null
               ? "Prices not set"
-              : `${fmtUsd(pb.usage.cost, atLeast)} for all bookings`
+              : `${fmtUsd(totals.cost, atLeast)} for all AI calls`
         }
       />
       <Kpi
@@ -95,6 +110,9 @@ export function CostKpis({ m }: { m: Metrics }) {
   );
 }
 
+/** Not "AI unsure": a hand-off can follow a sure reading of mail that isn't for the farm. */
+const HANDOFF_LABEL = "Handed to Noor (AI unsure, not for the farm, or AI error)";
+
 export function BehaviourKpis({ m }: { m: Metrics }) {
   const { handoff, keypad, timeToAnswer: wait, referrals } = m;
   return (
@@ -103,14 +121,14 @@ export function BehaviourKpis({ m }: { m: Metrics }) {
       intro="When a person has to step in, how often no AI is needed, and how fast Noor answers."
     >
       <Kpi
-        label="AI-unsure hand-off rate"
+        label={HANDOFF_LABEL}
         value={fmtPct(handoff.rate)}
-        detail={`${fmtInt(handoff.unsure)} of ${count(handoff.aiRead, "message")} the AI read${handoff.errors ? `, ${fmtInt(handoff.errors)} failed` : ""}`}
+        detail={`${fmtInt(handoff.handedOff)} of ${count(handoff.aiRead, "message")} the AI read${handoff.errors ? `, ${fmtInt(handoff.errors)} failed` : ""}`}
       />
       <Kpi
-        label="Keypad replies without AI"
+        label="Noor's replies read without AI"
         value={fmtPct(keypad.share)}
-        detail={`${fmtInt(keypad.withoutAi)} of Noor's ${count(keypad.hostReplies, "reply", "replies")}`}
+        detail={`${fmtInt(keypad.withoutAi)} of her ${count(keypad.hostReplies, "reply", "replies")}${keypad.readbackAnswers ? `, not counting ${count(keypad.readbackAnswers, "answer")} to a read-back` : ""}`}
       />
       <Kpi
         label="Median time to Noor's answer"
@@ -120,7 +138,7 @@ export function BehaviourKpis({ m }: { m: Metrics }) {
       <Kpi
         label="Referral bookings"
         value={fmtInt(referrals.referred)}
-        detail={`${fmtPct(referrals.share)} of ${count(referrals.bookings, "booking")}`}
+        detail={`${fmtPct(referrals.share)} of ${count(referrals.bookings, "booking")} sent to Noor`}
       />
     </KpiRow>
   );
@@ -337,43 +355,50 @@ function Prices({ m }: { m: Metrics }) {
 }
 
 export function HowMeasured({ m }: { m: Metrics }) {
-  const off = m.notOnBooking;
   const lines: [string, ReactNode][] = [
     [
       "AI cost per booking",
       <>
-        Cost of the AI calls tied to a booking (by the call, or by its message) ÷ the bookings with
-        such calls, whatever their status. Every booking starts with a guest email the AI reads, so
-        only bookings from before calls were logged are left out.
-        {off.calls > 0 &&
-          ` Left out: ${count(off.calls, "call")} tied to no booking (such as review insights and imports)${off.cost === null ? "" : `, ${fmtUsd(off.cost, off.unpricedCalls > 0)}`}.`}
+        The cost of every AI call, whatever it was for (reading emails and Noor's replies,
+        translations, review insights, and the calls on questions, spam and errors), ÷ the bookings
+        sent to Noor for a decision: those with a booking-request SMS to her (prompt{" "}
+        <Code>{APPROVE_PROMPT}</Code>) or a status of <CodeList items={SENT_TO_HOST_STATUSES} />. A
+        question, spam or an unfinished request from a guest with no booking opens one too, to keep
+        the conversation together: it isn't counted as a booking, but its AI calls are. Bookings
+        with no logged AI calls, from before calls were logged, are left out with their messages.
       </>,
     ],
     [
       "AI calls per booking",
-      "AI calls tied to a booking ÷ those bookings. SMS to Noor and emails to the guest are counted over the same bookings.",
+      "Every AI call ÷ the same bookings. The SMS to Noor and emails to guests above: every one sent ÷ the same bookings.",
     ],
     [
       "Tokens per booking",
-      "Input + output tokens of those calls ÷ bookings. Cached tokens are part of the input, reasoning tokens part of the output.",
+      "Input + output tokens of every AI call ÷ the same bookings. Cached tokens are part of the input, reasoning tokens part of the output.",
     ],
     [
       "Median AI latency",
       "From request to last streamed token, for each AI call that succeeded. p95: 95% of calls were faster.",
     ],
     [
-      "AI-unsure hand-off rate",
+      HANDOFF_LABEL,
       <>
-        Inbound messages where the AI was unsure or failed (
-        <CodeList items={[...AI_UNSURE_ACTIONS, `${AI_ERROR}: …`]} />) ÷ inbound messages the AI
-        read. Requests and questions that go to Noor by design don't count.
+        Inbound messages the AI read that went to Noor instead of being acted on (
+        <CodeList items={[...HANDOFF_ACTIONS, `${AI_ERROR}: …`]} />) ÷ inbound messages the AI read.
+        That is a guest's email the AI was unsure of, or marked <Code>unknown</Code>, which is also
+        how it marks spam and mail not meant for the farm, so a hand-off isn't always doubt; Noor's
+        free text that was unclear or named no waiting booking; or a failed AI call. Requests and
+        questions go to Noor by design and don't count.
       </>,
     ],
     [
-      "Keypad replies without AI",
+      "Noor's replies read without AI",
       <>
-        Noor's SMS replies understood by code alone (decision model <Code>{KEYPAD_MODEL}</Code>: 1,
-        2, 3, a booking code with a date, or yes/no to a read-back) ÷ all her replies.
+        Her SMS replies understood by code alone (decision model <Code>{KEYPAD_MODEL}</Code>: 1, 2
+        or 3, with or without a booking code, or a booking code with a date) ÷ her replies. Her 1 or
+        2 to a read-back (
+        <CodeList items={READBACK_ANSWER_INTENTS} />) is in neither: it only confirms what the AI
+        read from her free text, and that reply already counts as read by the AI.
       </>,
     ],
     [
@@ -387,8 +412,8 @@ export function HowMeasured({ m }: { m: Metrics }) {
     [
       "Referral bookings",
       <>
-        Bookings with <Code>referred_by</Code> set, that is brought in by a past guest's referral
-        code.
+        Of the bookings sent to Noor (the same ones as for the cost per booking), those with{" "}
+        <Code>referred_by</Code> set, that is brought in by a past guest's referral code.
       </>,
     ],
     ["Prices", <Prices m={m} />],
@@ -397,8 +422,9 @@ export function HowMeasured({ m }: { m: Metrics }) {
     <section className="paper p-4 sm:p-5">
       <h2 className="text-lg font-semibold text-primary">How these are measured</h2>
       <p className="text-xs text-muted-foreground">
-        Every AI call is logged with its task, model, tokens and latency (table{" "}
-        <Code>ai_calls</Code>); the rest comes from bookings, messages, decisions and prompts.
+        From this demo's own traffic, not a real farm's. Every AI call is logged with its task,
+        model, tokens and latency (table <Code>ai_calls</Code>); the rest comes from bookings,
+        messages, decisions and prompts.
       </p>
       <dl className="mt-4 grid gap-x-6 gap-y-3 text-sm md:grid-cols-[13rem_minmax(0,1fr)]">
         {lines.map(([term, definition]) => (

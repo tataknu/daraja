@@ -20,10 +20,10 @@ import {
   writeCache,
   type CacheEntry,
 } from "./cache";
-import { priceOf } from "@daraja/engine/metrics";
+import { PRICING_SOURCE, priceOf, type ModelPrice } from "@daraja/engine/metrics";
 import { loadEnv } from "./env";
 import { formatMetric, updateDocs, writeJson, type SafetyReport, type SuiteResult } from "./report";
-import { usageMetrics, type Prices } from "./score";
+import { usageMetrics } from "./score";
 import { guestSuite, hostSuite, reviewSuite, type ModelSuiteName, type Suite } from "./suites";
 
 const PKG = fileURLToPath(new URL("..", import.meta.url));
@@ -61,7 +61,8 @@ interface Options {
   limit: number | null;
   concurrency: number;
   fresh: boolean;
-  prices: Prices | null;
+  /** The price the cost is computed at, and where it came from; null: no cost. */
+  price: { price: ModelPrice; source: string } | null;
 }
 
 interface Plan {
@@ -258,14 +259,15 @@ async function executeSuite<C, O, S>(
       total: dataset.total,
     },
     partial: items.length < dataset.total,
-    prices: o.prices,
+    prices: o.price?.price ?? null,
+    price_source: o.price?.source ?? null,
     metrics: suite.metrics(
       outcomes.map((x) => x.item.c),
       outcomes.map((x) => x.score),
     ),
     usage: usageMetrics(
       outcomes.map((x) => x.d.usage),
-      o.prices,
+      o.price?.price ?? null,
     ),
     cases: outcomes.map(({ item, d, score }) => ({
       ...suite.record(item.c, d.out, score),
@@ -284,18 +286,32 @@ function positive(v: string | undefined, flag: string, fallback: number | null):
   return n;
 }
 
-/** Prices from AI_PRICE_*_PER_MTOK when set, else the engine's table (official prices, dated). */
-function pricesFrom(env: Record<string, string | undefined>, model: string): Prices | null {
+/**
+ * AI_PRICE_IN_PER_MTOK and AI_PRICE_OUT_PER_MTOK when both are set (no cached-input price is
+ * configured, so cached input is priced as input), else the engine's table: OpenAI's list prices,
+ * dated, in packages/engine/src/pricing.ts. Null when the model has neither: no cost is shown.
+ */
+function priceFrom(env: Record<string, string | undefined>, model: string): Options["price"] {
   const pin = env["AI_PRICE_IN_PER_MTOK"];
   const pout = env["AI_PRICE_OUT_PER_MTOK"];
   if (!pin || !pout) {
     const listed = priceOf(model);
-    return listed ? { in: listed.input, out: listed.output } : null;
+    return listed
+      ? {
+          price: listed,
+          source: `OpenAI's ${PRICING_SOURCE.tier} list price in \`packages/engine/src/pricing.ts\`, checked ${PRICING_SOURCE.checked}`,
+        }
+      : null;
   }
-  const prices = { in: Number(pin), out: Number(pout) };
-  if (!Number.isFinite(prices.in) || !Number.isFinite(prices.out))
+  const input = Number(pin);
+  const output = Number(pout);
+  if (!Number.isFinite(input) || !Number.isFinite(output))
     throw new UsageError("AI_PRICE_IN_PER_MTOK / AI_PRICE_OUT_PER_MTOK must be numbers (USD)");
-  return prices;
+  return {
+    price: { input, cachedInput: input, output },
+    source:
+      "set by AI_PRICE_IN_PER_MTOK and AI_PRICE_OUT_PER_MTOK; cached input at the input price",
+  };
 }
 
 function printResult(r: SuiteResult) {
@@ -359,7 +375,7 @@ async function main(): Promise<number> {
     limit: positive(values.limit, "limit", null),
     concurrency: positive(values.concurrency, "concurrency", 4) ?? 4,
     fresh: values.fresh,
-    prices: pricesFrom(env, model),
+    price: priceFrom(env, model),
   };
   const maxCalls = positive(values["max-calls"], "max-calls", 120) ?? 120;
 

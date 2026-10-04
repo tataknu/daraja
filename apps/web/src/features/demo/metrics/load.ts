@@ -36,7 +36,7 @@ export async function loadMetricsRows(): Promise<MetricsRows> {
         .range(from, to),
     ),
     everyRow((from, to) =>
-      supabase.from("bookings").select("id, referred_by").order("id").range(from, to),
+      supabase.from("bookings").select("id, status, referred_by").order("id").range(from, to),
     ),
     everyRow((from, to) =>
       supabase
@@ -49,7 +49,7 @@ export async function loadMetricsRows(): Promise<MetricsRows> {
     everyRow((from, to) =>
       supabase
         .from("decisions")
-        .select("message_id, model, action_taken")
+        .select("message_id, model, intent, action_taken")
         .order("created_at")
         .order("id")
         .range(from, to),
@@ -57,7 +57,7 @@ export async function loadMetricsRows(): Promise<MetricsRows> {
     everyRow((from, to) =>
       supabase
         .from("pending_prompts")
-        .select("kind, sent_at, resolved_at, resolution")
+        .select("booking_id, kind, sent_at, resolved_at, resolution")
         .order("sent_at")
         .order("id")
         .range(from, to),

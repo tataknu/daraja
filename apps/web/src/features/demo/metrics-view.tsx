@@ -1,6 +1,6 @@
-// What the system costs and how it behaves: AI calls, tokens, latency and cost per booking,
-// hand-offs to the host, time to her answer, referrals. The rows are read in the browser and the
-// numbers come from the engine's computeMetrics, the same definitions the tests check.
+// What the system costs and how it behaves in this demo: AI calls, tokens, latency and cost per
+// booking, hand-offs to the host, time to her answer, referrals. The rows are read in the browser
+// and the numbers come from the engine's computeMetrics, the same definitions the tests check.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { computeMetrics, PRICES } from "@daraja/engine/metrics";
 import { Button } from "@daraja/ui/components/button";
@@ -72,8 +72,11 @@ export function MetricsView() {
     <div className="mx-auto min-h-0 w-full max-w-7xl flex-1 space-y-8 overflow-y-auto px-6 py-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="max-w-2xl text-sm text-muted-foreground">
-          What each booking costs in AI, and how the system behaves. Computed from the stored rows;
-          updates live.
+          <span className="font-medium text-foreground">
+            From this demo's own traffic, not a real farm's guests.
+          </span>{" "}
+          What each booking costs in AI and how the system behaves, computed from the messages sent
+          through this demo. Updates live.
         </p>
         <div className="flex items-center gap-3">
           {updatedAt && (

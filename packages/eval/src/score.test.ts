@@ -4,12 +4,14 @@ import { guestSays, noorSays, reviewSays } from "@daraja/engine/testing";
 import { describe, expect, it } from "vitest";
 import type { GuestCase, HostCase } from "./labels";
 import {
+  clopperPearson,
   guestMetrics,
   isVerbatim,
   normBooking,
   normLang,
   normMissing,
   percentile,
+  rate,
   reviewMetrics,
   scoreGuest,
   scoreHost,
@@ -98,6 +100,11 @@ describe("guest scores", () => {
     expect(scoreGuest(request, says({ entities: { slot: "9:00" } }), SLOTS).slot).toBe(false);
   });
 
+  it("reports missing fields but leaves them out of every field right: guest.ts doesn't use them", () => {
+    const s = scoreGuest(request, says({ missing: ["party_size"] }), SLOTS);
+    expect(s).toMatchObject({ missing: false, exact: true, wrong_but_confident: false });
+  });
+
   it("scores an AI error as wrong and handed to Noor", () => {
     expect(scoreGuest(request, null, SLOTS)).toMatchObject({
       intent: false,
@@ -137,6 +144,53 @@ describe("guest scores", () => {
     expect(m["intent"]).toMatchObject({ value: 1, num: 2, den: 2 });
     expect(m["date_from"]).toMatchObject({ num: 1, den: 1 });
     expect(m["intent:question"]).toMatchObject({ num: 1, den: 1 });
+    expect(m["handoff"]?.label).toBe("Handed to Noor (AI unsure, not for the farm, or AI error)");
+  });
+});
+
+describe("exact (Clopper–Pearson) 95% intervals", () => {
+  const pct = (ci: [number, number] | null) => ci?.map((x) => Number((x * 100).toFixed(1)));
+
+  it("matches the published values for the eval's counts", () => {
+    expect(pct(clopperPearson(48, 49))).toEqual([89.1, 99.9]);
+    expect(pct(clopperPearson(1, 49))).toEqual([0.1, 10.9]);
+    expect(pct(clopperPearson(29, 29))).toEqual([88.1, 100]);
+    expect(pct(clopperPearson(0, 18))).toEqual([0, 18.5]);
+    expect(pct(clopperPearson(3, 3))).toEqual([29.2, 100]);
+  });
+
+  it("agrees with the closed forms at 0 and n, and has no interval without cases", () => {
+    // 0/n: upper = 1 − 0.025^(1/n); n/n: lower = 0.025^(1/n).
+    expect(clopperPearson(0, 18)?.[1]).toBeCloseTo(1 - 0.025 ** (1 / 18), 12);
+    expect(clopperPearson(29, 29)?.[0]).toBeCloseTo(0.025 ** (1 / 29), 12);
+    expect(clopperPearson(0, 0)).toBeNull();
+    expect(clopperPearson(3, 2)).toBeNull();
+  });
+
+  it("is attached to rates over cases, not to points or quotes that share a review", () => {
+    // 1 of 2 (the null isn't scored): P(X ≥ 1) = 1 − (1 − p)² and P(X ≤ 1) = 1 − p² at 2.5%.
+    const half = rate("k", "K", [true, false, null]);
+    expect(half).toMatchObject({ num: 1, den: 2 });
+    expect(half.ci?.[0]).toBeCloseTo(1 - Math.sqrt(0.975), 12);
+    expect(half.ci?.[1]).toBeCloseTo(Math.sqrt(0.975), 12);
+    const m = Object.fromEntries(
+      reviewMetrics([
+        {
+          sentiment: true,
+          points_tp: 1,
+          points_predicted: 1,
+          points_gold: 1,
+          has_idea: true,
+          idea_labelled: true,
+          quotes: 1,
+          verbatim: 1,
+        },
+      ]).map((x) => [x.key, x]),
+    );
+    expect(m["sentiment"]?.ci).toBeDefined();
+    expect(m["idea_precision"]?.ci).toBeDefined();
+    expect(m["points_precision"]?.ci).toBeUndefined();
+    expect(m["quote_verbatim"]?.ci).toBeUndefined();
   });
 });
 
@@ -269,17 +323,27 @@ describe("usage", () => {
     ok,
   });
 
-  it("prices 1,000 messages only when prices are given", () => {
+  it("prices 1,000 calls only when a price is given", () => {
     const perCase = [[call(1000, 200, 800)], [call(3000, 400, 1200)]];
-    const m = Object.fromEntries(
-      usageMetrics(perCase, { in: 0.5, out: 2 }).map((x) => [x.key, x.value]),
-    );
-    // Avg per message: (2000 * 0.5 + 300 * 2) / 1e6 = 0.0016 USD.
-    expect(m["cost_per_1k"]).toBeCloseTo(1.6);
-    expect(m["input_tokens"]).toBe(2000);
-    expect(m["latency_p50"]).toBe(800);
+    const price = { input: 0.5, cachedInput: 0.05, output: 2 };
+    const m = Object.fromEntries(usageMetrics(perCase, price).map((x) => [x.key, x]));
+    // Avg per call: (2000 * 0.5 + 300 * 2) / 1e6 = 0.0016 USD.
+    expect(m["cost_per_1k"]?.value).toBeCloseTo(1.6);
+    expect(m["cost_per_1k"]?.label).toBe("Cost per 1,000 calls");
+    expect(m["input_tokens"]?.value).toBe(2000);
+    expect(m["latency_p50"]?.value).toBe(800);
     const unpriced = usageMetrics(perCase, null).find((x) => x.key === "cost_per_1k");
     expect(unpriced?.value).toBeNull();
+  });
+
+  it("prices cached input at its own price, per call even when a case makes several", () => {
+    const cached = { ...call(1000, 0, 500), cached_tokens: 800 };
+    const price = { input: 1, cachedInput: 0.1, output: 4 };
+    const cost = usageMetrics([[cached, call(0, 100, 500)]], price).find(
+      (x) => x.key === "cost_per_1k",
+    );
+    // (200 * 1 + 800 * 0.1) / 1e6 and 100 * 4 / 1e6: two calls, averaged.
+    expect(cost?.value).toBeCloseTo(((280 + 400) / 2 / 1e6) * 1000, 12);
   });
 
   it("leaves failed calls out of token and latency averages", () => {

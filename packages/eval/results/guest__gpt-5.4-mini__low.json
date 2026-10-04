@@ -14,9 +14,11 @@
   },
   "partial": false,
   "prices": {
-    "in": 0.75,
-    "out": 4.5
+    "input": 0.75,
+    "cachedInput": 0.075,
+    "output": 4.5
   },
+  "price_source": "OpenAI's Standard list price in `packages/engine/src/pricing.ts`, checked 2026-10-03",
   "metrics": [
     {
       "key": "intent",
@@ -24,7 +26,8 @@
       "format": "pct",
       "value": 0.9795918367346939,
       "num": 48,
-      "den": 49
+      "den": 49,
+      "ci": [0.891458236031597, 0.9994834435024067]
     },
     {
       "key": "language",
@@ -32,7 +35,8 @@
       "format": "pct",
       "value": 1,
       "num": 48,
-      "den": 48
+      "den": 48,
+      "ci": [0.9260272146527304, 1]
     },
     {
       "key": "date_from",
@@ -40,7 +44,8 @@
       "format": "pct",
       "value": 1,
       "num": 29,
-      "den": 29
+      "den": 29,
+      "ci": [0.880555130930498, 1]
     },
     {
       "key": "party_size",
@@ -48,7 +53,8 @@
       "format": "pct",
       "value": 1,
       "num": 29,
-      "den": 29
+      "den": 29,
+      "ci": [0.880555130930498, 1]
     },
     {
       "key": "slot",
@@ -56,15 +62,17 @@
       "format": "pct",
       "value": 1,
       "num": 29,
-      "den": 29
+      "den": 29,
+      "ci": [0.880555130930498, 1]
     },
     {
       "key": "missing",
-      "label": "Missing fields",
+      "label": "Missing fields (not used to decide)",
       "format": "pct",
       "value": 1,
       "num": 29,
-      "den": 29
+      "den": 29,
+      "ci": [0.880555130930498, 1]
     },
     {
       "key": "exact",
@@ -72,15 +80,17 @@
       "format": "pct",
       "value": 0.9795918367346939,
       "num": 48,
-      "den": 49
+      "den": 49,
+      "ci": [0.891458236031597, 0.9994834435024067]
     },
     {
       "key": "handoff",
-      "label": "Handed to Noor (unsure)",
+      "label": "Handed to Noor (AI unsure, not for the farm, or AI error)",
       "format": "pct",
       "value": 0.10204081632653061,
       "num": 5,
-      "den": 49
+      "den": 49,
+      "ci": [0.03397170498395394, 0.22227669628262703]
     },
     {
       "key": "wrong_but_confident",
@@ -88,7 +98,8 @@
       "format": "pct",
       "value": 0.02040816326530612,
       "num": 1,
-      "den": 49
+      "den": 49,
+      "ci": [0.0005165564975932854, 0.10854176396840676]
     },
     {
       "key": "intent:booking_request",
@@ -96,7 +107,8 @@
       "format": "pct",
       "value": 0.9565217391304348,
       "num": 22,
-      "den": 23
+      "den": 23,
+      "ci": [0.7805133925465237, 0.9988998313695585]
     },
     {
       "key": "intent:modify",
@@ -104,7 +116,8 @@
       "format": "pct",
       "value": 1,
       "num": 6,
-      "den": 6
+      "den": 6,
+      "ci": [0.5407418735601011, 1]
     },
     {
       "key": "intent:cancel",
@@ -112,7 +125,8 @@
       "format": "pct",
       "value": 1,
       "num": 5,
-      "den": 5
+      "den": 5,
+      "ci": [0.47817624989501806, 1]
     },
     {
       "key": "intent:question",
@@ -120,7 +134,8 @@
       "format": "pct",
       "value": 1,
       "num": 7,
-      "den": 7
+      "den": 7,
+      "ci": [0.5903836027749982, 1]
     },
     {
       "key": "intent:feedback",
@@ -128,7 +143,8 @@
       "format": "pct",
       "value": 1,
       "num": 3,
-      "den": 3
+      "den": 3,
+      "ci": [0.2924017738212865, 1]
     },
     {
       "key": "intent:unknown",
@@ -136,7 +152,8 @@
       "format": "pct",
       "value": 1,
       "num": 5,
-      "den": 5
+      "den": 5,
+      "ci": [0.47817624989501806, 1]
     }
   ],
   "usage": [
@@ -196,7 +213,7 @@
     },
     {
       "key": "cost_per_1k",
-      "label": "Cost per 1,000 messages",
+      "label": "Cost per 1,000 calls",
       "format": "usd",
       "value": 1.3354438775510207
     }
@@ -244,7 +261,7 @@
       },
       "note": "\"zu dritt\" is three people; \"am Samstag\" is the coming Saturday.",
       "id": "de-saturday-three-morning",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -301,7 +318,7 @@
       },
       "note": "来週の土曜日 is Saturday of next calendar week (17 Oct), not this Saturday.",
       "id": "ja-next-week-saturday-family",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -360,7 +377,7 @@
       },
       "note": "\"next Saturday\" said on a Monday can mean the 10th or the 17th. The age question is secondary to the booking.",
       "id": "en-two-adults-three-children",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -416,7 +433,7 @@
         "wrong_but_confident": false
       },
       "id": "fr-explicit-date-four-afternoon",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -475,7 +492,7 @@
       },
       "note": "\"el próximo sábado\" is as ambiguous as \"next Saturday\".",
       "id": "es-proximo-sabado-couple",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -532,7 +549,7 @@
       },
       "note": "\"aanstaande zaterdag\" is the coming Saturday. 12 is over the 8-per-slot limit: the AI must still say 12, code flags the capacity.",
       "id": "nl-group-of-twelve",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -591,7 +608,7 @@
       },
       "note": "\"Vorremmo\" (we would like) gives no number of people.",
       "id": "it-sabato-prossimo-no-size",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -647,7 +664,7 @@
         "wrong_but_confident": false
       },
       "id": "pt-date-slash-three-friends",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -704,7 +721,7 @@
       },
       "note": "\"Jumamosi hii\" is this Saturday; \"watu wawili\" two people; \"asubuhi\" morning.",
       "id": "sw-jumamosi-hii-two",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -761,7 +778,7 @@
       },
       "note": "下周六 is Saturday of next week (17 Oct).",
       "id": "zh-next-week-saturday-six",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -820,7 +837,7 @@
       },
       "note": "\"السبت القادم\" (the coming Saturday) is usually the 10th but can be read as the 17th.",
       "id": "ar-coming-saturday-family-five",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -876,7 +893,7 @@
         "wrong_but_confident": false
       },
       "id": "ko-explicit-date-three-adults",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -933,7 +950,7 @@
       },
       "note": "Very short. \"Sat\" is the coming Saturday.",
       "id": "en-telegraphic",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -994,7 +1011,7 @@
       },
       "note": "Asks when a visit would be possible: a request without a date, or a question.",
       "id": "de-five-adults-no-date",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1050,7 +1067,7 @@
         "wrong_but_confident": false
       },
       "id": "en-tomorrow-solo-afternoon",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1111,7 +1128,7 @@
       },
       "note": "French and English mixed; whether the baby counts is open.",
       "id": "mixed-fr-en-sunday-baby",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1172,7 +1189,7 @@
       },
       "note": "Swahili and English mixed, Sheng style.",
       "id": "mixed-sw-en-sheng",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1228,7 +1245,7 @@
         "wrong_but_confident": false
       },
       "id": "de-dotted-date-2pm",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1285,7 +1302,7 @@
       },
       "note": "Distracting dates (19th, 25th, 2024) and numbers; the request is in the last paragraph.",
       "id": "en-long-email",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1344,7 +1361,7 @@
       },
       "note": "10am is not a tour time: the morning slot or none are both fine.",
       "id": "en-around-10am",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1403,7 +1420,7 @@
       },
       "note": "An availability question that is in effect a request.",
       "id": "en-availability-question",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1460,7 +1477,7 @@
       },
       "note": "Praise and a booking: the main purpose is the booking.",
       "id": "en-returning-guest-feedback-and-booking",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1517,7 +1534,7 @@
       },
       "note": "\"kesho kutwa\" is the day after tomorrow; \"mchana\" the afternoon; \"watatu\" three.",
       "id": "sw-day-after-tomorrow",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1578,7 +1595,7 @@
       },
       "note": "Unchanged fields may be repeated or left empty: the engine keeps the booking's values.",
       "id": "de-modify-move-to-sunday",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1638,7 +1655,7 @@
         "wrong_but_confident": false
       },
       "id": "en-modify-party-size",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1698,7 +1715,7 @@
         "wrong_but_confident": false
       },
       "id": "fr-modify-afternoon",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1758,7 +1775,7 @@
         "wrong_but_confident": false
       },
       "id": "es-modify-explicit-date",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1819,7 +1836,7 @@
       },
       "note": "Ijumaa (Friday) before the booked Saturday is 9 Oct; \"saa ile ile\" the same time.",
       "id": "sw-modify-to-friday",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1879,7 +1896,7 @@
         "wrong_but_confident": false
       },
       "id": "ja-modify-fewer-people",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1929,7 +1946,7 @@
         "wrong_but_confident": false
       },
       "id": "de-cancel-sick-child",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1979,7 +1996,7 @@
         "wrong_but_confident": false
       },
       "id": "en-cancel-code",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2029,7 +2046,7 @@
         "wrong_but_confident": false
       },
       "id": "zh-cancel",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2079,7 +2096,7 @@
         "wrong_but_confident": false
       },
       "id": "ru-cancel",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2130,7 +2147,7 @@
       },
       "note": "No booking on file: still a cancellation (the engine answers that it found none).",
       "id": "en-cancel-without-booking",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2180,7 +2197,7 @@
         "wrong_but_confident": false
       },
       "id": "de-question-price-card",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2230,7 +2247,7 @@
         "wrong_but_confident": false
       },
       "id": "en-question-directions",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2280,7 +2297,7 @@
         "wrong_but_confident": false
       },
       "id": "fr-question-vegetarian",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2330,7 +2347,7 @@
         "wrong_but_confident": false
       },
       "id": "ja-question-language",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2380,7 +2397,7 @@
         "wrong_but_confident": false
       },
       "id": "es-question-baby",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2430,7 +2447,7 @@
         "wrong_but_confident": false
       },
       "id": "ar-question-price-tasting",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2480,7 +2497,7 @@
         "wrong_but_confident": false
       },
       "id": "sw-question-parking",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2530,7 +2547,7 @@
         "wrong_but_confident": false
       },
       "id": "de-feedback-roasting",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2580,7 +2597,7 @@
         "wrong_but_confident": false
       },
       "id": "en-feedback-short",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2630,7 +2647,7 @@
         "wrong_but_confident": false
       },
       "id": "fr-feedback-complaint",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2680,7 +2697,7 @@
         "wrong_but_confident": false
       },
       "id": "en-spam-seo",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2730,7 +2747,7 @@
         "wrong_but_confident": false
       },
       "id": "en-spam-prize",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2780,7 +2797,7 @@
       },
       "note": "No language to score.",
       "id": "gibberish",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2830,7 +2847,7 @@
         "wrong_but_confident": false
       },
       "id": "en-wrong-recipient",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2881,7 +2898,7 @@
       },
       "note": "An auto-reply: the date in it is not a booking.",
       "id": "de-out-of-office",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {

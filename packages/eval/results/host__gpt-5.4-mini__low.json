@@ -14,9 +14,11 @@
   },
   "partial": false,
   "prices": {
-    "in": 0.75,
-    "out": 4.5
+    "input": 0.75,
+    "cachedInput": 0.075,
+    "output": 4.5
   },
+  "price_source": "OpenAI's Standard list price in `packages/engine/src/pricing.ts`, checked 2026-10-03",
   "metrics": [
     {
       "key": "intent",
@@ -24,7 +26,8 @@
       "format": "pct",
       "value": 1,
       "num": 18,
-      "den": 18
+      "den": 18,
+      "ci": [0.8146980318621428, 1]
     },
     {
       "key": "booking",
@@ -32,7 +35,8 @@
       "format": "pct",
       "value": 0.8888888888888888,
       "num": 16,
-      "den": 18
+      "den": 18,
+      "ci": [0.6528795613913232, 0.9862487843356356]
     },
     {
       "key": "proposed_date",
@@ -40,7 +44,8 @@
       "format": "pct",
       "value": 1,
       "num": 4,
-      "den": 4
+      "den": 4,
+      "ci": [0.397635364383524, 1]
     },
     {
       "key": "exact",
@@ -48,7 +53,8 @@
       "format": "pct",
       "value": 0.8888888888888888,
       "num": 16,
-      "den": 18
+      "den": 18,
+      "ci": [0.6528795613913232, 0.9862487843356356]
     },
     {
       "key": "handoff",
@@ -56,7 +62,8 @@
       "format": "pct",
       "value": 0.2777777777777778,
       "num": 5,
-      "den": 18
+      "den": 18,
+      "ci": [0.096949212525556, 0.534801965583056]
     },
     {
       "key": "wrong_but_confident",
@@ -64,7 +71,8 @@
       "format": "pct",
       "value": 0,
       "num": 0,
-      "den": 18
+      "den": 18,
+      "ci": [0, 0.1853019681378522]
     }
   ],
   "usage": [
@@ -124,7 +132,7 @@
     },
     {
       "key": "cost_per_1k",
-      "label": "Cost per 1,000 messages",
+      "label": "Cost per 1,000 calls",
       "format": "usd",
       "value": 0.7182916666666667
     }
@@ -156,7 +164,7 @@
       },
       "note": "\"OK, let them be welcome on Saturday.\"",
       "id": "sw-approve-welcome",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -198,7 +206,7 @@
       },
       "note": "\"The 20th would suit better.\" She pressed 3 and was asked for another day; she answered in words instead of 'B21 2026-10-20'.",
       "id": "sw-other-day-in-words",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -239,7 +247,7 @@
       },
       "note": "\"No, that day I have a lot of work on the farm.\"",
       "id": "sw-decline-busy",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -283,7 +291,7 @@
       },
       "note": "\"Saturday I can't, but Sunday morning is fine.\" The prompt doesn't show the booking's date, so either coming Sunday is accepted.",
       "id": "sw-propose-sunday",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -324,7 +332,7 @@
       },
       "note": "\"Yes, we have vegetarian food: rice, beans and bananas.\"",
       "id": "sw-answer-vegetarian",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -365,7 +373,7 @@
       },
       "note": "\"The price is 25,000 shillings per person, children half price.\"",
       "id": "sw-answer-price",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -406,7 +414,7 @@
       },
       "note": "\"B19: take a daladala to Kibosho, I'll wait for them at the stop.\"",
       "id": "sw-answer-directions-coded",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -446,7 +454,7 @@
         "wrong_but_confident": false
       },
       "id": "en-approve",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -487,7 +495,7 @@
       },
       "note": "Sheng: \"Cool, let them come.\"",
       "id": "sheng-approve",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -530,7 +538,7 @@
       },
       "note": "\"I'll check tomorrow and answer you\": not a decision yet.",
       "id": "sw-check-tomorrow",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -573,7 +581,7 @@
       },
       "note": "\"Good morning.\"",
       "id": "sw-greeting",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -616,7 +624,7 @@
       },
       "note": "\"Yes, welcome.\" Two requests wait and she names neither: guessing one is wrong (the engine then asks her to rephrase).",
       "id": "sw-yes-two-waiting",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -657,7 +665,7 @@
       },
       "note": "\"Very sorry, that day there is a funeral. I can't receive them.\"",
       "id": "sw-decline-funeral",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -698,7 +706,7 @@
       },
       "note": "\"Sorry I can't, I'm travelling all this week.\"",
       "id": "mixed-decline-travel",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -740,7 +748,7 @@
       },
       "note": "\"This week I'm full. Let them come next Saturday, the 17th.\"",
       "id": "sw-propose-explicit-17",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -780,7 +788,7 @@
         "wrong_but_confident": false
       },
       "id": "sw-approve-coded-two-waiting",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -821,7 +829,7 @@
       },
       "note": "\"Yes, children under 5 don't pay.\" Starts with \"yes\" but answers B39's question about children; it does not approve B38.",
       "id": "sw-yes-that-answers-question",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -863,7 +871,7 @@
       },
       "note": "\"B44 I can't that date, let them come on 24 October.\"",
       "id": "sw-propose-coded-date",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {

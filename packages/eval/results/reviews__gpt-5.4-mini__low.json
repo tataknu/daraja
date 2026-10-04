@@ -14,9 +14,11 @@
   },
   "partial": false,
   "prices": {
-    "in": 0.75,
-    "out": 4.5
+    "input": 0.75,
+    "cachedInput": 0.075,
+    "output": 4.5
   },
+  "price_source": "OpenAI's Standard list price in `packages/engine/src/pricing.ts`, checked 2026-10-03",
   "metrics": [
     {
       "key": "sentiment",
@@ -24,7 +26,8 @@
       "format": "pct",
       "value": 0.9761904761904762,
       "num": 41,
-      "den": 42
+      "den": 42,
+      "ci": [0.874341442824992, 0.9993973766983963]
     },
     {
       "key": "points_precision",
@@ -54,7 +57,8 @@
       "format": "pct",
       "value": 1,
       "num": 19,
-      "den": 19
+      "den": 19,
+      "ci": [0.8235330881930334, 1]
     },
     {
       "key": "idea_recall",
@@ -62,7 +66,8 @@
       "format": "pct",
       "value": 1,
       "num": 19,
-      "den": 19
+      "den": 19,
+      "ci": [0.8235330881930334, 1]
     },
     {
       "key": "quote_verbatim",
@@ -130,7 +135,7 @@
     },
     {
       "key": "cost_per_1k",
-      "label": "Cost per 1,000 messages",
+      "label": "Cost per 1,000 calls",
       "format": "usd",
       "value": 1.7858749999999999
     }
@@ -181,7 +186,7 @@
         "verbatim": 3
       },
       "id": "r01",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -241,7 +246,7 @@
         "verbatim": 3
       },
       "id": "r02",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -319,7 +324,7 @@
         "verbatim": 6
       },
       "id": "r03",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -385,7 +390,7 @@
         "verbatim": 4
       },
       "id": "r04",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -451,7 +456,7 @@
         "verbatim": 4
       },
       "id": "r05",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -523,7 +528,7 @@
         "verbatim": 5
       },
       "id": "r06",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -583,7 +588,7 @@
         "verbatim": 3
       },
       "id": "r07",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -643,7 +648,7 @@
         "verbatim": 3
       },
       "id": "r08",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -703,7 +708,7 @@
         "verbatim": 3
       },
       "id": "r09",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -769,7 +774,7 @@
         "verbatim": 4
       },
       "id": "r10",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -841,7 +846,7 @@
         "verbatim": 5
       },
       "id": "r11",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -919,7 +924,7 @@
         "verbatim": 6
       },
       "id": "r12",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -985,7 +990,7 @@
         "verbatim": 4
       },
       "id": "r13",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1056,7 +1061,7 @@
         "verbatim": 5
       },
       "id": "r14",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1122,7 +1127,7 @@
         "verbatim": 4
       },
       "id": "r15",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1200,7 +1205,7 @@
         "verbatim": 6
       },
       "id": "r16",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1260,7 +1265,7 @@
         "verbatim": 3
       },
       "id": "r17",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1308,7 +1313,7 @@
         "verbatim": 1
       },
       "id": "r18",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1380,7 +1385,7 @@
         "verbatim": 5
       },
       "id": "r19",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1446,7 +1451,7 @@
         "verbatim": 4
       },
       "id": "r20",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1512,7 +1517,7 @@
         "verbatim": 4
       },
       "id": "r21",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1572,7 +1577,7 @@
         "verbatim": 3
       },
       "id": "r22",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1638,7 +1643,7 @@
         "verbatim": 4
       },
       "id": "r23",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1748,7 +1753,7 @@
         "verbatim": 11
       },
       "id": "r24",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1808,7 +1813,7 @@
         "verbatim": 3
       },
       "id": "r25",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1874,7 +1879,7 @@
         "verbatim": 4
       },
       "id": "r26",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -1940,7 +1945,7 @@
         "verbatim": 4
       },
       "id": "r27",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2012,7 +2017,7 @@
         "verbatim": 5
       },
       "id": "r28",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2090,7 +2095,7 @@
         "verbatim": 6
       },
       "id": "r29",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2150,7 +2155,7 @@
         "verbatim": 3
       },
       "id": "r30",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2216,7 +2221,7 @@
         "verbatim": 4
       },
       "id": "r31",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2276,7 +2281,7 @@
         "verbatim": 3
       },
       "id": "r32",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2336,7 +2341,7 @@
         "verbatim": 3
       },
       "id": "r33",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2402,7 +2407,7 @@
         "verbatim": 4
       },
       "id": "r34",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2474,7 +2479,7 @@
         "verbatim": 5
       },
       "id": "r35",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2534,7 +2539,7 @@
         "verbatim": 3
       },
       "id": "r36",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2600,7 +2605,7 @@
         "verbatim": 4
       },
       "id": "r37",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2641,7 +2646,7 @@
         "verbatim": 0
       },
       "id": "r38",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2701,7 +2706,7 @@
         "verbatim": 3
       },
       "id": "r39",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2742,7 +2747,7 @@
         "verbatim": 0
       },
       "id": "r40",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2796,7 +2801,7 @@
         "verbatim": 2
       },
       "id": "r41",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
@@ -2874,7 +2879,7 @@
         "verbatim": 6
       },
       "id": "r42",
-      "cached": false,
+      "cached": true,
       "error": null,
       "usage": [
         {
