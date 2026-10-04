@@ -27,6 +27,8 @@ const SPECIAL_LETTERS: Record<string, string> = {
 const ATTEMPTS = 5;
 const FRIEND_OF = ", rafiki wa ";
 const SMS_LENGTH = 160; // one segment, as in sms160
+/** Booking statuses once the visit has happened. */
+const AFTER_VISIT = ["VISITED", "FEEDBACK_REQUESTED", "CLOSED"];
 
 /** The reply to a review: always one email. Happy guests also get a code and an invitation back. */
 export async function followUpFeedback(
@@ -41,9 +43,12 @@ export async function followUpFeedback(
   await ctx.emailGuest(guest, extra ? `${THANKS}\n\n${extra}` : THANKS, booking?.id);
 }
 
-/** The code and an invitation back: once per booking, or once per guest when there's no booking. */
+/**
+ * The code and an invitation back: once per booking after the visit, or once per guest when
+ * there's no booking. A thank-you before the visit gets neither, and keeps the booking's invite.
+ */
 async function inviteBack(ctx: Ctx, guest: Contact, booking: Booking | null): Promise<string> {
-  if (!booking && guest.referral_code) return "";
+  if (booking ? !AFTER_VISIT.includes(booking.status) : guest.referral_code) return "";
   const code = await ensureReferralCode(ctx, guest);
   if (booking && !(await ctx.repo.recordReminder(booking.id, "referral_invite"))) return "";
   return inviteWithCode(code);
@@ -74,8 +79,8 @@ export async function ensureReferralCode(
   for (let i = 0; i < ATTEMPTS; i++) {
     const code = referralCode(guest.name, random);
     if (await ctx.repo.contactByReferralCode(code)) continue;
-    await ctx.repo.setReferralCode(guest.id, code);
-    return code;
+    // Two reviews at once: the code stored first is kept, and both replies give that one.
+    return ctx.repo.claimReferralCode(guest.id, code);
   }
   throw new Error(`No free referral code for ${guest.id}`);
 }

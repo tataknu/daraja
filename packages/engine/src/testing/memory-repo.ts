@@ -251,8 +251,10 @@ export function memoryRepo(clock: () => Date) {
       data.insightReports.push(row);
       return { id: row.id };
     },
-    async setReferralCode(cid, code) {
-      find(data.contacts, (c) => c.id === cid, "contact").referral_code = code.toUpperCase();
+    async claimReferralCode(cid, code) {
+      const contact = find(data.contacts, (c) => c.id === cid, "contact");
+      contact.referral_code ??= code.toUpperCase();
+      return contact.referral_code;
     },
     async contactByReferralCode(code) {
       const c = data.contacts.find((x) => x.referral_code === code.toUpperCase());

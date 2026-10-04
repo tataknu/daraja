@@ -41,12 +41,13 @@ function setup() {
     repo.createGuest({ name, email, language: "de" });
   const guestWithCode = async (name: string, code: string, email?: string) => {
     const g = await guest(name, email);
-    await repo.setReferralCode(g.id, code);
+    await repo.claimReferralCode(g.id, code);
     return repo.contact(g.id);
   };
-  const visit = async (who: Contact, status?: string) => {
+  /** A booking of `who`; by default one whose visit has happened. */
+  const visit = async (who: Contact, status = "VISITED") => {
     const b = await repo.createBooking(who.id, "A visit");
-    return status ? repo.updateBooking(b.id, { status }) : b;
+    return repo.updateBooking(b.id, { status });
   };
   /** A guest writes in; the AI reads it as `overrides` say (by default, a complete request). */
   const ask = (
@@ -158,6 +159,44 @@ describe("the reply to a review", () => {
     expect(emails).toHaveLength(1);
     expect(emails[0]).toContain((await t.repo.contact(lena.id)).referral_code);
   });
+
+  it("only thanks for a happy email before the visit, and keeps the invite for after it", async () => {
+    const t = setup();
+    const lena = await t.guest("Lena Schulz", "lena@example.de");
+    const booking = await t.visit(lena, "CONFIRMED");
+    const thanks = "Danke für die schnelle Bestätigung, wir freuen uns sehr!";
+    await t.ask("lena@example.de", "Lena Schulz", thanks, {
+      intent: "feedback",
+      feedback_text: thanks,
+    });
+
+    expect(t.emailsTo(lena)).toEqual([`[de] ${THANKS}`]);
+    expect((await t.repo.contact(lena.id)).referral_code).toBeFalsy();
+
+    await t.repo.updateBooking(booking.id, { status: "FEEDBACK_REQUESTED" }); // she visited
+    await t.ask("lena@example.de", "Lena Schulz", "Die Röstung war toll!", {
+      intent: "feedback",
+      feedback_text: "Die Röstung war toll!",
+    });
+    const code = (await t.repo.contact(lena.id)).referral_code;
+    expect(t.emailsTo(lena)[1]).toContain(`Your personal code is ${code}.`);
+  });
+
+  it("gives both replies the stored code when two happy reviews arrive at once", async () => {
+    const t = setup();
+    const lena = await t.guest("Lena Schulz");
+    const [first, second] = [await t.visit(lena), await t.visit(lena)];
+
+    await Promise.all([
+      followUpFeedback(t.ctx, lena, first, review("positive")),
+      followUpFeedback(t.ctx, lena, second, review("positive")),
+    ]);
+
+    const code = (await t.repo.contact(lena.id)).referral_code;
+    const emails = t.emailsTo(lena);
+    expect(emails).toHaveLength(2);
+    for (const email of emails) expect(email).toContain(`Your personal code is ${code}.`);
+  });
 });
 
 describe("referral codes", () => {
@@ -206,6 +245,19 @@ describe("referral codes", () => {
     const lena = await t.guest("Lena Schulz");
 
     await expect(ensureReferralCode(t.ctx, lena, () => 0)).rejects.toThrow("No free referral code");
+  });
+
+  it("keeps the first code when two are made for a guest at once", async () => {
+    const t = setup();
+    const lena = await t.guest("Lena Schulz");
+
+    const codes = await Promise.all([
+      ensureReferralCode(t.ctx, lena, rolls(0, 0, 0)),
+      ensureReferralCode(t.ctx, lena, rolls(1, 1, 1)),
+    ]);
+
+    expect(codes).toEqual(["LENA-AAA", "LENA-AAA"]);
+    expect((await t.repo.contact(lena.id)).referral_code).toBe("LENA-AAA");
   });
 
   it("keeps the code a guest already has", async () => {

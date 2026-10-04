@@ -123,7 +123,8 @@ export interface Repo {
   feedbackForInsights(limit: number): Promise<FeedbackRow[]>;
   saveInsightReport(report: InsightReport): Promise<{ id: string }>;
 
-  setReferralCode(contactId: string, code: string): Promise<void>;
+  /** Gives the contact `code` only if they have none yet; returns the code they end up with. */
+  claimReferralCode(contactId: string, code: string): Promise<string>;
   /** Case-insensitive. */
   contactByReferralCode(code: string): Promise<Contact | null>;
 

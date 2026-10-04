@@ -224,12 +224,22 @@ export function supabaseRepo(db: Db): Repo {
       if (error) throw error;
       return data;
     },
-    async setReferralCode(contactId, code) {
+    async claimReferralCode(contactId, code) {
+      // Only a contact without a code gets one: of two reviews at once, the first code stays.
       const { error } = await db
         .from("contacts")
         .update({ referral_code: code.toUpperCase() })
-        .eq("id", contactId);
+        .eq("id", contactId)
+        .is("referral_code", null);
       if (error) throw error;
+      const { data, error: readError } = await db
+        .from("contacts")
+        .select("referral_code")
+        .eq("id", contactId)
+        .single();
+      if (readError) throw readError;
+      if (!data.referral_code) throw new Error(`No referral code stored for ${contactId}`);
+      return data.referral_code;
     },
     async contactByReferralCode(code) {
       const { data } = await db
