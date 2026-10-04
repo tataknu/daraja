@@ -2,7 +2,7 @@
 // her before anything happens.
 import { code } from "./booking-state";
 import { CONF_MIN, type Ctx } from "./context";
-import { addDays, enDate, firstName, localDate, swDate } from "./format";
+import { addDays, enDate, firstName, localDate, mapLine, swDate } from "./format";
 import { parseHostReply } from "./host-replies";
 import type { Contact, InboundResult, Prompt } from "./types";
 
@@ -215,6 +215,7 @@ async function executeHostAction(
       guest,
       `Dear ${first},\n\nGreat news — Noor has confirmed your coffee farm visit (${code(id)}) on ${when} for ${b.party_size} people. The price is ${s.price_per_person} ${s.currency} per person.\n\nHow to get there: ${s.directions}\n\nSee you soon!\nNoor's Farm Visits`,
       id,
+      mapLine(s),
     );
     await ctx.smsNoor(
       `${code(id)} imethibitishwa. Mgeni ametumiwa maelekezo.`,

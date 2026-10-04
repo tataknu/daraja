@@ -8,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@daraja/ui/components/select";
+import { splitDirections } from "./directions";
+import { MapCard } from "./map-card";
 import { NewGuestDialog } from "./new-guest-dialog";
 import type { Booking, Contact, Message } from "./types";
 
@@ -69,31 +71,36 @@ export function GuestInbox(props: {
             No emails yet. Write to Noor in any language.
           </p>
         )}
-        {thread.map((m) => (
-          <div key={m.id} className={m.direction === "in" ? "ml-6 sm:ml-12" : "mr-6 sm:mr-12"}>
-            <div
-              className={`rounded-lg border px-4 py-3 text-sm ${m.direction === "in" ? "border-primary/20 bg-secondary" : "border-border bg-card"}`}
-            >
-              <div className="mb-1 flex items-center justify-between gap-3 text-xs text-muted-foreground">
-                <span className="font-medium">
-                  {m.direction === "in" ? `From ${guest?.name}` : "From Noor's Farm Visits"}
-                </span>
-                <span className="tabular-nums">
-                  {new Date(m.created_at).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
+        {thread.map((m) => {
+          // A confirmation's directions link shows as a map, not as a long URL.
+          const { text, map } = splitDirections(m.text_original);
+          return (
+            <div key={m.id} className={m.direction === "in" ? "ml-6 sm:ml-12" : "mr-6 sm:mr-12"}>
+              <div
+                className={`rounded-lg border px-4 py-3 text-sm ${m.direction === "in" ? "border-primary/20 bg-secondary" : "border-border bg-card"}`}
+              >
+                <div className="mb-1 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+                  <span className="font-medium">
+                    {m.direction === "in" ? `From ${guest?.name}` : "From Noor's Farm Visits"}
+                  </span>
+                  <span className="tabular-nums">
+                    {new Date(m.created_at).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+                <p className="whitespace-pre-wrap break-words">{text}</p>
+                {map && <MapCard {...map} />}
+                {m.text_en && (
+                  <p className="mt-2 border-t border-border pt-2 text-xs italic text-muted-foreground">
+                    EN: {splitDirections(m.text_en).text}
+                  </p>
+                )}
               </div>
-              <p className="whitespace-pre-wrap break-words">{m.text_original}</p>
-              {m.text_en && (
-                <p className="mt-2 border-t border-border pt-2 text-xs italic text-muted-foreground">
-                  EN: {m.text_en}
-                </p>
-              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <form
         className="space-y-2 border-t border-border p-4"

@@ -45,6 +45,9 @@ export interface FarmSettings {
   price_per_person: number;
   currency: string;
   directions: string;
+  /** The farm gate, for the map link in confirmation emails. */
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export type PromptKind =

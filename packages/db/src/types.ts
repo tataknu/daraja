@@ -220,6 +220,8 @@ export type Database = {
           directions: string
           host_id: string | null
           id: number
+          latitude: number | null
+          longitude: number | null
           max_per_slot: number
           price_per_person: number
           slots: string[]
@@ -229,6 +231,8 @@ export type Database = {
           directions: string
           host_id?: string | null
           id?: number
+          latitude?: number | null
+          longitude?: number | null
           max_per_slot: number
           price_per_person: number
           slots: string[]
@@ -238,6 +242,8 @@ export type Database = {
           directions?: string
           host_id?: string | null
           id?: number
+          latitude?: number | null
+          longitude?: number | null
           max_per_slot?: number
           price_per_person?: number
           slots?: string[]

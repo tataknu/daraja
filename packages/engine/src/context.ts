@@ -29,8 +29,16 @@ export interface Ctx extends EngineDeps {
    * only when nobody knows it (the AI then translates the SMS).
    */
   smsNoor(text: string, english: string | null, bookingId?: number | null): Promise<void>;
-  /** Writes in English; the guest receives it in their language. */
-  emailGuest(guest: Contact, english: string, bookingId?: number | null): Promise<void>;
+  /**
+   * Writes in English; the guest receives it in their language. `untranslated` (a link) is added
+   * after translation, so the AI never sees or rewrites it.
+   */
+  emailGuest(
+    guest: Contact,
+    english: string,
+    bookingId?: number | null,
+    untranslated?: string | null,
+  ): Promise<void>;
   /** Moves a booking to a new status, if the state machine allows it for this actor. */
   transition(b: Booking, to: BookingStatus, actor: Actor, patch?: BookingPatch): Promise<Booking>;
   log(messageId: string, decision: Decision): Promise<void>;
@@ -84,11 +92,17 @@ export function createContext(deps: EngineDeps): Ctx {
     });
   }
 
-  async function emailGuest(guest: Contact, english: string, bookingId?: number | null) {
+  async function emailGuest(
+    guest: Contact,
+    english: string,
+    bookingId?: number | null,
+    untranslated?: string | null,
+  ) {
     const localized = await ai.translate(english, "en", guest.language).catch(() => english);
-    await sendMessage("email", guest, localized, {
+    const tail = untranslated ? `\n\n${untranslated}` : "";
+    await sendMessage("email", guest, localized + tail, {
       booking_id: bookingId,
-      text_translated: guest.language === "en" ? null : english,
+      text_translated: guest.language === "en" ? null : english + tail,
       thread_ref: bookingId ? code(bookingId) : null,
     });
   }

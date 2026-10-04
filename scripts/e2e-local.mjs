@@ -181,6 +181,12 @@ async function main() {
     !!last && last.lang === "de" && last.text_original.includes(`B${booking.id}`),
     last?.text_original.slice(0, 80),
   );
+  check(
+    "confirmation ends with Google Maps directions to the farm",
+    !!last &&
+      /📍 https:\/\/www\.google\.com\/maps\/dir\/\?api=1&destination=-?\d/.test(last.text_original),
+    last?.text_original.split("\n").at(-1),
+  );
 
   // 3. The cron hook runs with its secret, and refuses without it.
   const r3 = await fetch(`${BASE}/api/public/hooks/run-timers`, {

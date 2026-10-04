@@ -58,12 +58,15 @@ sequenceDiagram
     D->>V: Request received, not confirmed yet (in Japanese)
     H->>D: SMS: 1
     D->>D: Parsed without AI. PENDING_NOOR to CONFIRMED (host only)
-    D->>V: Confirmed, with directions (in Japanese)
+    D->>V: Confirmed, with directions and a Google Maps link (in Japanese)
 ```
 
 The host's keypad covers the whole flow: **1** accepts, **2** declines, **3** offers another day.
 With several requests waiting, she types the code (`B14 1`). If she writes in her own words instead,
 Daraja reads its understanding back to her and waits for a **1** before anything is sent.
+
+The confirmation ends with a Google Maps directions link to the farm, added after translation so the
+AI never touches it; the demo shows it as a small map under the email.
 
 <div align="center">
 <img src="docs/images/demo.png" alt="Live demo: Kenji's Japanese email in the guest inbox, Noor's Swahili SMS and her reply on a basic phone" width="880">
@@ -178,13 +181,13 @@ Read these with their limits: the data was written by us (not real guests), the 
 the prompts were tuned on them (not a held-out test), so expect lower scores on new messages.
 Method, intervals and every limitation: [docs/eval.md](docs/eval.md).
 
-| Check                                   | What it covers                                                                                                                                                                                   | Command                              |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
-| **Eval** (above)                        | The AI on labelled data; cached; prints how many paid calls a run needs first                                                                                                                    | `make eval`                          |
-| **245 unit tests**                      | Every workflow against an in-memory database and a scripted AI (156), the eval's scoring and safety suite (52), and the web app (37)                                                             | `make test`                          |
-| **10 end-to-end checks**                | Real webhooks, the real model and a real Postgres: language detected, details extracted, Swahili SMS sent, signed SMS reply accepted, booking confirmed, confirmation email in German, cron auth | `make e2e`                           |
-| **The same 10 on the production build** | The built Cloudflare Worker running locally in workerd                                                                                                                                           | `make e2e-worker`                    |
-| **CI**                                  | Typecheck, lint, tests, build and formatting on every pull request                                                                                                                               | [`ci.yml`](.github/workflows/ci.yml) |
+| Check                                   | What it covers                                                                                                                                                                                                     | Command                              |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| **Eval** (above)                        | The AI on labelled data; cached; prints how many paid calls a run needs first                                                                                                                                      | `make eval`                          |
+| **251 unit tests**                      | Every workflow against an in-memory database and a scripted AI (160), the eval's scoring and safety suite (52), and the web app (39)                                                                               | `make test`                          |
+| **11 end-to-end checks**                | Real webhooks, the real model and a real Postgres: language detected, details extracted, Swahili SMS sent, signed SMS reply accepted, booking confirmed, confirmation email in German with the map link, cron auth | `make e2e`                           |
+| **The same 11 on the production build** | The built Cloudflare Worker running locally in workerd                                                                                                                                                             | `make e2e-worker`                    |
+| **CI**                                  | Typecheck, lint, tests, build and formatting on every pull request                                                                                                                                                 | [`ci.yml`](.github/workflows/ci.yml) |
 
 ## What it costs
 

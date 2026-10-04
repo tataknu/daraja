@@ -3,7 +3,17 @@ import type { GuestClassification } from "./ai/types";
 import { code, canTransition, type BookingStatus } from "./booking-state";
 import { CONF_MIN, type Ctx } from "./context";
 import { ingestFeedback, quoteInText } from "./feedback";
-import { enDate, enOrigin, enSlot, firstName, localDate, swDate, swOrigin, swSlot } from "./format";
+import {
+  enDate,
+  enOrigin,
+  enSlot,
+  firstName,
+  localDate,
+  mapLine,
+  swDate,
+  swOrigin,
+  swSlot,
+} from "./format";
 import { findReferrer, followUpFeedback, friendInSms, withReferralNote } from "./referrals";
 import type { Booking, Contact, FarmSettings, InboundResult } from "./types";
 
@@ -213,6 +223,7 @@ async function answerOffer(
       guest,
       `Wonderful — your visit (${id}) on ${booking.date_from} at ${booking.slot ?? s.slots[0]} is confirmed.\n\nHow to get there: ${s.directions}\n\nNoor's Farm Visits`,
       booking.id,
+      mapLine(s),
     );
     await ctx.smsNoor(
       `${id}: mgeni amekubali ${swDate(booking.date_from)}. Imethibitishwa.`,

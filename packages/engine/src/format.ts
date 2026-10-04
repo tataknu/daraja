@@ -95,3 +95,16 @@ export const sms160English = (sms: string, en: string) =>
   sms.length <= 160 ? en : en.slice(0, Math.floor((en.length * 157) / sms.length)) + "...";
 
 export const firstName = (n: string) => n.split(" ")[0] ?? n;
+
+/** Google Maps directions to the farm, from wherever the guest opens it (official Maps URL). */
+export function directionsUrl(s: { latitude: number | null; longitude: number | null }) {
+  if (s.latitude === null || s.longitude === null) return null;
+  const at = (n: number) => +n.toFixed(6);
+  return `https://www.google.com/maps/dir/?api=1&destination=${at(s.latitude)},${at(s.longitude)}`;
+}
+
+/** The last line of a confirmation email: a pin and the directions link, in every language. */
+export function mapLine(s: { latitude: number | null; longitude: number | null }) {
+  const url = directionsUrl(s);
+  return url ? `📍 ${url}` : null;
+}

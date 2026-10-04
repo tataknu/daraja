@@ -31,6 +31,8 @@ const FARM: FarmSettings = {
   price_per_person: 25000,
   currency: "TZS",
   directions: "From Moshi town take the Kibosho road 12 km north.",
+  latitude: -3.238791,
+  longitude: 37.312834,
 };
 
 export function memoryRepo(clock: () => Date) {
