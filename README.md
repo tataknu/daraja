@@ -2,239 +2,207 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/brand/daraja-horizontal-reversed.svg">
-  <img src="docs/brand/daraja-horizontal.svg" alt="Daraja" height="72">
+  <img src="docs/brand/daraja-horizontal.svg" alt="Daraja" height="60">
 </picture>
 
-### An AI front desk for small tourism hosts who run on a basic phone.
+<h3>An AI front desk for small tourism hosts who run on a basic phone</h3>
 
 Visitors write in any language. The host answers with one digit by SMS.<br>
-The AI reads, translates and finds what reviews say. **Code decides; the host has the final say.**
+The AI reads and translates. Code decides. The host always has the final say.
 
-[![CI](https://github.com/fritzschack/pixel-perfect-clone/actions/workflows/ci.yml/badge.svg)](https://github.com/fritzschack/pixel-perfect-clone/actions/workflows/ci.yml)
-![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
-![React 19](https://img.shields.io/badge/TanStack_Start-React_19-61DAFB?logo=react&logoColor=black)
-![Supabase](https://img.shields.io/badge/Supabase-Postgres-3FCF8E?logo=supabase&logoColor=white)
-![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020?logo=cloudflare&logoColor=white)
+**[Open the live demo →](https://daraja-black.vercel.app)**
 
-[How it works](#how-it-works) · [Review insights](#what-visitors-say-review-insights) ·
-[Why AI](#why-ai-and-where-we-dont-use-it) · [Explainability](#explainability-and-guardrails) ·
-[Proof](#proof-it-works) · [Cost](#what-it-costs) · [Architecture](#architecture) ·
-[Quick start](#quick-start)
+[How it works](#how-it-works) · [Why AI](#why-ai-and-where-we-dont-use-it) · [Proof](#proof) · [Architecture](#architecture) · [Run it locally](#run-it-locally)
 
-<img src="docs/images/landing.png" alt="Daraja landing page: visitors write in any language, hosts answer from a basic phone" width="880">
+<br>
+
+<a href="https://daraja-black.vercel.app/demo"><img src="docs/images/hero.png" alt="The live demo: Kenji's email in Japanese, the replies he got, and Noor's basic phone with the Swahili SMS and her reply 1" width="100%"></a>
+
+<sub>A real run of the live demo. Kenji writes in Japanese, Noor gets one SMS in Swahili and replies <b>1</b>, and Kenji's confirmation comes back in Japanese.</sub>
 
 </div>
 
+<br>
+
 ## The problem
 
-A small rural host can lose a booking simply because an email went unread, or arrived in a language
-nobody on the farm reads. Our example host is **Noor**, the persona in the hackathon's Tourism brief:
+A small rural host can lose a booking because an email went unread, or arrived in a language nobody on the farm reads.
 
-- She farms two hectares in the Ondera highlands, with coffee on the upper slope, and gets a handful
-  of visitors a month, mostly by word of mouth.
-- Her phone is a basic phone, and it stays at the house while she works the slope.
-- She reads Swahili. Her visitors don't (in the demo they write in German, French, Japanese and
-  Spanish).
+Our example host is **Noor**, the persona in the hackathon's Tourism brief. She grows coffee on a smallholding and welcomes a handful of visitors a month, mostly by word of mouth. Her basic phone stays at the house while she works, and she reads Swahili. Her visitors write in German, French, Japanese or Spanish.
 
-So emails go unanswered, or get answered too late, in a language the visitor can't read.
-
-**Daraja** (Swahili for _bridge_) sits between the two. Visitors email as they normally would. The
-host gets one short SMS and answers with a keypad. Neither side installs anything.
+**Daraja** sits between them. Visitors email as they normally would. The host gets one short SMS in her language and answers with the keypad. Nobody installs anything.
 
 ## How it works
+
+1. **A visitor emails, in any language.** One AI call reads it into strict JSON: what they want, the date, the time slot and how many people. Relative dates like 来週の土曜日 (_next Saturday_) are resolved against a calendar in the prompt.
+2. **The host gets one SMS in Swahili** and answers with the keypad: **1** yes, **2** no, **3** another day. With several requests waiting, she adds the code (`B14 1`). Keypad replies are read by code, without AI.
+3. **Only the host can confirm.** The visitor gets the confirmation in their own language, with directions and a Google Maps link added after translation, so the AI never touches it.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor V as Visitor (Japanese)
-    participant D as Daraja engine
+    participant D as Daraja
     participant AI as AI model
-    actor H as Host (basic phone, Swahili)
+    actor H as Host (Swahili, basic phone)
     V->>D: Email: 来週の土曜日の午前中に、4人で…
-    D->>AI: Classify and extract (strict JSON schema)
-    AI-->>D: booking_request, 0.98, 4 people, Sat 10 Oct, 09:00
+    D->>AI: Read and extract (strict JSON schema)
+    AI-->>D: booking_request · 4 people · Sat 10 Oct · morning
     D->>D: Rules in code: capacity, state machine, audit log
-    D->>H: SMS: B14 Kenji (Japani), watu 4, Jumamosi 10 Okt asubuhi. Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine
+    D->>H: SMS: B14: Kenji (Japani), watu 4, Jumamosi 10 Okt asubuhi. Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine
     D->>V: Request received, not confirmed yet (in Japanese)
     H->>D: SMS: 1
-    D->>D: Parsed without AI. PENDING_NOOR to CONFIRMED (host only)
-    D->>V: Confirmed, with directions and a Google Maps link (in Japanese)
+    D->>D: Parsed without AI · PENDING_NOOR → CONFIRMED (host only)
+    D->>V: Confirmed, with directions and a map link (in Japanese)
 ```
 
-The host's keypad covers the whole flow: **1** accepts, **2** declines, **3** offers another day.
-With several requests waiting, she types the code (`B14 1`). If she writes in her own words instead,
-Daraja reads its understanding back to her and waits for a **1** before anything is sent.
+If the host writes in her own words instead, Daraja reads its understanding back to her and waits for a **1** before anything is sent.
 
-The confirmation ends with a Google Maps directions link to the farm, added after translation so the
-AI never touches it; the demo shows it as a small map under the email.
+## What visitors say
 
-<div align="center">
-<img src="docs/images/demo.png" alt="Live demo: Kenji's Japanese email in the guest inbox, Noor's Swahili SMS and her reply on a basic phone" width="880">
-<br><sub>The live demo after a real run: Kenji's email, Noor's SMS with an English line for reviewers, and her reply.</sub>
-</div>
+The Tourism brief names where AI adds value: reading scattered reviews and telling the operator **what visitors keep returning to, what they wish had been different, and what to build next.** Daraja answers those three questions for a host who will only ever read them as SMS.
 
-## What visitors say: review insights
+<img src="docs/images/insights.png" alt="Insights tab: Keep doing, Improve and Build next, with review counts and quotes in each visitor's language" width="100%">
 
-The Tourism brief names where AI adds value: reading scattered reviews and telling the operator
-**what visitors keep returning to, what they wish had been different, and what to build next**.
-Daraja answers exactly those three questions, for a host who will only ever read them as SMS.
+- **Each review is read once**, when it arrives: what the visitor loved, wished and suggested, each with a short quote in their own words.
+- **Every quote is checked in code** against the review, whole words only. An invented quote is dropped and counted.
+- **Counting is code, not AI:** each insight is the number of distinct reviews that say it.
+- **Noor gets two or three Swahili lines.** A line without its count, or too long for one SMS, is replaced by a fixed template.
 
-- **Each review is read once, when it arrives** (one AI call): what the visitor loved, what they
-  wished, and what they suggest, each with a short quote in their own words.
-- **Every quote is checked in code** against the review, whole words only. A quote the model
-  invented is dropped and counted, so a point without evidence never reaches Noor.
-- **Counting is code, not AI**: each insight is the number of distinct reviews that say it.
-- **Suggestions are grouped by meaning** (one call: "sell beans" and "coffee to take home" are one
-  idea), and Noor gets **two or three Swahili lines** (one call). A line without its count, or too
-  long for one SMS, is replaced by a fixed template.
-
-<div align="center">
-<img src="docs/images/insights.png" alt="Insights tab: Keep doing, Improve and Build next, with counts and quotes in each visitor's language" width="880">
-<br><sub>The Insights tab on the 42 sample reviews (11 languages, written for the demo): counts, quotes in the visitor's language with English underneath.</sub>
-</div>
-
-What Noor received on her phone for those 42 reviews (real run):
+What Noor received for the 42 sample reviews (11 languages, written for the demo):
 
 > Wageni walipenda jinsi kahawa inavyotengenezwa: wageni 20 kati ya 42. Endelea hivyo.<br>
 > Cha kuboresha ni njia ya kufika shambani: wageni 16 kati ya 42. Rahisisha maelekezo.<br>
 > Wageni walipendekeza kuuza maharage ya kahawa yaliyokaangwa ya kuchukua nyumbani: wageni 8 kati ya 42.
 
-_Visitors loved how coffee is made: 20 of 42. Keep it up. · What to improve is the way to find the
-farm: 16 of 42. Make directions easier. · Visitors suggested selling roasted coffee beans to take
-home: 8 of 42._
+<sub>Visitors loved how coffee is made: 20 of 42. · Improve the way to the farm: 16 of 42. · Visitors suggested selling roasted beans to take home: 8 of 42.</sub>
 
-### Good reviews bring the next visitors
-
-After the visit, a happy reviewer gets a personal code in the thank-you email (e.g. `LENA-K7P`)
-and an invitation to come back. When a friend quotes it, the new booking is linked to them and
-Noor's SMS says so: `B15: Tom (Ujerumani), rafiki wa Lena, watu 3, …` ("friend of Lena"). Codes
-are matched in code, never guessed by the AI, and the Metrics tab counts referral bookings.
+**Good reviews bring the next visitors.** A happy reviewer gets a personal code in the thank-you email (like `LENA-K7P`). When a friend quotes it, the new booking is linked and Noor's SMS says so: `B15: Tom (Ujerumani), rafiki wa Lena, …` (_friend of Lena_). Codes are matched in code, never guessed by the AI.
 
 ## Why AI, and where we don't use it
 
-AI is used only where rules can't do the job: reading free text in any language. Everything that
-commits the host to something is plain code.
+AI is used only where rules can't do the job: understanding free text in any language. That takes six narrow model calls, each returning strict JSON, with no agent framework. Everything that commits the host to something is plain code.
 
-| The AI does                                                         | Why it needs AI                                                        |
-| ------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Reads a visitor's email and extracts date, group size and time slot | Free text, any language, relative dates ("next Saturday morning")      |
-| Translates both ways: visitor → host, host → visitor                | Any visitor language, without writing templates for each one           |
-| Interprets the host's free-text replies                             | So she isn't limited to digits, with a read-back before acting on them |
-| Reads each review: what the visitor loved, wished and suggests      | Free text in any language; the brief names this as where AI adds value |
-| Groups suggestions by meaning, and words Noor's Swahili SMS         | "Sell beans" and "coffee to take home" are the same idea               |
+<table>
+<tr>
+<th width="50%" align="left">The AI reads and writes</th>
+<th width="50%" align="left">Code decides</th>
+</tr>
+<tr>
+<td valign="top">
 
-| Code does (no AI)                                                 | Where                                                                                              |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Decides what happens to a booking, and who may confirm it         | [`booking-state.ts`](packages/engine/src/booking-state.ts)                                         |
-| Parses keypad replies (`1`, `B14 2`, `14-1`)                      | [`host-replies.ts`](packages/engine/src/host-replies.ts)                                           |
-| Checks capacity, sends reminders, expires stale requests          | [`guest.ts`](packages/engine/src/guest.ts), [`timers.ts`](packages/engine/src/timers.ts)           |
-| Writes the Swahili SMS (dates, slots, one 160-character segment)  | [`format.ts`](packages/engine/src/format.ts)                                                       |
-| Counts reviews per insight, checks every quote against its review | [`insights.ts`](packages/engine/src/insights.ts), [`feedback.ts`](packages/engine/src/feedback.ts) |
-| Referral codes, and linking the bookings they bring in            | [`referrals.ts`](packages/engine/src/referrals.ts)                                                 |
-| Logs every AI call: task, tokens, latency, cost                   | [`context.ts`](packages/engine/src/context.ts), [`metrics.ts`](packages/engine/src/metrics.ts)     |
+- Reads a visitor's email: intent, date, slot, group size
+- Translates between the visitor's language and the host's
+- Understands the host's own words, then reads them back
+- Reads each review: what visitors loved, wished and suggest
+- Groups suggestions by meaning and writes the host's summary SMS
+
+</td>
+<td valign="top">
+
+- Who may confirm a booking: only the host · [`booking-state.ts`](packages/engine/src/booking-state.ts)
+- Keypad replies like `1` or `B14 2` · [`host-replies.ts`](packages/engine/src/host-replies.ts)
+- Capacity, reminders and expiry · [`guest.ts`](packages/engine/src/guest.ts), [`timers.ts`](packages/engine/src/timers.ts)
+- Counting reviews and checking quotes · [`insights.ts`](packages/engine/src/insights.ts), [`feedback.ts`](packages/engine/src/feedback.ts)
+- Referral codes and the cost of every AI call · [`referrals.ts`](packages/engine/src/referrals.ts), [`metrics.ts`](packages/engine/src/metrics.ts)
+
+</td>
+</tr>
+</table>
+
+## Proof
+
+The AI is scored on labelled data with the real model (`gpt-5.4-mini`, reasoning effort low). Every answer is cached, so the numbers can be regenerated without paying again.
+
+| Suite                              | Cases | Result                                                                     |
+| ---------------------------------- | ----- | -------------------------------------------------------------------------- |
+| Guest emails, 13 languages         | 56    | Every field right **56/56** (95% CI 94–100%), wrong but confident **0/56** |
+| Answers to a date the host offered | 7     | **7/7** read safely: only an explicit yes confirms                         |
+| The host's free-text replies       | 18    | Intent **18/18**, wrong but confident **0/18**                             |
+| Reviews, 11 languages              | 42    | Sentiment 41/42, points F1 89%, ideas 19/19, quotes **165/165** verbatim   |
+| Safety: the engine under attack    | 12    | **12/12**: no booking confirmed except from the host's own phone           |
+
+> [!NOTE]
+> The data was written by us, the sets are small, and the prompts were tuned on them, so expect lower scores on real messages. Method, intervals and limits: [docs/eval.md](docs/eval.md).
+
+**253 unit tests** cover every workflow against an in-memory database, without calling the model (engine 160, eval 52, web app 41). **11 end-to-end checks** go through the real webhooks, the real model and a real Postgres. [CI](.github/workflows/ci.yml) runs typecheck, lint, tests, build and formatting on every pull request.
+
+### What it costs
+
+A booking (the visitor's request, then the host's yes) takes **3 AI calls, about 1,300 tokens and about $0.003** at OpenAI's list price for `gpt-5.4-mini` ([`pricing.ts`](packages/engine/src/pricing.ts), checked 3 Oct 2026). The host's keypad answers use no AI at all.
+
+<img src="docs/images/metrics.png" alt="Metrics tab: AI cost, calls and tokens per booking, latency, hand-offs to the host and referral bookings" width="100%">
 
 ## Explainability and guardrails
 
-**Every inbound message leaves an audit row** in the `decisions` table: what the model understood,
-how sure it was, which model it was, and what the code did about it. These are the two rows from the
-run in the screenshot above, as shown in the demo's **Data** tab:
+Every inbound message leaves a row in the `decisions` table: what the model understood, how sure it was, which model it was, and what the code did. Two rows from a real run:
 
-| Message       | intent            | confidence | entities                                                                | model          | action_taken           | routed_to_human |
-| ------------- | ----------------- | ---------- | ----------------------------------------------------------------------- | -------------- | ---------------------- | --------------- |
-| Kenji's email | `booking_request` | 0.98       | `{"date_from":"2026-10-10","slot":"09:00","party_size":4,"missing":[]}` | `gpt-5.4-mini` | `request_sent_to_noor` | true            |
-| Noor's "1"    | `approve`         | 1          | `{"choice":1,"booking":14}`                                             | `regex`        | `approve`              | false           |
+| Message       | Understood                                                   | Read by        | Action                 |
+| ------------- | ------------------------------------------------------------ | -------------- | ---------------------- |
+| Kenji's email | `booking_request`, 4 people, 10 Oct, 09:00 · confidence 0.98 | `gpt-5.4-mini` | `request_sent_to_noor` |
+| Noor's `1`    | `approve` B14                                                | `regex`        | `approve`              |
 
-The second row shows that the host's decision never went through the AI.
+The host's decision never went through the AI. Every message also keeps its original text, the translation the other side saw, and an English version for reviewers.
 
-Every message also keeps its **original text**, the **translation** the other side saw, and an
-**English** version for reviewers.
+- **The host decides.** The state machine checks who is acting: `PENDING_NOOR → CONFIRMED` only on the host's reply, and a date she offered is confirmed only on the visitor's explicit yes.
+- **AI output is data, not actions.** Structured output against a strict JSON schema; code maps intents to actions.
+- **Unsure means a person decides.** Below 0.75 confidence, the message goes to the host as a question.
+- **Nothing waits forever.** A reminder to the host after 24 h; after 48 h the request expires and the visitor gets an apology.
 
-| Guardrail                      | How it's enforced                                                                                                                                                                                                                        |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| The host decides               | The state machine checks the actor: `PENDING_NOOR → CONFIRMED` only on the host's reply; a date she offered is confirmed only on the guest's explicit yes (`accepts_offer`) ([`booking-state.ts`](packages/engine/src/booking-state.ts)) |
-| AI output is data, not actions | Structured output against a strict JSON schema; code maps intents to actions ([`ai/tasks.ts`](packages/engine/src/ai/tasks.ts))                                                                                                          |
-| Unsure means a human decides   | Confidence below 0.75 or `unknown`: the message goes to the host as a question, or she's asked to rephrase                                                                                                                               |
-| Free text is read back         | "Nimeelewa: … Jibu 1 kutuma, 2 kughairi" (I understood …, reply 1 to send, 2 to cancel); an old read-back never catches a reply meant for a newer request                                                                                |
-| Quotes need evidence           | A review quote must appear word for word in the review; invented ones are dropped and counted                                                                                                                                            |
-| Every AI call is logged        | `ai_calls`: task, model, tokens, latency, linked to its message and booking                                                                                                                                                              |
-| AI outage                      | The raw message reaches the host untranslated, and the visitor is told she'll reply                                                                                                                                                      |
-| Nothing waits forever          | Reminder to the host after 24 h; after 48 h the request expires and the visitor gets an apology                                                                                                                                          |
-| Capacity                       | If a request would overfill a tour slot, the host's SMS says `ZIDI!` (too many)                                                                                                                                                          |
-| Repeated webhooks              | Deduplicated by provider message id                                                                                                                                                                                                      |
-| Authenticated webhooks         | Twilio HMAC signature, Postmark basic auth, a secret for the cron hook. Real channels stay off unless `PHASE2_ENABLED=true`                                                                                                              |
-| One way out                    | Every outbound message goes through a single function ([`context.ts`](packages/engine/src/context.ts)), so channels can be swapped in one place                                                                                          |
+<details>
+<summary><b>All guardrails</b></summary>
+<br>
 
-## Proof it works
+| Guardrail               | How it's enforced                                                                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Free text is read back  | `Nimeelewa: … Jibu 1 kutuma, 2 kughairi` (_I understood …, reply 1 to send, 2 to cancel_); an old read-back never catches a reply meant for a newer one |
+| Quotes need evidence    | A review quote must appear word for word in the review                                                                                                  |
+| Every AI call is logged | `ai_calls`: task, model, tokens, latency, linked to its message and booking                                                                             |
+| AI outage               | The raw message reaches the host untranslated, and the visitor is told she'll reply                                                                     |
+| Capacity                | If a request would overfill a tour slot, the host's SMS says `ZIDI!` (_too many_)                                                                       |
+| Repeated webhooks       | Deduplicated by the provider's message id                                                                                                               |
+| Authenticated webhooks  | Twilio signature, Postmark basic auth, a secret for the cron hook; real channels stay off unless `PHASE2_ENABLED=true`                                  |
+| One way out             | Every outbound message goes through one function ([`context.ts`](packages/engine/src/context.ts)), so channels can be swapped in one place              |
 
-The AI is scored on labelled data with the real model (`gpt-5.4-mini`, reasoning effort low).
-Every answer is cached, so the numbers can be regenerated without paying again.
-
-| Suite                           | Cases | Result                                                                                           |
-| ------------------------------- | ----- | ------------------------------------------------------------------------------------------------ |
-| Guest emails, 13 languages      | 56    | Every field right **56/56** (95% CI 94–100%); wrong but confident **0/56**                       |
-| Answers to a date Noor offered  | 7     | **7/7** read safely: only an explicit yes confirms                                               |
-| Noor's free-text SMS replies    | 18    | Intent **18/18**; wrong but confident **0/18**; unclear booking ids are asked again, not guessed |
-| Reviews, 11 languages           | 42    | Sentiment 41/42; points F1 89%; ideas 19/19 precision and recall; quotes **165/165** verbatim    |
-| Safety: the engine under attack | 12    | **12/12**: whatever the AI claimed, no booking was confirmed except from Noor's own phone        |
-
-Read these with their limits: the data was written by us (not real guests), the sets are small, and
-the prompts were tuned on them (not a held-out test), so expect lower scores on new messages.
-Method, intervals and every limitation: [docs/eval.md](docs/eval.md).
-
-| Check                                   | What it covers                                                                                                                                                                                                     | Command                              |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
-| **Eval** (above)                        | The AI on labelled data; cached; prints how many paid calls a run needs first                                                                                                                                      | `make eval`                          |
-| **251 unit tests**                      | Every workflow against an in-memory database and a scripted AI (160), the eval's scoring and safety suite (52), and the web app (39)                                                                               | `make test`                          |
-| **11 end-to-end checks**                | Real webhooks, the real model and a real Postgres: language detected, details extracted, Swahili SMS sent, signed SMS reply accepted, booking confirmed, confirmation email in German with the map link, cron auth | `make e2e`                           |
-| **The same 11 on the production build** | The built Cloudflare Worker running locally in workerd                                                                                                                                                             | `make e2e-worker`                    |
-| **CI**                                  | Typecheck, lint, tests, build and formatting on every pull request                                                                                                                                                 | [`ci.yml`](.github/workflows/ci.yml) |
-
-## What it costs
-
-A booking (the visitor's request, then Noor's yes) takes **3 AI calls, about 1,300 tokens: about
-$0.003** at OpenAI's list price for `gpt-5.4-mini` (checked 3 Oct 2026, in
-[`pricing.ts`](packages/engine/src/pricing.ts)). Noor's keypad answers use no AI at all.
-
-- **We cut it in half.** The first version made 6 calls per booking; metering every call showed
-  that most were English glosses of SMS whose English we already knew. Now the SMS carry their
-  English and the email's English comes with its classification.
-- **Reviews:** one call per review when it arrives; the monthly report adds two (grouping and the
-  SMS), whatever the number of reviews.
-- The demo's **Metrics** tab computes this live from every logged call: cost and calls per booking,
-  hand-offs to Noor, replies read without AI, time to her answer, and referral bookings.
-
-<div align="center">
-<img src="docs/images/metrics.png" alt="Metrics tab: AI cost per booking, calls and tokens per booking, latency, hand-offs, and a breakdown by task" width="880">
-</div>
+</details>
 
 ## Architecture
 
 ```mermaid
 flowchart TD
-  E["Email webhook (Postmark)"] --> H
-  S["SMS webhook (Twilio, signed)"] --> H
-  SIM["Demo simulator"] --> H
-  H["handleInbound: dedupe, find contact, store message"]
-  H -->|from a visitor| G["Guest workflow"]
-  H -->|from the host| HO["Host workflow"]
-  G -->|free text| AI[["AI: classify, extract, translate"]]
-  HO -->|own words| AI
-  HO -->|keypad reply| KP["Keypad parser (no AI)"]
-  AI --> R{{"Rules in code: state machine, capacity, confidence threshold"}}
-  KP --> R
-  T["Cron: reminders, expiry, feedback"] --> OUT
-  R --> OUT["sendMessage: the only way out"]
+  IN["Email (Postmark) · SMS (Twilio) · live demo"] --> H["handleInbound<br/>dedupe, store the original"]
+  H -->|visitor| G["Guest workflow"]
+  H -->|host| K{"Keypad reply?"}
+  G --> AI[["AI: read and translate<br/>strict JSON"]]
+  AI --> R["Rules in code<br/>state machine · capacity · confidence"]
+  K -->|"yes: 1, B14 2"| R
+  K -->|own words| AI
+  T["Cron hook<br/>reminders · expiry"] --> R
+  R --> OUT["sendMessage<br/>the only way out"]
   OUT --> SMS["SMS to the host"]
   OUT --> MAIL["Email to the visitor"]
-  R -.->|audit| DB[("Supabase: messages, bookings, decisions")]
+  R -.->|audit| DB[("Supabase Postgres<br/>bookings · decisions · ai_calls")]
+  classDef ai fill:#CB6440,stroke:#CB6440,color:#fff
+  class AI ai
 ```
 
-The engine depends on two interfaces, `Repo` (all data access) and `Ai` (all model calls). Production
-wires Supabase and an OpenAI-compatible gateway; tests wire an in-memory repo and a scripted AI.
+The engine depends on two interfaces, `Repo` (all data access) and `Ai` (all model calls). Production wires Supabase and OpenAI; tests wire in-memory versions of both.
+
+| Layer    | Tools                                                              | Why                                                                                     |
+| -------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| Frontend | TanStack Start, React 19, Tailwind CSS v4, shadcn/ui               | One app for the landing page and the live demo, which updates through Supabase Realtime |
+| Backend  | Server functions on Vercel, a TypeScript engine, Turborepo and bun | Plain code with a booking state machine; channels and storage plug in behind interfaces |
+| Agents   | OpenAI `gpt-5.4-mini`, Responses API, strict JSON schemas          | Six narrow calls, one per job, no agent framework                                       |
+| Database | Supabase Postgres with row-level security                          | Waiting for the host is a row, not a running process; every AI call is logged           |
+| APIs     | Twilio SMS, Postmark email, Google Maps links                      | One way in and one way out, so real sending is a single function to add                 |
+| Testing  | Vitest, a labelled eval, GitHub Actions                            | Every workflow is tested; the eval measures the real model                              |
+
+<details>
+<summary><b>Repository layout</b></summary>
 
 ```
 apps/
-  web/                    TanStack Start app (Cloudflare Worker)
+  web/                    TanStack Start app (Vercel)
     src/routes/           thin route files: URL, head, search params, webhooks
     src/features/landing/ landing page and the wizard into the demo
     src/features/demo/    live simulator: guest inbox, the host's phone, Insights, Metrics, Data
@@ -249,8 +217,10 @@ packages/
 docs/
   brand/                  logo files and usage guidelines
   eval.md                 how the AI is scored, results, limitations
-  development.md          monorepo, UI and database notes
+  development.md          monorepo, UI, database and deploy notes
 ```
+
+</details>
 
 <details>
 <summary><b>Booking lifecycle</b></summary>
@@ -275,50 +245,57 @@ Simplified; the full transition table is in [`booking-state.ts`](packages/engine
 
 </details>
 
-## Quick start
+## Run it locally
 
-Needs Docker running, Node, and an OpenAI API key. bun, the Supabase CLI and wrangler run through
-`npx` if they aren't installed.
+Needs Docker running, Node, and an OpenAI API key. bun and the Supabase CLI run through `npx` if they aren't installed.
 
 ```sh
-OPENAI_API_KEY=sk-... make setup   # dependencies, local Supabase in Docker, migrations and seed, .env.local
-make dev                           # http://localhost:8080 (landing) and /demo (live simulator)
+OPENAI_API_KEY=sk-... make setup   # dependencies, local Supabase, migrations and seed, .env.local
+make dev                           # http://localhost:8080, and /demo for the live simulator
 ```
 
-| Command             | What it does                                                       |
-| ------------------- | ------------------------------------------------------------------ |
-| `make check`        | Typecheck, unit tests, lint, format check and production build     |
-| `make e2e`          | End-to-end through the real webhooks, printing the full transcript |
-| `make eval`         | Score the AI on the labelled sets (cached; shows paid calls first) |
-| `make deploy-local` | The built Cloudflare Worker on http://localhost:8787               |
-| `make db-reset`     | Wipe the local database and re-seed it                             |
-| `make`              | List every target                                                  |
+| Command         | What it does                                                       |
+| --------------- | ------------------------------------------------------------------ |
+| `make check`    | Typecheck, unit tests, lint, format check and production build     |
+| `make e2e`      | End to end through the real webhooks, printing the transcript      |
+| `make eval`     | Score the AI on the labelled sets (cached; shows paid calls first) |
+| `make db-reset` | Wipe the local database and re-seed it                             |
+| `make`          | List every target                                                  |
 
-Configuration lives in `apps/web/.env.local` (written by `make setup`, never committed):
+Production runs on Vercel: see [Deploying to Vercel](docs/development.md#deploying-to-vercel).
 
-| Variable                                                                                | Purpose                                                                                                          |
-| --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `OPENAI_API_KEY`, `AI_MODEL`, `AI_GATEWAY_URL`                                          | Model access. Locally: OpenAI directly. In Lovable: Lovable's AI gateway                                         |
-| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `VITE_SUPABASE_*`                          | Database. The service key stays on the server; the browser gets read-only access for the simulator               |
-| `PHASE2_ENABLED`, `TWILIO_AUTH_TOKEN`, `POSTMARK_INBOUND_USER`, `POSTMARK_INBOUND_PASS` | The real SMS and email webhooks. Off unless `PHASE2_ENABLED=true` (the local setup turns them on for `make e2e`) |
-| `LOVABLE_CRON_SECRET`                                                                   | Authenticates the timers hook                                                                                    |
+<details>
+<summary><b>Configuration</b></summary>
+<br>
 
-More in [docs/development.md](docs/development.md).
+Set in `apps/web/.env.local` (written by `make setup`, never committed):
+
+| Variable                                                                                          | Purpose                                                                                  |
+| ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `OPENAI_API_KEY`, `AI_MODEL`, `AI_REASONING_EFFORT`, `AI_GATEWAY_URL`                             | Model access: OpenAI directly, or any OpenAI-compatible gateway                          |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` | Database. The service key stays on the server; the browser only reads, for the simulator |
+| `PHASE2_ENABLED`, `TWILIO_AUTH_TOKEN`, `POSTMARK_INBOUND_USER`, `POSTMARK_INBOUND_PASS`           | The real SMS and email webhooks, off unless `PHASE2_ENABLED=true`                        |
+| `LOVABLE_CRON_SECRET`                                                                             | Authenticates the timers hook                                                            |
+
+</details>
 
 ## Status and next steps
 
-- **Phase 1 (this repo):** a working engine with simulated channels. The demo sends no real SMS or
-  email. The Twilio and Postmark inbound webhooks are implemented and tested end to end locally;
-  sending real SMS and email is the next step.
-- **One host today:** the Swahili templates and the farm's name live in code. Next is per-host
-  settings (language, tours, capacity), so a second host is a row in the database, not a code change.
-- **Measured on our own data, not yet on real guests:** the eval uses messages and reviews we
-  wrote. A pilot with real emails and reviews is the next proof.
-- **Language review:** the Swahili wording (SMS templates, aspect labels) needs a native
-  speaker's check.
+- **Live on Vercel, with simulated channels.** The demo sends no real SMS or email. The Twilio and Postmark webhooks are built and tested end to end locally; real sending is next.
+- **One host today.** The Swahili templates and the farm's name live in code. Next is per-host settings, so a second host is a row in the database, not a code change.
+- **Measured on our own data.** A pilot with real emails and reviews is the next proof.
+- **Language review.** The Swahili wording needs a native speaker's check.
 
-## Context
+<br>
 
-Built for the Hack-Nation × World Bank Youth Summit Global AI Hackathon 2026, _Small AI for
-Development_, Tourism track. The first version was generated with [Lovable](https://lovable.dev);
-this repo restructures it into a tested monorepo. Brand files and guidelines: [`docs/brand`](docs/brand).
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/brand/daraja-mark-reversed.svg">
+  <img src="docs/brand/daraja-mark.svg" alt="" height="28">
+</picture>
+
+<sub>Built for the Hack-Nation × World Bank Youth Summit Global AI Hackathon 2026 · <i>Small AI for Development</i>, Tourism track.<br>
+The first version was made with <a href="https://lovable.dev">Lovable</a>; this repo turns it into a tested monorepo. Brand files: <a href="docs/brand">docs/brand</a>.</sub>
+
+</div>
