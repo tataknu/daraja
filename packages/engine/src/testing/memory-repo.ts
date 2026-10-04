@@ -261,7 +261,7 @@ export function memoryRepo(clock: () => Date) {
       return c ? copy(c) : null;
     },
     async logAiCalls(calls) {
-      // As in Postgres with the retry: a link to a booking or message that doesn't exist is dropped.
+      // As in Supabase (foreign keys, then the retry): a link to a missing row is dropped.
       const linked = <T>(id: T | null, rows: { id: T }[]) =>
         id !== null && rows.some((r) => r.id === id) ? id : null;
       data.aiCalls.push(

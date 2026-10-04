@@ -28,9 +28,9 @@ const askedAt = (p: Prompt) =>
 /** `open` is newest first, as the repo returns it. */
 export function parseHostReply(text: string, open: Prompt[]): HostCommand {
   // A bare "1"/"2" answers a read-back only if it is the last thing she was asked: an older one
-  // must not catch her answer to a newer request or reminder.
+  // must not catch her answer to a newer request or reminder. (A stable sort: ties stay in order.)
   const bare = /^\s*([12])\s*$/.exec(text);
-  const [last] = [...open].sort((a, b) => askedAt(b) - askedAt(a)); // stable: ties stay newest first
+  const [last] = [...open].sort((a, b) => askedAt(b) - askedAt(a));
   if (bare && last?.kind === "confirm_readback")
     return { kind: "readback", prompt: last, yes: bare[1] === "1" };
 

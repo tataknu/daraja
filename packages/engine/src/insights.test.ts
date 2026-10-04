@@ -78,7 +78,7 @@ const REVIEWS = [
   ]),
 ];
 
-/** The fixed SMS for REVIEWS and its English: what Noor gets when the AI's wording can't be used. */
+/** The fixed SMS for REVIEWS, and its English: sent when the AI's wording can't be used. */
 const FIXED_SW = [
   "Endelea: Kuonja kahawa. Wageni 4 kati ya 5 walipenda.",
   "Boresha: Njia ya kufika shambani. Wageni 2 kati ya 5 walitaja.",

@@ -18,11 +18,11 @@ const WORD_CHAR = /[\p{L}\p{M}\p{N}]/u;
 /** Scripts written without spaces between words, where a quote may start or end mid-"word". */
 const NO_SPACES =
   /[\p{scx=Han}\p{scx=Hiragana}\p{scx=Katakana}\p{scx=Hangul}\p{scx=Thai}\p{scx=Lao}\p{scx=Khmer}\p{scx=Myanmar}]/u;
-/** A line break between two Chinese or Japanese characters, which is not a space between words. */
+/** A line break (or space) between two Chinese or Japanese characters: it separates no words. */
 const CJK_GAP =
   /(?<=[\p{scx=Han}\p{scx=Hiragana}\p{scx=Katakana}])\s+(?=[\p{scx=Han}\p{scx=Hiragana}\p{scx=Katakana}])/gu;
 
-/** Lowercase, one space between words, the same quote marks and dashes, no punctuation at either end. */
+/** Lowercase, one space between words, one kind of quote mark and dash, no end punctuation. */
 function normalise(s: string): string {
   return s
     .replace(/[‘’‛`´]/g, "'") // before NFKC, which turns ´ into a space and an accent

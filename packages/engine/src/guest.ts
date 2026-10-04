@@ -130,7 +130,7 @@ export async function handleGuest(
   switch (r.intent) {
     case "booking_request":
     case "modify":
-      // A reply to the date Noor offered: only the guest's own yes confirms it; unclear goes to her.
+      // A reply to the date Noor offered: only the guest's clear yes confirms; unclear goes to her.
       if (
         booking?.status === "COUNTER_OFFERED" &&
         (!r.entities.date_from || r.entities.date_from === booking.date_from)
