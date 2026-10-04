@@ -6,7 +6,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".output", ".vinxi", ".wrangler", ".turbo", "**/*.gen.ts"] },
+  { ignores: ["dist", ".output", ".vinxi", ".wrangler", ".turbo", ".vercel", "**/*.gen.ts"] },
   {
     files: ["**/*.{js,ts,tsx}"],
     extends: [js.configs.recommended, ...tseslint.configs.recommended],

@@ -16,3 +16,4 @@ packages/db/migrations
 packages/db/supabase
 # Turborepo manages a block in this file
 AGENTS.md
+.vercel

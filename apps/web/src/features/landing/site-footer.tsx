@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { GitHubLink } from "@/components/github-link";
 import { DarajaLogo } from "@/components/logo";
 
 export function SiteFooter() {
@@ -7,9 +8,12 @@ export function SiteFooter() {
       <Link to="/" aria-label="Daraja home" className="text-base">
         <DarajaLogo />
       </Link>
-      <Link to="/demo" className="font-medium text-foreground underline-offset-4 hover:underline">
-        Open the demo →
-      </Link>
+      <div className="flex items-center gap-5">
+        <GitHubLink label="Code on GitHub" />
+        <Link to="/demo" className="font-medium text-foreground underline-offset-4 hover:underline">
+          Open the demo →
+        </Link>
+      </div>
     </footer>
   );
 }

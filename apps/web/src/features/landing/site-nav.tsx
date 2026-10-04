@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@daraja/ui/components/button";
+import { GitHubLink } from "@/components/github-link";
 import { DarajaLogo } from "@/components/logo";
 
 export function SiteNav() {
@@ -21,6 +22,7 @@ export function SiteNav() {
         >
           Use case
         </a>
+        <GitHubLink className="p-2" />
         <Button asChild variant="outline" size="sm">
           <Link to="/demo">Open the demo</Link>
         </Button>
