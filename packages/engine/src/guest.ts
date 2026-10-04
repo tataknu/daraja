@@ -4,7 +4,7 @@ import { code, canTransition, type BookingStatus } from "./booking-state";
 import { CONF_MIN, type Ctx } from "./context";
 import { ingestFeedback } from "./feedback";
 import { firstName, localDate, swDate, swOrigin, swSlot } from "./format";
-import { followUpFeedback } from "./referrals";
+import { findReferrer, followUpFeedback, withReferralNote } from "./referrals";
 import type { Booking, Contact, FarmSettings, InboundResult } from "./types";
 
 /** The booking a guest's email is about: the one in the thread, else their newest open booking. */
@@ -212,6 +212,8 @@ async function requestBooking(
   }
 
   const e = r.entities;
+  // A friend's code in the message links the booking to them, once.
+  const found = booking?.referred_by ? null : await findReferrer(ctx, guest, text);
   const patch = {
     date_from: e.date_from ?? booking?.date_from ?? null,
     date_to: e.date_to ?? e.date_from ?? booking?.date_to ?? null,
@@ -219,6 +221,7 @@ async function requestBooking(
     party_size: e.party_size ?? booking?.party_size ?? null,
     notes_original: text,
     notes_translated: r.translation_for_noor,
+    ...(found && { referred_by: found.id }),
   };
   if (!booking) booking = await ctx.repo.createBooking(guest.id, text);
 
@@ -250,10 +253,11 @@ async function requestBooking(
   // Capacity is checked by code against the configured maximum and shown to Noor; AI never decides it.
   const taken = await ctx.repo.partySizeBooked(patch.date_from!, patch.slot, booking.id);
   const over = taken + patch.party_size! > s.max_per_slot ? " ZIDI!" : "";
-  await ctx.smsNoor(
-    `${code(booking.id)}: ${firstName(guest.name)} (${swOrigin(guest.language)}), watu ${patch.party_size}, ${swDate(patch.date_from)} ${swSlot(patch.slot)}${over}. Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine`,
-    booking.id,
-  );
+  const referrer =
+    found ?? (booking.referred_by ? await ctx.repo.contact(booking.referred_by) : null);
+  const head = `${code(booking.id)}: ${firstName(guest.name)} (${swOrigin(guest.language)})`;
+  const tail = `, watu ${patch.party_size}, ${swDate(patch.date_from)} ${swSlot(patch.slot)}${over}. Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine`;
+  await ctx.smsNoor(withReferralNote(head, referrer, tail), booking.id);
   await ctx.emailGuest(
     guest,
     `Thank you! Your request (${code(booking.id)}) for ${patch.party_size} people on ${patch.date_from} at ${patch.slot} has been received. This is not yet a confirmation — Noor will confirm personally soon.`,
