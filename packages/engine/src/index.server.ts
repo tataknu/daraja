@@ -10,6 +10,7 @@ import { gatewayAi } from "./ai/gateway.server";
 import { createEngine, type Engine } from "./engine";
 import { supabaseRepo } from "./repo.supabase.server";
 import { SAMPLE_REVIEWS } from "./samples";
+import { SAMPLE_ANALYSES } from "./samples/analyses";
 import type { InboundInput, ReviewInput } from "./types";
 
 export { createEngine, type Engine } from "./engine";
@@ -39,6 +40,10 @@ export const importReviews = (reviews: ReviewInput[], source?: "guest" | "sample
 /** The sample review set, analysed with the stored analyses where present (no tokens spent). */
 export const loadSampleReviews = () =>
   engine().importReviews(
-    SAMPLE_REVIEWS.map((r) => ({ text: r.text, lang: r.lang, analysis: r.analysis })),
+    SAMPLE_REVIEWS.map((r) => ({
+      text: r.text,
+      lang: r.lang,
+      analysis: r.analysis ?? SAMPLE_ANALYSES[r.id],
+    })),
     "sample",
   );

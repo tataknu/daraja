@@ -6,7 +6,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "eval": "bun src/run.ts"
+    "eval": "bun src/run.ts",
+    "export-samples": "bun src/export-sample-analyses.ts"
   },
   "dependencies": {
     "@daraja/engine": "workspace:*"
