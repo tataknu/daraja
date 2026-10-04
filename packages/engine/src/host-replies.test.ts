@@ -3,13 +3,19 @@ import { parseHostReply } from "./host-replies";
 import type { Prompt } from "./types";
 
 let n = 0;
-const prompt = (booking_id: number, kind: string, options: unknown = {}): Prompt => ({
+const prompt = (
+  booking_id: number,
+  kind: string,
+  options: unknown = {},
+  at: Partial<Pick<Prompt, "sent_at" | "nudged_at">> = {},
+): Prompt => ({
   id: `p${++n}`,
   booking_id,
   kind,
   options,
   sent_at: "2026-10-05T08:00:00Z",
   nudged_at: null,
+  ...at,
 });
 const waiting = (id: number) => prompt(id, "approve_booking");
 
@@ -67,9 +73,42 @@ describe("Noor's keypad replies", () => {
     const rb = prompt(14, "confirm_readback", { action: "approve" });
     expect(parseHostReply("1", [rb, waiting(14)])).toMatchObject({ kind: "readback", yes: true });
     expect(parseHostReply("2", [rb])).toMatchObject({ kind: "readback", yes: false });
-    expect(parseHostReply("B14 1", [rb, waiting(14)])).toMatchObject({
-      kind: "readback",
-      yes: true,
+  });
+
+  it("answers a read-back with a bare number only if it is the last thing she was asked", () => {
+    // B14's read-back waits; B15's request came after it: "1" is not a yes to the read-back.
+    const rb = prompt(14, "confirm_readback", { action: "decline" });
+    expect(parseHostReply("1", [waiting(15), rb, waiting(14)])).toEqual({
+      kind: "ask_which",
+      codes: ["B15", "B14"],
+      choice: "1",
+    });
+    const rb16 = prompt(16, "confirm_readback", { action: "answer_question" });
+    expect(parseHostReply("2", [waiting(15), rb16, prompt(16, "answer_question")])).toMatchObject({
+      kind: "act",
+      bookingId: 15,
+      action: "decline",
+    });
+    // The reminder about B14 (1=Ndiyo) asked again after the read-back was sent.
+    const read = prompt(14, "confirm_readback", {}, { sent_at: "2026-10-05T09:00:00Z" });
+    const nudged = prompt(14, "approve_booking", {}, { nudged_at: "2026-10-06T08:00:00Z" });
+    expect(parseHostReply("1", [read, nudged])).toMatchObject({ kind: "act", action: "approve" });
+  });
+
+  it("reads 'B14 1' as B14's keypad answer, even while a read-back for B14 waits", () => {
+    const rb = prompt(14, "confirm_readback", { action: "decline" });
+    expect(parseHostReply("B14 1", [rb, waiting(14)])).toEqual({
+      kind: "act",
+      bookingId: 14,
+      choice: 1,
+      action: "approve",
+    });
+    expect(parseHostReply("B14 2", [rb, waiting(14)])).toMatchObject({ action: "decline" });
+    const rb16 = prompt(16, "confirm_readback", { action: "answer_question" });
+    expect(parseHostReply("B16 1", [rb16, prompt(16, "answer_question")])).toEqual({
+      kind: "no_open_request",
+      bookingId: 16,
+      choice: 1,
     });
   });
 

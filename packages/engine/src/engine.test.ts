@@ -190,6 +190,48 @@ describe("Noor decides by SMS", () => {
     expect(t.toNoor().at(-1)).toBe("Samahani, sikuelewa. Jibu mf. 'B14 1'.");
     expect(t.booking(14)?.status).toBe("PENDING_NOOR");
   });
+
+  it("doesn't let an unanswered read-back catch her answer to a newer request", async () => {
+    const t = setup();
+    await t.request("a@example.de"); // B14
+    t.script.host(noorSays({ intent: "decline", booking: "B14" }));
+    await t.noorTexts("B14 hapana"); // read back, never answered
+    t.advance(1);
+    await t.request("b@example.de", { entities: { date_from: "2026-10-11" } }); // B15
+    await t.noorTexts("1"); // meant for B15
+
+    expect(t.booking(14)?.status).toBe("PENDING_NOOR");
+    expect(t.booking(15)?.status).toBe("PENDING_NOOR");
+    expect(t.toNoor().at(-1)).toBe("Maombi 2 yanasubiri: B15, B14. Jibu mf. 'B15 1'.");
+    await t.noorTexts("B15 1");
+    expect([t.booking(14)?.status, t.booking(15)?.status]).toEqual(["PENDING_NOOR", "CONFIRMED"]);
+  });
+
+  it("reads 'B14 1' as yes to B14, not as yes to the decline read back for B14", async () => {
+    const t = setup();
+    await t.request();
+    t.script.host(noorSays({ intent: "decline", booking: "B14" }));
+    await t.noorTexts("B14 hapana");
+    await t.noorTexts("B14 1"); // 1=Ndiyo, as in the booking SMS
+
+    expect(t.booking(14)?.status).toBe("CONFIRMED");
+    expect(t.emailsTo("lena@example.de").at(-1)).toContain("Noor has confirmed your coffee farm");
+    expect(t.data.prompts.find((p) => p.kind === "confirm_readback")?.resolution).toBe(
+      "superseded",
+    );
+  });
+
+  it("reads a bare 1 after a reminder as the reminder's yes, not the older read-back's", async () => {
+    const t = setup();
+    await t.request();
+    t.script.host(noorSays({ intent: "decline", booking: "B14" }));
+    await t.noorTexts("B14 hapana"); // read back, never answered
+    t.advance(25);
+    await t.engine.runTimers(); // "Kumbusho: B14 … Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine"
+    await t.noorTexts("1");
+
+    expect(t.booking(14)?.status).toBe("CONFIRMED");
+  });
 });
 
 describe("when things go wrong", () => {

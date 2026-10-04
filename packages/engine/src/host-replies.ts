@@ -21,11 +21,18 @@ export type HostCommand =
 
 const ACTIONS: Record<number, HostAction> = { 1: "approve", 2: "decline", 3: "ask_other_date" };
 
+/** When she was last asked: a reminder asks again. */
+const askedAt = (p: Prompt) =>
+  Math.max(Date.parse(p.sent_at), p.nudged_at ? Date.parse(p.nudged_at) : 0);
+
+/** `open` is newest first, as the repo returns it. */
 export function parseHostReply(text: string, open: Prompt[]): HostCommand {
-  // "1"/"2" confirm or cancel a read-back first.
+  // A bare "1"/"2" answers a read-back only if it is the last thing she was asked: an older one
+  // must not catch her answer to a newer request or reminder.
   const bare = /^\s*([12])\s*$/.exec(text);
-  const readback = open.find((p) => p.kind === "confirm_readback");
-  if (bare && readback) return { kind: "readback", prompt: readback, yes: bare[1] === "1" };
+  const [last] = [...open].sort((a, b) => askedAt(b) - askedAt(a)); // stable: ties stay newest first
+  if (bare && last?.kind === "confirm_readback")
+    return { kind: "readback", prompt: last, yes: bare[1] === "1" };
 
   const dated = /^\s*B?(\d+)\s+(\d{4}-\d{2}-\d{2})\s*$/i.exec(text);
   if (dated) {
@@ -57,10 +64,8 @@ export function parseHostReply(text: string, open: Prompt[]): HostCommand {
         : null;
   if (!pick) return { kind: "free_text" };
 
-  const mine = open.filter((p) => p.booking_id === pick.bookingId);
-  const mineReadback = mine.find((p) => p.kind === "confirm_readback");
-  if (mineReadback && pick.choice <= 2)
-    return { kind: "readback", prompt: mineReadback, yes: pick.choice === 1 };
-  if (!mine.some((p) => p.kind === "approve_booking")) return { kind: "no_open_request", ...pick };
+  // "B14 1" is always B14's keypad answer (1 = Ndiyo), even while a read-back for B14 waits.
+  if (!open.some((p) => p.booking_id === pick.bookingId && p.kind === "approve_booking"))
+    return { kind: "no_open_request", ...pick };
   return { kind: "act", ...pick, action: ACTIONS[pick.choice]! };
 }

@@ -77,6 +77,8 @@ export async function handleHost(
         action: cmd.action,
         routed: false,
       });
+      // Her keypad answer replaces whatever was read back to her for this booking.
+      await ctx.repo.resolvePrompts(cmd.bookingId, "superseded", ctx.now(), ["confirm_readback"]);
       await executeHostAction(ctx, cmd.bookingId, cmd.action, {});
       return { booking_id: cmd.bookingId };
 
