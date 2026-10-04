@@ -45,6 +45,34 @@ describe("quoteInText", () => {
     expect(quoteInText("toll ... finden", GERMAN)).toBe(false);
     expect(quoteInText(" … ", GERMAN)).toBe(false);
   });
+
+  it("rejects a quote that starts or ends inside a word, which can invert its meaning", () => {
+    expect(quoteInText("comfortable seats", "Very uncomfortable seats.")).toBe(false);
+    expect(quoteInText("helpful", "The guide was unhelpful.")).toBe(false);
+    expect(quoteInText("freundlich", "Der Fahrer war unfreundlich.")).toBe(false);
+    expect(quoteInText("5 people", "We were 15 people.")).toBe(false);
+    expect(quoteInText("the view", "The views were great.")).toBe(false);
+    // Every occurrence is checked, not just the first.
+    const text = "Uncomfortable seats on the bus, comfortable seats at the farm.";
+    expect(quoteInText("comfortable seats", text)).toBe(true);
+    expect(quoteInText("accueil de Noor", "Nous avons adoré l'accueil de Noor.")).toBe(true);
+  });
+
+  it("matches inside words in scripts written without spaces", () => {
+    expect(quoteInText("咖啡很好喝", "这里的咖啡很好喝！")).toBe(true);
+    expect(quoteInText("試飲", "コーヒーの試飲が最高でした。")).toBe(true);
+    expect(quoteInText("가이드", "가이드가 정말 친절했어요.")).toBe(true);
+    expect(quoteInText("Noor", "Noorさんの説明が丁寧でした。")).toBe(true);
+  });
+
+  it("matches across apostrophes, dashes and line breaks written differently", () => {
+    expect(quoteInText("Noor´s coffee", "We loved Noor's coffee.")).toBe(true);
+    expect(quoteInText("Noor's coffee", "We loved Noor´s coffee.")).toBe(true);
+    expect(quoteInText("schwer zu finden - ein Schild", GERMAN)).toBe(true); // "–" in the text
+    expect(quoteInText("説明がとても丁寧", "ご主人の説明が\nとても丁寧でした。")).toBe(true);
+    expect(quoteInText("die Bohnen selbst", "die Bohnen\nselbst zu rösten")).toBe(true);
+    expect(quoteInText("dieBohnen", "die Bohnen")).toBe(false); // spaces between Latin words stay
+  });
 });
 
 describe("ingestFeedback", () => {

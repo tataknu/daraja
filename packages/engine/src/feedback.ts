@@ -14,21 +14,49 @@ export interface IngestedReview {
 /** Reviews analysed at the same time during an import. */
 const IMPORT_CONCURRENCY = 4;
 
-/** Lowercase, one space between words, the same quote marks, no punctuation at either end. */
+const WORD_CHAR = /[\p{L}\p{M}\p{N}]/u;
+/** Scripts written without spaces between words, where a quote may start or end mid-"word". */
+const NO_SPACES =
+  /[\p{scx=Han}\p{scx=Hiragana}\p{scx=Katakana}\p{scx=Hangul}\p{scx=Thai}\p{scx=Lao}\p{scx=Khmer}\p{scx=Myanmar}]/u;
+/** A line break between two Chinese or Japanese characters, which is not a space between words. */
+const CJK_GAP =
+  /(?<=[\p{scx=Han}\p{scx=Hiragana}\p{scx=Katakana}])\s+(?=[\p{scx=Han}\p{scx=Hiragana}\p{scx=Katakana}])/gu;
+
+/** Lowercase, one space between words, the same quote marks and dashes, no punctuation at either end. */
 function normalise(s: string): string {
   return s
+    .replace(/[‘’‛`´]/g, "'") // before NFKC, which turns ´ into a space and an accent
+    .replace(/[“”„‟«»]/g, '"')
     .normalize("NFKC")
     .toLowerCase()
-    .replace(/[‘’‛`´]/g, "'")
-    .replace(/[“”„‟«»]/g, '"')
+    .replace(/[‐‑‒–—―]/g, "-")
+    .replace(CJK_GAP, "")
     .replace(/\s+/g, " ")
     .replace(/^[\s\p{P}]+|[\s\p{P}]+$/gu, "");
 }
 
-/** True when `quote` appears in `text`: the AI may only quote what the visitor wrote. */
+/**
+ * True when `quote` appears in `text` as whole words: the AI may only quote what the visitor
+ * wrote, and "helpful" is not in "unhelpful".
+ */
 export function quoteInText(quote: string, text: string): boolean {
   const q = normalise(quote);
-  return q.length > 0 && normalise(text).includes(q);
+  const t = normalise(text);
+  if (!q) return false;
+  const [first] = [...q];
+  const last = [...q].at(-1);
+  for (let i = t.indexOf(q); i !== -1; i = t.indexOf(q, i + 1)) {
+    const before = [...t.slice(Math.max(0, i - 2), i)].at(-1); // whole even if astral
+    const [after] = [...t.slice(i + q.length, i + q.length + 2)];
+    if (wordEdge(before, first) && wordEdge(after, last)) return true;
+  }
+  return false;
+}
+
+/** No letter or digit just outside the quote, unless either side is in a script without spaces. */
+function wordEdge(outside: string | undefined, inside: string | undefined): boolean {
+  if (!outside || !WORD_CHAR.test(outside)) return true;
+  return NO_SPACES.test(outside) || (!!inside && NO_SPACES.test(inside));
 }
 
 /** Analyses one review and stores it. Never throws on AI failure: the review is kept untranslated. */
