@@ -14,7 +14,6 @@ import { demoEmail, personaById } from "@/lib/personas";
 import { Button } from "@daraja/ui/components/button";
 import { DarajaMark } from "@/components/logo";
 import { ArrivalBanner } from "./arrival-banner";
-import { markStarted, needsFreshStart } from "./fresh-start";
 import { DataView } from "./data-view";
 import { InsightsView } from "./insights-view";
 import { MetricsView } from "./metrics-view";
@@ -43,7 +42,7 @@ export function DemoPage() {
   const [guestId, setGuestId] = useState<string>("");
   const [arrival, setArrival] = useState<Arrival | null>(null);
   const [tab, setTab] = useState<Tab>("demo");
-  // False while a new tab clears the previous visit's demo; nothing is sent until it's done.
+  // False while opening the page resets the demo; nothing is sent until it's done.
   const [ready, setReady] = useState(false);
 
   const host = live.contacts.find((c) => c.role === "host");
@@ -77,13 +76,15 @@ export function DemoPage() {
   const sendSms = (text: string) =>
     post({ data: { channel: "sms", sender: host!.phone!, text, provider_msg_id: uid() } });
 
-  // A new browser tab starts from a clean demo instead of the previous visit's messages.
+  // Every visit starts from a clean demo: opening or reloading the page resets it first. The ref
+  // keeps it to one reset even if React runs the effect twice.
+  const started = useRef(false);
   useEffect(() => {
-    if (!needsFreshStart()) return setReady(true);
+    if (started.current) return;
+    started.current = true;
     (async () => {
       try {
         await reset();
-        markStarted();
       } catch (e) {
         toast.error(e instanceof Error ? e.message : String(e));
       } finally {
