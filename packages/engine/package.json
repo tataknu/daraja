@@ -5,6 +5,7 @@
   "exports": {
     ".": "./src/index.server.ts",
     "./ai": "./src/ai/index.ts",
+    "./metrics": "./src/metrics.ts",
     "./testing": "./src/testing/index.ts",
     "./samples": "./src/samples/index.ts"
   },
