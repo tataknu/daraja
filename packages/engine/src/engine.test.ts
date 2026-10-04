@@ -1,19 +1,30 @@
 // The whole workflow through the real engine modules, with an in-memory repo, a scripted AI and a
 // clock the tests control. No network, no database.
 import { describe, expect, it } from "vitest";
+import type { Ai, ReviewAnalysis } from "./ai/types";
 import { createEngine } from "./engine";
-import { fakeAi, guestSays, noorSays } from "./testing/fake-ai";
+import { fakeAi, guestSays, noorSays, reviewSays } from "./testing/fake-ai";
 import { NOOR_PHONE, memoryRepo } from "./testing/memory-repo";
 import type { InboundInput } from "./types";
 
 const HOUR = 3600e3;
 
-function setup() {
+/** The fake AI, analysing reviews by what their text says, as a model would. */
+function readingReviews(ai: Ai, analyses: Record<string, ReviewAnalysis>): Ai {
+  return {
+    ...ai,
+    withUsage: (l) => readingReviews(ai.withUsage(l), analyses),
+    analyzeReview: async (text) =>
+      analyses[text] ?? reviewSays({ sentiment: "neutral", points: [] }),
+  };
+}
+
+function setup(wrap: (ai: Ai) => Ai = (ai) => ai) {
   let now = new Date("2026-10-05T08:00:00Z");
   const clock = () => now;
   const { repo, data, noor } = memoryRepo(clock);
   const script = fakeAi();
-  const engine = createEngine({ repo, ai: script.ai, now: clock });
+  const engine = createEngine({ repo, ai: wrap(script.ai), now: clock });
 
   const email = (from: string, text: string, extra: Partial<InboundInput> = {}): InboundInput => ({
     channel: "email",
@@ -308,6 +319,44 @@ describe("feedback and insights", () => {
     });
     expect(t.toNoor().at(-1)).toBe("Wageni wanapenda kuchoma kahawa.");
     expect(t.data.insightReports).toHaveLength(1);
+  });
+
+  it("stores the guest's own words as the review, never the AI's version of them", async () => {
+    // The AI claims the guest raved about the tasting; the email only says it was okay.
+    const invented = "Die Verkostung war das Beste an der Reise!";
+    const t = setup((ai) =>
+      readingReviews(ai, {
+        [invented]: reviewSays({
+          points: [{ aspect: "tasting", polarity: "loved", quote: invented, quote_en: "" }],
+        }),
+      }),
+    );
+    t.script.guest(guestSays({ intent: "feedback", feedback_text: invented }));
+    await t.engine.handleInbound(t.email("lena@example.de", "Hallo Noor, es war okay."));
+
+    expect(t.data.feedback).toHaveLength(1);
+    expect(t.data.feedback[0]).toMatchObject({
+      text_original: "Hallo Noor, es war okay.",
+      sentiment: "neutral",
+      points: [],
+    });
+    expect(t.data.contacts.find((c) => c.email === "lena@example.de")?.referral_code).toBeFalsy();
+    expect(t.emailsTo("lena@example.de")).toEqual([
+      "[de] Thank you so much for your feedback — Noor will read every word.",
+    ]);
+  });
+
+  it("saves feedback that comes with another message only if the guest wrote it", async () => {
+    const t = setup();
+    t.script.guest(guestSays({ intent: "question", feedback_text: "Die Tour war fantastisch!" }));
+    await t.engine.handleInbound(t.email("lena@example.de", "Gibt es Mittagessen?"));
+    expect(t.data.feedback).toEqual([]);
+    expect(t.toNoor().at(-1)).toMatch(/^B14 swali: /); // the question still reaches Noor
+
+    const said = "Die Tour letztes Jahr war fantastisch!";
+    t.script.guest(guestSays({ intent: "question", feedback_text: said }));
+    await t.engine.handleInbound(t.email("lena@example.de", `Gibt es Mittagessen? ${said}`));
+    expect(t.data.feedback.map((f) => f.text_original)).toEqual([said]);
   });
 });
 

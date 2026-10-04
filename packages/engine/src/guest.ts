@@ -2,7 +2,7 @@
 import type { GuestClassification } from "./ai/types";
 import { code, canTransition, type BookingStatus } from "./booking-state";
 import { CONF_MIN, type Ctx } from "./context";
-import { ingestFeedback } from "./feedback";
+import { ingestFeedback, quoteInText } from "./feedback";
 import { enDate, enOrigin, enSlot, firstName, localDate, swDate, swOrigin, swSlot } from "./format";
 import { findReferrer, followUpFeedback, friendInSms, withReferralNote } from "./referrals";
 import type { Booking, Contact, FarmSettings, InboundResult } from "./types";
@@ -92,10 +92,14 @@ export async function handleGuest(
       routed,
     });
 
+  // The feedback the AI found, only if the guest wrote it: a review is never in the AI's words.
+  const feedback =
+    r.feedback_text?.trim() && quoteInText(r.feedback_text, text) ? r.feedback_text.trim() : null;
+
   // Any message may also carry feedback: save it, then continue with the main intent.
-  if (r.intent !== "feedback" && r.feedback_text?.trim()) {
+  if (r.intent !== "feedback" && feedback) {
     const fbBooking = booking ?? (await ctx.repo.latestBooking(guest.id));
-    await ingestFeedback(ctx, fbBooking?.id ?? null, r.feedback_text.trim(), r.language);
+    await ingestFeedback(ctx, fbBooking?.id ?? null, feedback, r.language);
     await ctx.log(messageId, {
       intent: "feedback",
       confidence: r.confidence,
@@ -177,12 +181,7 @@ export async function handleGuest(
 
     case "feedback": {
       const fb = booking ?? (await ctx.repo.latestBooking(guest.id));
-      const review = await ingestFeedback(
-        ctx,
-        fb?.id ?? null,
-        r.feedback_text?.trim() || text,
-        r.language,
-      );
+      const review = await ingestFeedback(ctx, fb?.id ?? null, feedback ?? text, r.language);
       if (fb?.status === "FEEDBACK_REQUESTED") await ctx.transition(fb, "CLOSED", "system");
       await followUpFeedback(ctx, guest, fb, review);
       await log("feedback_saved");
