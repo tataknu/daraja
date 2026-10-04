@@ -1,4 +1,5 @@
-// Pure formatting helpers: farm-local dates and the short Swahili wording Noor sees.
+// Pure formatting helpers: farm-local dates and the short Swahili wording Noor sees, with its
+// English for reviewers.
 
 /** The farm's time zone; "today" and reminder hours are computed here. */
 export const TZ = "Africa/Dar_es_Salaam";
@@ -28,6 +29,21 @@ const SW_MONTHS = [
   "Nov",
   "Des",
 ];
+const EN_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const EN_MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 const SW_ORIGIN: Record<string, string> = {
   de: "Ujerumani",
   en: "Uingereza",
@@ -39,22 +55,43 @@ const SW_ORIGIN: Record<string, string> = {
   zh: "China",
   ja: "Japani",
 };
+const EN_ORIGIN: Record<string, string> = {
+  de: "Germany",
+  en: "UK",
+  fr: "France",
+  nl: "Netherlands",
+  it: "Italy",
+  es: "Spain",
+  sw: "Tanzania",
+  zh: "China",
+  ja: "Japan",
+};
 
-/** "2026-10-10" -> "Jumamosi 10 Okt". */
-export function swDate(iso: string | null) {
+function dayMonth(iso: string | null, days: string[], months: string[]) {
   if (!iso) return "?";
   const d = new Date(iso + "T12:00:00Z");
-  return `${SW_DAYS[d.getUTCDay()]} ${d.getUTCDate()} ${SW_MONTHS[d.getUTCMonth()]}`;
+  return `${days[d.getUTCDay()]} ${d.getUTCDate()} ${months[d.getUTCMonth()]}`;
 }
+
+/** "2026-10-10" -> "Jumamosi 10 Okt". */
+export const swDate = (iso: string | null) => dayMonth(iso, SW_DAYS, SW_MONTHS);
+/** "2026-10-10" -> "Saturday 10 Oct". */
+export const enDate = (iso: string | null) => dayMonth(iso, EN_DAYS, EN_MONTHS);
 
 /** Tour slot as Noor says it: morning or afternoon. */
 export const swSlot = (s: string | null) =>
   s === "09:00" ? "asubuhi" : s === "14:00" ? "mchana" : (s ?? "");
+export const enSlot = (s: string | null) =>
+  s === "09:00" ? "morning" : s === "14:00" ? "afternoon" : (s ?? "");
 
 /** Where the guest is from, in Swahili, from their language code. */
 export const swOrigin = (lang: string) => SW_ORIGIN[lang] ?? lang.toUpperCase();
+export const enOrigin = (lang: string) => EN_ORIGIN[lang] ?? lang.toUpperCase();
 
 /** One SMS segment. */
 export const sms160 = (s: string) => (s.length <= 160 ? s : s.slice(0, 157) + "...");
+/** The English of an SMS, cut where sms160 cuts the SMS, in proportion to their lengths. */
+export const sms160English = (sms: string, en: string) =>
+  sms.length <= 160 ? en : en.slice(0, Math.floor((en.length * 157) / sms.length)) + "...";
 
 export const firstName = (n: string) => n.split(" ")[0] ?? n;

@@ -30,6 +30,7 @@ export async function runTimers(ctx: Ctx, asOf: Date): Promise<string[]> {
       await repo.markNudged(p.id, asOf);
       await ctx.smsNoor(
         `Kumbusho: ${code(p.booking_id!)} bado inasubiri jibu. Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine`,
+        `Reminder: ${code(p.booking_id!)} is still waiting for your reply. Reply 1=Yes 2=No 3=Other day`,
         p.booking_id,
       );
       log.push(`${code(p.booking_id!)} nudged`);
@@ -48,10 +49,8 @@ export async function runTimers(ctx: Ctx, asOf: Date): Promise<string[]> {
       (await repo.recordReminder(b.id, "day_before"))
     ) {
       const extra = (b.party_size ?? 1) - 1;
-      await ctx.smsNoor(
-        `Kesho ${b.slot}: ${firstName(guest.name)}${extra > 0 ? ` +${extra}` : ""}, ${code(b.id)}`,
-        b.id,
-      );
+      const who = `${firstName(guest.name)}${extra > 0 ? ` +${extra}` : ""}, ${code(b.id)}`;
+      await ctx.smsNoor(`Kesho ${b.slot}: ${who}`, `Tomorrow ${b.slot}: ${who}`, b.id);
       log.push(`${code(b.id)} reminder`);
     }
     if ((b.date_to ?? b.date_from) < today) {

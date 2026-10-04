@@ -9,6 +9,7 @@ import type { FeedbackRow } from "./repo";
 import type { InsightItem, InsightQuote, InsightReport } from "./types";
 
 const NO_REVIEWS = "Bado hakuna maoni ya wageni mwezi huu.";
+const NO_REVIEWS_EN = "No visitor reviews yet this month.";
 /** Newest reviews read per report. */
 const REVIEW_LIMIT = 200;
 const ITEMS_PER_LIST = 5;
@@ -55,7 +56,7 @@ export async function monthlyInsights(ctx: Ctx): Promise<InsightReport> {
   const reviews = await ctx.repo.feedbackForInsights(REVIEW_LIMIT);
   const generated_at = ctx.now().toISOString();
   if (!reviews.length) {
-    await ctx.smsNoor(NO_REVIEWS);
+    await ctx.smsNoor(NO_REVIEWS, NO_REVIEWS_EN);
     return {
       review_count: 0,
       sentiment: { positive: 0, neutral: 0, negative: 0 },
@@ -63,7 +64,7 @@ export async function monthlyInsights(ctx: Ctx): Promise<InsightReport> {
       improve: [],
       next: [],
       sms_sw: [NO_REVIEWS],
-      sms_en: ["No visitor reviews yet this month."],
+      sms_en: [NO_REVIEWS_EN],
       dropped_quotes: 0,
       generated_at,
     };
@@ -81,7 +82,7 @@ export async function monthlyInsights(ctx: Ctx): Promise<InsightReport> {
     generated_at,
   };
   const sms = await smsFor(ctx, counts);
-  for (const line of sms.sw) await ctx.smsNoor(line);
+  for (const [i, line] of sms.sw.entries()) await ctx.smsNoor(line, sms.en[i] ?? null);
   const report: InsightReport = { ...counts, sms_sw: sms.sw, sms_en: sms.en };
   await ctx.repo.saveInsightReport(report);
   return report;

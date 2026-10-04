@@ -17,6 +17,8 @@ export interface GuestClassification {
   };
   missing: string[];
   translation_for_noor: string;
+  /** For reviewers; "" when the email is in English. */
+  translation_en: string;
   feedback_text: string | null;
 }
 export interface HostClassification {
@@ -25,6 +27,8 @@ export interface HostClassification {
   confidence: number;
   proposed_date: string | null;
   answer_text_for_guest: string | null;
+  /** Her SMS in English, for reviewers; "" when she wrote in English. */
+  translation_en: string;
 }
 
 /** Aspects of a farm visit a review can talk about. Counted in code, so they are a fixed list. */

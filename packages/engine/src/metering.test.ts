@@ -2,15 +2,51 @@
 import { describe, expect, it } from "vitest";
 import { createEngine } from "./engine";
 import { FAKE_USAGE, fakeAi, guestSays } from "./testing/fake-ai";
-import { memoryRepo } from "./testing/memory-repo";
+import { NOOR_PHONE, memoryRepo } from "./testing/memory-repo";
 
 function setup() {
   const clock = () => new Date("2026-10-05T08:00:00Z");
-  const { repo, data } = memoryRepo(clock);
+  const { repo, data, noor } = memoryRepo(clock);
   const script = fakeAi();
   const engine = createEngine({ repo, ai: script.ai, now: clock });
-  return { engine, data, script };
+  return { engine, data, script, noor };
 }
+
+describe("AI calls per booking", () => {
+  it("classifies the request and writes the guest's two emails; nothing else", async () => {
+    const { engine, data, script, noor } = setup();
+    script.guest(guestSays());
+    await engine.handleInbound({
+      channel: "email",
+      sender: "lena@example.de",
+      sender_name: "Lena Schulz",
+      text: "Hallo! Wir sind 3 Personen und möchten am Samstag morgens kommen.",
+      provider_msg_id: "m1",
+    });
+    await engine.handleInbound({
+      channel: "sms",
+      sender: NOOR_PHONE,
+      text: "1",
+      provider_msg_id: "m2",
+    });
+
+    // Before: five translate calls, three of them English glosses for reviewers (email, both SMS).
+    expect(data.aiCalls.map((c) => c.task)).toEqual(["classify_guest", "translate", "translate"]);
+    const request = data.messages.find((m) => m.provider_msg_id === "m1");
+    expect(request?.text_en).toBe(guestSays().translation_en);
+    const sms = data.messages.filter((m) => m.direction === "out" && m.contact_id === noor.id);
+    expect(sms.map((m) => [m.text_original, m.text_en])).toEqual([
+      [
+        "B14: Lena (Ujerumani), watu 3, Jumamosi 10 Okt asubuhi. Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine",
+        "B14: Lena (Germany), 3 people, Saturday 10 Oct morning. Reply 1=Yes 2=No 3=Other day",
+      ],
+      [
+        "B14 imethibitishwa. Mgeni ametumiwa maelekezo.",
+        "B14 is confirmed. The guest has been sent directions.",
+      ],
+    ]);
+  });
+});
 
 describe("AI usage metering", () => {
   it("logs each call of a booking request against its message and booking", async () => {

@@ -68,9 +68,10 @@ function setup() {
     data.messages.filter((m) => m.direction === "out" && m.contact_id === id);
   const emailsTo = (who: Contact) => outTo(who.id).map((m) => m.text_original);
   const toNoor = () => outTo(noor.id).map((m) => m.text_original);
+  const toNoorEn = () => outTo(noor.id).map((m) => m.text_en);
   const booking = (id: number) => data.bookings.find((b) => b.id === id);
 
-  return { repo, ctx, guest, guestWithCode, visit, ask, emailsTo, toNoor, booking };
+  return { repo, ctx, guest, guestWithCode, visit, ask, emailsTo, toNoor, toNoorEn, booking };
 }
 
 describe("the reply to a review", () => {
@@ -255,6 +256,9 @@ describe("a new guest quotes a code", () => {
     expect(t.toNoor()).toEqual([
       `B14: Tom (Ujerumani), rafiki wa Lena, watu 3, Jumamosi 10 Okt asubuhi. ${OPTIONS}`,
     ]);
+    expect(t.toNoorEn()).toEqual([
+      "B14: Tom (Germany), friend of Lena, 3 people, Saturday 10 Oct morning. Reply 1=Yes 2=No 3=Other day",
+    ]);
   });
 
   it("closes the loop: a review brings a code, the code brings a friend", async () => {
@@ -332,6 +336,7 @@ describe("a new guest quotes a code", () => {
       `B14: ${visitor} (Ujerumani), rafiki wa Bartholom, watu 3, Jumamosi 10 Okt asubuhi. ${OPTIONS}`,
     );
     expect(sms).toHaveLength(160);
+    expect(t.toNoorEn()[0]).toContain(", friend of Bartholom, 3 people,"); // the name Noor got
   });
 
   it("leaves the note out when there is no room, and still sends the reply options", async () => {
@@ -344,6 +349,7 @@ describe("a new guest quotes a code", () => {
     expect(t.toNoor()).toEqual([
       `B14: ${visitor} (Ujerumani), watu 3, Jumamosi 10 Okt asubuhi. ${OPTIONS}`,
     ]);
+    expect(t.toNoorEn()[0]).not.toContain("friend");
   });
 
   it("keeps the warning about a full slot next to the reply options", async () => {
@@ -356,6 +362,9 @@ describe("a new guest quotes a code", () => {
 
     expect(t.toNoor()[1]).toBe(
       `B15: Tom (Ujerumani), rafiki wa Lena, watu 4, Jumamosi 10 Okt asubuhi ZIDI!. ${OPTIONS}`,
+    );
+    expect(t.toNoorEn()[1]).toBe(
+      "B15: Tom (Germany), friend of Lena, 4 people, Saturday 10 Oct morning OVER CAPACITY. Reply 1=Yes 2=No 3=Other day",
     );
   });
 });

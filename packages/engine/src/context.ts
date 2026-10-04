@@ -2,7 +2,7 @@
 // (outbound messages, booking transitions, the decision log).
 import type { AiUsage } from "./ai/types";
 import { canTransition, code, type Actor, type BookingStatus } from "./booking-state";
-import { sms160 } from "./format";
+import { sms160, sms160English } from "./format";
 import type { BookingPatch } from "./repo";
 import type { Booking, Channel, Contact, Decision, EngineDeps } from "./types";
 
@@ -24,7 +24,11 @@ export interface Ctx extends EngineDeps {
   sendMessage(channel: Channel, to: Contact, text: string, opts?: SendOptions): Promise<void>;
   /** English gloss of a non-English message, for operators and reviewers. */
   englishOf(text: string, lang: string): Promise<string | null>;
-  smsNoor(text: string, bookingId?: number | null): Promise<void>;
+  /**
+   * Texts Noor. `english` is what the SMS says, for reviewers, so no AI call is made for it; null
+   * only when nobody knows it (the AI then translates the SMS).
+   */
+  smsNoor(text: string, english: string | null, bookingId?: number | null): Promise<void>;
   /** Writes in English; the guest receives it in their language. */
   emailGuest(guest: Contact, english: string, bookingId?: number | null): Promise<void>;
   /** Moves a booking to a new status, if the state machine allows it for this actor. */
@@ -73,8 +77,11 @@ export function createContext(deps: EngineDeps): Ctx {
     return repo.contact(s.host_id!);
   }
 
-  async function smsNoor(text: string, bookingId?: number | null) {
-    await sendMessage("sms", await host(), text, { booking_id: bookingId });
+  async function smsNoor(text: string, english: string | null, bookingId?: number | null) {
+    await sendMessage("sms", await host(), text, {
+      booking_id: bookingId,
+      text_translated: english ? sms160English(text, english) : null,
+    });
   }
 
   async function emailGuest(guest: Contact, english: string, bookingId?: number | null) {

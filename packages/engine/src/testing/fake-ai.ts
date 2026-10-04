@@ -23,6 +23,7 @@ export function guestSays({ entities, ...rest }: GuestOverrides = {}): GuestClas
     language: "de",
     missing: [],
     translation_for_noor: "Mgeni anataka kutembelea shamba.",
+    translation_en: "The guest wants to visit the farm.",
     feedback_text: null,
     ...rest,
     entities: { date_from: "2026-10-10", date_to: null, party_size: 3, slot: "09:00", ...entities },
@@ -36,6 +37,7 @@ export function noorSays(overrides: Partial<HostClassification> = {}): HostClass
     confidence: 0.9,
     proposed_date: null,
     answer_text_for_guest: null,
+    translation_en: "Yes, welcome.",
     ...overrides,
   };
 }

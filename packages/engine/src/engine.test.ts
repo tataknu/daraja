@@ -30,10 +30,9 @@ function setup() {
       text,
       provider_msg_id: crypto.randomUUID(),
     });
-  const toNoor = () =>
-    data.messages
-      .filter((m) => m.direction === "out" && m.contact_id === noor.id)
-      .map((m) => m.text_original);
+  const smsToNoor = () =>
+    data.messages.filter((m) => m.direction === "out" && m.contact_id === noor.id);
+  const toNoor = () => smsToNoor().map((m) => m.text_original);
   const emailsTo = (address: string) => {
     const guest = data.contacts.find((c) => c.email === address);
     return data.messages
@@ -54,7 +53,19 @@ function setup() {
     );
   };
 
-  return { engine, data, script, email, noorTexts, toNoor, emailsTo, booking, advance, request };
+  return {
+    engine,
+    data,
+    script,
+    email,
+    noorTexts,
+    smsToNoor,
+    toNoor,
+    emailsTo,
+    booking,
+    advance,
+    request,
+  };
 }
 
 describe("a guest asks to visit", () => {
@@ -188,6 +199,10 @@ describe("when things go wrong", () => {
     await t.engine.handleInbound(t.email("lena@example.de", "Hallo Noor!"));
 
     expect(t.toNoor().at(-1)).toBe("B14 ujumbe kutoka Lena (haukutafsiriwa): Hallo Noor!");
+    // The one SMS whose English the AI still writes: nobody has translated the guest's words.
+    expect(t.smsToNoor().at(-1)?.text_en).toBe(
+      "[en] B14 ujumbe kutoka Lena (haukutafsiriwa): Hallo Noor!",
+    );
     expect(t.emailsTo("lena@example.de").at(-1)).toBe("Thank you — Noor will get back to you.");
     expect(t.data.decisions.at(-1)).toMatchObject({ intent: "error", routed: true });
   });
@@ -251,5 +266,125 @@ describe("feedback and insights", () => {
     });
     expect(t.toNoor().at(-1)).toBe("Wageni wanapenda kuchoma kahawa.");
     expect(t.data.insightReports).toHaveLength(1);
+  });
+});
+
+describe("English for reviewers", () => {
+  const numbers = (s: string | null | undefined) => (s?.match(/\d+/g) ?? []).sort();
+
+  it("comes with every SMS to Noor, written by code with the same codes and numbers", async () => {
+    const t = setup();
+    await t.request("a@example.de", { entities: { party_size: 6 } }); // B14
+    await t.request("b@example.de", { entities: { party_size: 4 } }); // B15, over capacity
+    await t.noorTexts("1"); // which one?
+    await t.noorTexts("B14 1"); // confirmed
+    await t.noorTexts("B15 3"); // which other day?
+    await t.noorTexts("B15 2026-10-12"); // offer sent
+    t.script.guest(guestSays({ entities: { date_from: null } }));
+    await t.engine.handleInbound(t.email("b@example.de", "Ja, gerne!", { thread_ref: "B15" }));
+    t.script.guest(guestSays({ intent: "question" }));
+    await t.engine.handleInbound(t.email("c@example.de", "Gibt es Mittagessen?")); // B16
+    t.script.host(
+      noorSays({ intent: "answer_question", booking: "B16", answer_text_for_guest: "Yes, lunch." }),
+    );
+    await t.noorTexts("Ndiyo, chakula kipo."); // read back
+    await t.noorTexts("1"); // reply sent
+    t.script.guest(guestSays({ confidence: 0.5 }));
+    await t.engine.handleInbound(t.email("d@example.de", "Hm?")); // B17, forwarded
+    t.script.host(
+      noorSays({ intent: "propose_other_date", booking: "B17", proposed_date: "2026-10-13" }),
+    );
+    await t.noorTexts("Jumanne?"); // read back
+    await t.noorTexts("2"); // not sent
+    await t.noorTexts("B99 1"); // nothing waiting
+    t.script.guest(guestSays({ intent: "cancel" }));
+    await t.engine.handleInbound(t.email("b@example.de", "Wir müssen absagen.")); // B15
+    await t.request("e@example.de"); // B18
+    t.advance(25);
+    await t.engine.runTimers(); // B18 nudged
+    t.advance(82); // Friday evening
+    await t.engine.runTimers(); // B14 is tomorrow
+    await t.engine.monthlyInsights(); // no reviews yet
+
+    const sms = t.smsToNoor();
+    expect(sms).toHaveLength(19);
+    for (const m of sms) {
+      expect(m.text_en, m.text_original).toBeTruthy();
+      expect(m.text_en, m.text_original).not.toMatch(/^\[en\]/); // not from a translate call
+      expect(numbers(m.text_en), m.text_original).toEqual(numbers(m.text_original));
+    }
+  });
+
+  it("takes the guest's English from the classification", async () => {
+    const t = setup();
+    t.script.guest(
+      guestSays({
+        intent: "question",
+        translation_for_noor: "Je, mna chakula cha mboga?",
+        translation_en: "Do you have vegetarian food?",
+      }),
+    );
+    await t.engine.handleInbound(t.email("lena@example.de", "Habt ihr vegetarisches Essen?"));
+
+    expect(t.data.messages[0]?.text_en).toBe("Do you have vegetarian food?");
+    expect(t.smsToNoor()[0]).toMatchObject({
+      text_original: "B14 swali: Je, mna chakula cha mboga?",
+      text_en: "B14 question: Do you have vegetarian food?",
+    });
+    expect(t.data.aiCalls.map((c) => c.task)).toEqual(["classify_guest", "translate"]); // the reply
+  });
+
+  it("cuts the English of a long question where the SMS is cut", async () => {
+    const t = setup();
+    const english = "Can we bring our dog? ".repeat(10);
+    t.script.guest(
+      guestSays({
+        intent: "question",
+        translation_for_noor: "Tunaweza kuleta mbwa wetu? ".repeat(10),
+        translation_en: english,
+      }),
+    );
+    await t.engine.handleInbound(t.email("lena@example.de", "Dürfen wir unseren Hund mitbringen?"));
+
+    const [sms] = t.smsToNoor();
+    expect(sms?.text_original).toHaveLength(160);
+    expect(sms?.text_en).toMatch(/^B14 question: Can we bring our dog\? .*\.\.\.$/);
+    expect(sms?.text_en?.length).toBeLessThan(`B14 question: ${english}`.length);
+  });
+
+  it("uses an English guest's own words, with no AI call for them", async () => {
+    const t = setup();
+    t.script.guest(guestSays({ intent: "question", language: "en", translation_en: "" }));
+    await t.engine.handleInbound(t.email("ann@example.com", "Do you have vegetarian food?"));
+
+    expect(t.data.messages[0]?.text_en).toBeNull();
+    expect(t.smsToNoor()[0]?.text_en).toBe("B14 question: Do you have vegetarian food?");
+    expect(t.data.aiCalls.map((c) => c.task)).toEqual(["classify_guest"]);
+  });
+
+  it("translates an email only when the classification brought no English", async () => {
+    const t = setup();
+    t.script.guest(guestSays({ intent: "question", translation_en: "" }));
+    await t.engine.handleInbound(t.email("lena@example.de", "Habt ihr vegetarisches Essen?"));
+
+    expect(t.data.messages[0]?.text_en).toBe("[en] Habt ihr vegetarisches Essen?");
+    expect(t.smsToNoor()[0]?.text_en).toBe("B14 question: [en] Habt ihr vegetarisches Essen?");
+  });
+
+  it("gets Noor's free text in English from the AI that reads it", async () => {
+    const t = setup();
+    await t.request();
+    t.script.host(noorSays({ translation_en: "Yes, welcome." }));
+    await t.noorTexts("Ndiyo, karibuni");
+    await t.noorTexts("2"); // keypad: no AI
+    await t.noorTexts("B14 1 asante"); // keypad with words: translated, as before
+
+    const sent = (text: string) => t.data.messages.find((m) => m.text_original === text);
+    const tasks = (text: string) =>
+      t.data.aiCalls.filter((c) => c.message_id === sent(text)?.id).map((c) => c.task);
+    expect(sent("Ndiyo, karibuni")?.text_en).toBe("Yes, welcome.");
+    expect(tasks("Ndiyo, karibuni")).toEqual(["classify_host"]);
+    expect(tasks("2")).toEqual([]);
+    expect(sent("B14 1 asante")?.text_en).toBe("[en] B14 1 asante");
   });
 });

@@ -101,7 +101,12 @@ export async function findReferrer(
  * the reply options in `tail` are never cut.
  */
 export function withReferralNote(head: string, referrer: Contact | null, tail: string): string {
-  const room = SMS_LENGTH - head.length - tail.length - FRIEND_OF.length;
-  const name = referrer ? firstName(referrer.name).slice(0, Math.max(0, room)) : "";
+  const name = friendInSms(head, referrer, tail);
   return name ? head + FRIEND_OF + name + tail : head + tail;
+}
+
+/** The friend's first name as far as it fits in that SMS; "" when none does. */
+export function friendInSms(head: string, referrer: Contact | null, tail: string): string {
+  const room = SMS_LENGTH - head.length - tail.length - FRIEND_OF.length;
+  return referrer ? firstName(referrer.name).slice(0, Math.max(0, room)) : "";
 }

@@ -2,19 +2,26 @@
 // her before anything happens.
 import { code } from "./booking-state";
 import { CONF_MIN, type Ctx } from "./context";
-import { addDays, firstName, localDate, swDate } from "./format";
+import { addDays, enDate, firstName, localDate, swDate } from "./format";
 import { parseHostReply } from "./host-replies";
-import type { InboundResult, Prompt } from "./types";
+import type { Contact, InboundResult, Prompt } from "./types";
 
 export const SORRY = "Samahani, sikuelewa. Jibu mf. 'B14 1'.";
+const SORRY_EN = "Sorry, I didn't understand. Reply e.g. 'B14 1'.";
 
 export async function handleHost(
   ctx: Ctx,
+  noor: Contact,
   messageId: string,
   text: string,
 ): Promise<InboundResult> {
   const open = await ctx.repo.openPrompts(ctx.now());
   const cmd = parseHostReply(text, open);
+  // Free text gets its English from the AI that reads it; a keypad reply needs one only with words.
+  if (cmd.kind !== "free_text") {
+    const en = await ctx.englishOf(text, noor.language);
+    if (en) await ctx.repo.updateMessage(messageId, { text_en: en });
+  }
 
   switch (cmd.kind) {
     case "readback":
@@ -45,6 +52,7 @@ export async function handleHost(
       });
       await ctx.smsNoor(
         `Maombi ${cmd.codes.length} yanasubiri: ${cmd.codes.join(", ")}. Jibu mf. '${cmd.codes[0]} ${cmd.choice}'.`,
+        `${cmd.codes.length} requests are waiting: ${cmd.codes.join(", ")}. Reply e.g. '${cmd.codes[0]} ${cmd.choice}'.`,
       );
       return {};
 
@@ -57,7 +65,7 @@ export async function handleHost(
         action: "no_open_prompt",
         routed: true,
       });
-      await ctx.smsNoor(SORRY);
+      await ctx.smsNoor(SORRY, SORRY_EN);
       return { booking_id: cmd.bookingId };
 
     case "act":
@@ -98,9 +106,10 @@ async function readFreeText(
       action: `ai_error: ${String(e).slice(0, 120)}`,
       routed: true,
     });
-    await ctx.smsNoor(SORRY);
+    await ctx.smsNoor(SORRY, SORRY_EN);
     return {};
   }
+  if (r.translation_en) await ctx.repo.updateMessage(messageId, { text_en: r.translation_en });
   const bid = r.booking ? Number(String(r.booking).replace(/\D/g, "")) : NaN;
   const valid = open.some((p) => p.booking_id === bid && p.kind !== "confirm_readback");
   if (r.confidence < CONF_MIN || r.intent === "unknown" || !valid) {
@@ -112,18 +121,20 @@ async function readFreeText(
       action: "asked_to_rephrase",
       routed: true,
     });
-    await ctx.smsNoor(SORRY);
+    await ctx.smsNoor(SORRY, SORRY_EN);
     return {};
   }
 
-  const summary =
+  const date = r.proposed_date ?? null;
+  const answer = `"${(r.answer_text_for_guest ?? "").slice(0, 60)}"`;
+  const [summary, summaryEn] =
     r.intent === "approve"
-      ? "kubali"
+      ? ["kubali", "approve"]
       : r.intent === "decline"
-        ? "kataa"
+        ? ["kataa", "decline"]
         : r.intent === "propose_other_date"
-          ? `pendekeza ${swDate(r.proposed_date ?? null)}`
-          : `jibu: "${(r.answer_text_for_guest ?? "").slice(0, 60)}"`;
+          ? [`pendekeza ${swDate(date)}`, `propose ${enDate(date)}`]
+          : [`jibu: ${answer}`, `reply: ${answer}`];
   await ctx.repo.resolvePrompts(bid, "superseded", ctx.now(), ["confirm_readback"]);
   await ctx.repo.createPrompt(bid, "confirm_readback", {
     action: r.intent,
@@ -139,7 +150,11 @@ async function readFreeText(
     action: "readback_sent",
     routed: false,
   });
-  await ctx.smsNoor(`Nimeelewa: ${summary} kwa ${code(bid)}. Jibu 1 kutuma, 2 kughairi.`, bid);
+  await ctx.smsNoor(
+    `Nimeelewa: ${summary} kwa ${code(bid)}. Jibu 1 kutuma, 2 kughairi.`,
+    `Understood: ${summaryEn} for ${code(bid)}. Reply 1 to send, 2 to cancel.`,
+    bid,
+  );
   return { booking_id: bid };
 }
 
@@ -166,7 +181,11 @@ async function resolveReadback(
     routed: false,
   });
   if (!yes) {
-    await ctx.smsNoor(`Sawa, ${code(p.booking_id!)} haijatumwa.`, p.booking_id);
+    await ctx.smsNoor(
+      `Sawa, ${code(p.booking_id!)} haijatumwa.`,
+      `OK, ${code(p.booking_id!)} was not sent.`,
+      p.booking_id,
+    );
     return { booking_id: p.booking_id };
   }
   await executeHostAction(ctx, p.booking_id!, o.action, o);
@@ -195,7 +214,11 @@ async function executeHostAction(
       `Dear ${first},\n\nGreat news — Noor has confirmed your coffee farm visit (${code(id)}) on ${when} for ${b.party_size} people. The price is ${s.price_per_person} ${s.currency} per person.\n\nHow to get there: ${s.directions}\n\nSee you soon!\nNoor's Farm Visits`,
       id,
     );
-    await ctx.smsNoor(`${code(id)} imethibitishwa. Mgeni ametumiwa maelekezo.`, id);
+    await ctx.smsNoor(
+      `${code(id)} imethibitishwa. Mgeni ametumiwa maelekezo.`,
+      `${code(id)} is confirmed. The guest has been sent directions.`,
+      id,
+    );
   } else if (action === "decline") {
     await ctx.transition(b, "DECLINED", "noor");
     await ctx.repo.resolvePrompts(id, "declined", now);
@@ -204,17 +227,23 @@ async function executeHostAction(
       `Dear ${first},\n\nThank you for your interest in visiting our coffee farm. Unfortunately Noor cannot host you on ${when} (${code(id)}). We are sorry and hope to welcome you another time.\n\nNoor's Farm Visits`,
       id,
     );
-    await ctx.smsNoor(`${code(id)} imekataliwa. Mgeni amejulishwa.`, id);
+    await ctx.smsNoor(
+      `${code(id)} imekataliwa. Mgeni amejulishwa.`,
+      `${code(id)} is declined. The guest has been told.`,
+      id,
+    );
   } else if (action === "ask_other_date") {
     await ctx.repo.resolvePrompts(id, "other_day", now, ["approve_booking"]);
     await ctx.repo.createPrompt(id, "ask_other_date");
+    const example = `${code(id)} ${addDays(b.date_from ?? localDate(now), 1)}`;
     await ctx.smsNoor(
-      `${code(id)}: Siku gani nyingine? Jibu mf. '${code(id)} ${addDays(b.date_from ?? localDate(now), 1)}'`,
+      `${code(id)}: Siku gani nyingine? Jibu mf. '${example}'`,
+      `${code(id)}: Which other day? Reply e.g. '${example}'`,
       id,
     );
   } else if (action === "propose_other_date") {
     const date = o.proposed_date;
-    if (!date) return ctx.smsNoor(SORRY);
+    if (!date) return ctx.smsNoor(SORRY, SORRY_EN);
     await ctx.transition(b, "COUNTER_OFFERED", "noor", { date_from: date, date_to: date });
     await ctx.repo.resolvePrompts(id, "counter_offered", now);
     await ctx.emailGuest(
@@ -222,7 +251,11 @@ async function executeHostAction(
       `Dear ${first},\n\nNoor cannot host you on the date you asked for, but she can offer ${date} at ${b.slot ?? s.slots[0]} for ${b.party_size} people (${code(id)}). Please reply "yes" to accept, or let us know if it does not suit you.\n\nNoor's Farm Visits`,
       id,
     );
-    await ctx.smsNoor(`${code(id)}: pendekezo ${swDate(date)} limetumwa kwa mgeni.`, id);
+    await ctx.smsNoor(
+      `${code(id)}: pendekezo ${swDate(date)} limetumwa kwa mgeni.`,
+      `${code(id)}: the offer of ${enDate(date)} has been sent to the guest.`,
+      id,
+    );
   } else if (action === "answer_question") {
     await ctx.repo.resolvePrompts(id, "answered", now, ["answer_question"]);
     await ctx.emailGuest(
@@ -230,6 +263,10 @@ async function executeHostAction(
       `Dear ${first},\n\nNoor replied to your question:\n\n"${o.answer ?? ""}"\n\nNoor's Farm Visits`,
       id,
     );
-    await ctx.smsNoor(`${code(id)}: jibu lako limetumwa.`, id);
+    await ctx.smsNoor(
+      `${code(id)}: jibu lako limetumwa.`,
+      `${code(id)}: your reply has been sent.`,
+      id,
+    );
   }
 }

@@ -33,10 +33,6 @@ export async function handleInbound(ctx: Ctx, input: InboundInput): Promise<Inbo
   if (!msg) return { ignored: true }; // the same webhook arrived twice at once
   ctx.trace.message_id = msg.id;
 
-  if (contact.role === "host") {
-    const en = await ctx.englishOf(input.text, contact.language);
-    if (en) await repo.updateMessage(msg.id, { text_en: en });
-    return handleHost(ctx, msg.id, input.text);
-  }
+  if (contact.role === "host") return handleHost(ctx, contact, msg.id, input.text);
   return handleGuest(ctx, contact, msg.id, input.text, input.thread_ref ?? null);
 }

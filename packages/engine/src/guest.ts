@@ -3,8 +3,8 @@ import type { GuestClassification } from "./ai/types";
 import { code, canTransition, type BookingStatus } from "./booking-state";
 import { CONF_MIN, type Ctx } from "./context";
 import { ingestFeedback } from "./feedback";
-import { firstName, localDate, swDate, swOrigin, swSlot } from "./format";
-import { findReferrer, followUpFeedback, withReferralNote } from "./referrals";
+import { enDate, enOrigin, enSlot, firstName, localDate, swDate, swOrigin, swSlot } from "./format";
+import { findReferrer, followUpFeedback, friendInSms, withReferralNote } from "./referrals";
 import type { Booking, Contact, FarmSettings, InboundResult } from "./types";
 
 /** The booking a guest's email is about: the one in the thread, else their newest open booking. */
@@ -59,6 +59,7 @@ export async function handleGuest(
     booking = booking ?? (await newBooking());
     await ctx.smsNoor(
       `${code(booking.id)} ujumbe kutoka ${firstName(guest.name)} (haukutafsiriwa): ${text}`,
+      null, // untranslated, so its English is left to the AI
       booking.id,
     );
     await ctx.sendMessage("email", guest, "Thank you — Noor will get back to you.", {
@@ -71,13 +72,16 @@ export async function handleGuest(
     await ctx.repo.setContactLanguage(guest.id, r.language);
     guest = { ...guest, language: r.language };
   }
-  const text_en = await ctx.englishOf(text, r.language);
+  // The English comes with the classification ("" for an English email); translate only if missing.
+  const text_en =
+    r.language === "en" ? null : r.translation_en || (await ctx.englishOf(text, r.language));
   await ctx.repo.updateMessage(messageId, {
     lang: r.language,
     text_translated: r.translation_for_noor,
     text_en,
     booking_id: booking?.id ?? null,
   });
+  const english = text_en ?? text; // for the English of Noor's SMS
   const log = (action: string, routed = false) =>
     ctx.log(messageId, {
       intent: r.intent,
@@ -110,6 +114,7 @@ export async function handleGuest(
     });
     await ctx.smsNoor(
       `${code(booking.id)} ${firstName(guest.name)}: ${r.translation_for_noor}`,
+      `${code(booking.id)} ${firstName(guest.name)}: ${english}`,
       booking.id,
     );
     await ctx.emailGuest(
@@ -137,7 +142,11 @@ export async function handleGuest(
       }
       await ctx.transition(booking, "CANCELLED", "guest");
       await ctx.repo.resolvePrompts(booking.id, "cancelled_by_guest", ctx.now());
-      await ctx.smsNoor(`${code(booking.id)} imefutwa na mgeni.`, booking.id);
+      await ctx.smsNoor(
+        `${code(booking.id)} imefutwa na mgeni.`,
+        `${code(booking.id)} was cancelled by the guest.`,
+        booking.id,
+      );
       await ctx.emailGuest(
         guest,
         `Your booking ${code(booking.id)} has been cancelled. We hope to welcome you another time.`,
@@ -152,7 +161,11 @@ export async function handleGuest(
       await ctx.repo.createPrompt(booking.id, "answer_question", {
         question: r.translation_for_noor,
       });
-      await ctx.smsNoor(`${code(booking.id)} swali: ${r.translation_for_noor}`, booking.id);
+      await ctx.smsNoor(
+        `${code(booking.id)} swali: ${r.translation_for_noor}`,
+        `${code(booking.id)} question: ${english}`,
+        booking.id,
+      );
       await ctx.emailGuest(
         guest,
         "Thank you for your question. Noor will get back to you personally.",
@@ -205,6 +218,7 @@ async function requestBooking(
     );
     await ctx.smsNoor(
       `${code(booking.id)}: mgeni amekubali ${swDate(booking.date_from)}. Imethibitishwa.`,
+      `${code(booking.id)}: the guest accepted ${enDate(booking.date_from)}. Confirmed.`,
       booking.id,
     );
     await log("counter_offer_accepted");
@@ -257,7 +271,14 @@ async function requestBooking(
     found ?? (booking.referred_by ? await ctx.repo.contact(booking.referred_by) : null);
   const head = `${code(booking.id)}: ${firstName(guest.name)} (${swOrigin(guest.language)})`;
   const tail = `, watu ${patch.party_size}, ${swDate(patch.date_from)} ${swSlot(patch.slot)}${over}. Jibu 1=Ndiyo 2=Hapana 3=Siku nyingine`;
-  await ctx.smsNoor(withReferralNote(head, referrer, tail), booking.id);
+  const headEn = `${code(booking.id)}: ${firstName(guest.name)} (${enOrigin(guest.language)})`;
+  const tailEn = `, ${patch.party_size} people, ${enDate(patch.date_from)} ${enSlot(patch.slot)}${over && " OVER CAPACITY"}. Reply 1=Yes 2=No 3=Other day`;
+  const friend = friendInSms(head, referrer, tail);
+  await ctx.smsNoor(
+    withReferralNote(head, referrer, tail),
+    headEn + (friend && `, friend of ${friend}`) + tailEn,
+    booking.id,
+  );
   await ctx.emailGuest(
     guest,
     `Thank you! Your request (${code(booking.id)}) for ${patch.party_size} people on ${patch.date_from} at ${patch.slot} has been received. This is not yet a confirmation — Noor will confirm personally soon.`,
