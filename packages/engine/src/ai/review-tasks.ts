@@ -21,7 +21,7 @@ export async function analyzeReview(call: CallTool, text: string): Promise<Revie
   const r = await call<ReviewAnalysis>(
     `You read one visitor review of a small coffee-farm tour. Report only what the review says.
 points: each thing the visitor loved, or complained about or wished had been different.
-ideas: only things the visitor suggests the farm could offer, build or change; idea is a short English label.
+ideas: only suggestions for something new the farm could offer (an activity, product, meal or longer stay), as a short English label. A fix for something that went wrong (signs, shade, seats, toilets, faster replies) is a "wished" point, never an idea.
 Each quote is one short excerpt (max 15 words) copied exactly from the review in its original language, without "..."; quote_en is its English.
 translation_en: "" if the review is in English. Empty arrays are fine.`,
     text,

@@ -1,6 +1,6 @@
 // The classify prompts, checked without a model: the transport only records what it is sent.
 import { describe, expect, it } from "vitest";
-import { classifyGuest, classifyHost, withWeekday } from "./tasks";
+import { classifyGuest, classifyHost, weeksAround, withWeekday } from "./tasks";
 import type { CallTool } from "./types";
 
 describe("classify prompts", () => {
@@ -22,5 +22,16 @@ describe("classify prompts", () => {
     await classifyHost(call, "Jumamosi ijayo", { today: "2026-10-10", openPrompts: "(none)" });
     expect(prompts[0]).toContain("Today is Monday 2026-10-05.");
     expect(prompts[1]).toContain("Today is Saturday 2026-10-10.");
+    expect(prompts[0]).toContain("next week is Mon 12 Oct–Sun 18 Oct.");
+  });
+
+  it("spell out this week and next, Monday to Sunday, so 'next week's Saturday' is a lookup", () => {
+    const weeks = "This week is Mon 5 Oct–Sun 11 Oct; next week is Mon 12 Oct–Sun 18 Oct.";
+    expect(weeksAround("2026-10-05")).toBe(weeks); // Monday
+    expect(weeksAround("2026-10-10")).toBe(weeks); // Saturday
+    expect(weeksAround("2026-10-11")).toBe(weeks); // Sunday still belongs to this week
+    expect(weeksAround("2026-12-30")).toBe(
+      "This week is Mon 28 Dec–Sun 3 Jan; next week is Mon 4 Jan–Sun 10 Jan.",
+    );
   });
 });

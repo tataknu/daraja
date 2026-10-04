@@ -1,0 +1,2893 @@
+{
+  "kind": "model",
+  "suite": "reviews",
+  "task": "analyze_review",
+  "title": "Reviews",
+  "model": "gpt-5.4-mini",
+  "effort": "low",
+  "answered_at": "2026-10-04T00:27:08.025Z",
+  "dataset": {
+    "source": "SAMPLE_REVIEWS in packages/engine/src/samples",
+    "sha256": "c438b60febb83dac284630ad1d2ec08b050406f3704de4e775136935f11bc2fd",
+    "cases": 42,
+    "total": 42
+  },
+  "partial": false,
+  "prices": {
+    "in": 0.75,
+    "out": 4.5
+  },
+  "metrics": [
+    {
+      "key": "sentiment",
+      "label": "Sentiment",
+      "format": "pct",
+      "value": 0.9761904761904762,
+      "num": 41,
+      "den": 42
+    },
+    {
+      "key": "points_precision",
+      "label": "Points precision",
+      "format": "pct",
+      "value": 0.8403361344537815,
+      "num": 100,
+      "den": 119
+    },
+    {
+      "key": "points_recall",
+      "label": "Points recall",
+      "format": "pct",
+      "value": 0.9523809523809523,
+      "num": 100,
+      "den": 105
+    },
+    {
+      "key": "points_f1",
+      "label": "Points F1",
+      "format": "pct",
+      "value": 0.8928571428571429
+    },
+    {
+      "key": "idea_precision",
+      "label": "Idea detection precision",
+      "format": "pct",
+      "value": 1,
+      "num": 19,
+      "den": 19
+    },
+    {
+      "key": "idea_recall",
+      "label": "Idea detection recall",
+      "format": "pct",
+      "value": 1,
+      "num": 19,
+      "den": 19
+    },
+    {
+      "key": "quote_verbatim",
+      "label": "Quotes found verbatim",
+      "format": "pct",
+      "value": 1,
+      "num": 165,
+      "den": 165
+    }
+  ],
+  "usage": [
+    {
+      "key": "calls",
+      "label": "Model calls",
+      "format": "int",
+      "value": 42
+    },
+    {
+      "key": "failed",
+      "label": "Failed calls",
+      "format": "int",
+      "value": 0
+    },
+    {
+      "key": "input_tokens",
+      "label": "Avg input tokens",
+      "format": "int",
+      "value": 548.452380952381
+    },
+    {
+      "key": "cached_tokens",
+      "label": "Avg cached input",
+      "format": "int",
+      "value": 0
+    },
+    {
+      "key": "output_tokens",
+      "label": "Avg output tokens",
+      "format": "int",
+      "value": 305.45238095238096
+    },
+    {
+      "key": "reasoning_tokens",
+      "label": "Avg reasoning tokens",
+      "format": "int",
+      "value": 80.35714285714286
+    },
+    {
+      "key": "latency_avg",
+      "label": "Latency avg",
+      "format": "ms",
+      "value": 2494.0476190476193
+    },
+    {
+      "key": "latency_p50",
+      "label": "Latency p50",
+      "format": "ms",
+      "value": 2349
+    },
+    {
+      "key": "latency_p95",
+      "label": "Latency p95",
+      "format": "ms",
+      "value": 3379
+    },
+    {
+      "key": "cost_per_1k",
+      "label": "Cost per 1,000 messages",
+      "format": "usd",
+      "value": 1.7858749999999999
+    }
+  ],
+  "cases": [
+    {
+      "text": "Ein Highlight unserer Tansania-Reise! Wir durften die Bohnen selbst über dem Feuer rösten, und der Duft war unbeschreiblich. Noor erzählt so lebendig von ihrem Leben als Kaffeebäuerin, dass man ihr ewig zuhören könnte. Mein Tipp: Verkauft doch die frisch gerösteten Bohnen zum Mitnehmen, ich hätte sofort drei Packungen als Mitbringsel gekauft.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["coffee_process", "host"],
+        "wished": [],
+        "ideas": ["sell roasted beans to take home"]
+      },
+      "got": {
+        "language": "de",
+        "sentiment": "positive",
+        "translation_en": "A highlight of our Tanzania trip! We were allowed to roast the beans ourselves over the fire, and the aroma was indescribable. Noor tells so vividly about her life as a coffee farmer that you could listen to her forever. My tip: please sell the freshly roasted beans to take away; I would have immediately bought three packs as souvenirs.",
+        "points": [
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "die Bohnen selbst über dem Feuer rösten",
+            "quote_en": "roast the beans ourselves over the fire"
+          },
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor erzählt so lebendig von ihrem Leben als Kaffeebäuerin",
+            "quote_en": "Noor tells so vividly about her life as a coffee farmer"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "Sell freshly roasted beans to take away",
+            "quote": "Verkauft doch die frisch gerösteten Bohnen zum Mitnehmen",
+            "quote_en": "Please sell the freshly roasted beans to take away"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 2,
+        "points_gold": 2,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r01",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 566,
+          "cached_tokens": 0,
+          "output_tokens": 286,
+          "reasoning_tokens": 65,
+          "latency_ms": 2388,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "It took three days to get a reply to my booking email, so I was a bit nervous. But the walk up through the coffee trees is gorgeous and Noor is such a warm, funny guide. Would do it again!",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["landscape", "host"],
+        "wished": ["communication"],
+        "ideas": []
+      },
+      "got": {
+        "language": "en",
+        "sentiment": "positive",
+        "translation_en": "It took three days to get a reply to my booking email, so I was a bit nervous. But the walk up through the coffee trees is gorgeous and Noor is such a warm, funny guide. Would do it again!",
+        "points": [
+          {
+            "aspect": "communication",
+            "polarity": "wished",
+            "quote": "It took three days to get a reply to my booking email",
+            "quote_en": "It took three days to get a reply to my booking email"
+          },
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "the walk up through the coffee trees is gorgeous",
+            "quote_en": "the walk up through the coffee trees is gorgeous"
+          },
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor is such a warm, funny guide",
+            "quote_en": "Noor is such a warm, funny guide"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r02",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 525,
+          "cached_tokens": 0,
+          "output_tokens": 250,
+          "reasoning_tokens": 107,
+          "latency_ms": 2096,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "ヌールさんはとても親切で、コーヒーの話も勉強になりました。ただ、農園までの道がわかりにくく、緑の「Kahawa」の看板を見逃して何度も行き過ぎてしまいました。また、斜面の途中に日陰や休める場所がなく、午後の回は少しつらかったです。全体としては、良かった点と残念だった点が半々でした。",
+      "expected": {
+        "sentiment": "neutral",
+        "loved": ["host"],
+        "wished": ["access", "facilities"],
+        "ideas": []
+      },
+      "got": {
+        "language": "ja",
+        "sentiment": "neutral",
+        "translation_en": "Nuur-san was very kind, and I learned a lot from the coffee talk. However, the road to the farm was hard to find, and I missed the green 'Kahawa' sign and drove past it many times. Also, there was no shade or place to rest partway up the slope, so the afternoon session was a bit tough. Overall, the good points and the disappointing points were about half and half.",
+        "points": [
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "ヌールさんはとても親切で",
+            "quote_en": "Nuur-san was very kind"
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "コーヒーの話も勉強になりました",
+            "quote_en": "I learned a lot from the coffee talk"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "農園までの道がわかりにくく",
+            "quote_en": "the road to the farm was hard to find"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "緑の「Kahawa」の看板を見逃して",
+            "quote_en": "I missed the green 'Kahawa' sign"
+          },
+          {
+            "aspect": "facilities",
+            "polarity": "wished",
+            "quote": "日陰や休める場所がなく",
+            "quote_en": "there was no shade or place to rest"
+          },
+          {
+            "aspect": "timing",
+            "polarity": "wished",
+            "quote": "午後の回は少しつらかったです",
+            "quote_en": "the afternoon session was a bit tough"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 5,
+        "points_gold": 3,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 6,
+        "verbatim": 6
+      },
+      "id": "r03",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 589,
+          "cached_tokens": 0,
+          "output_tokens": 435,
+          "reasoning_tokens": 97,
+          "latency_ms": 2948,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Une matinée inoubliable ! Noor nous a parlé de sa vie de caféicultrice avec beaucoup de chaleur, puis nous avons torréfié nos propres grains sur le feu, un moment magique, avant de déguster un café incroyable. Vous devriez proposer un séjour de quelques jours à la saison de la récolte, pour cueillir les cerises avec elle et dormir à la ferme : je réserve tout de suite !",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["host", "coffee_process", "tasting"],
+        "wished": [],
+        "ideas": ["offer a longer harvest-season experience or stay at the farm"]
+      },
+      "got": {
+        "language": "fr",
+        "sentiment": "positive",
+        "translation_en": "An unforgettable morning! Noor told us about her life as a coffee grower with great warmth, then we roasted our own beans over the fire, a magical moment, before tasting an incredible coffee. You should offer a few-day stay during the harvest season, to pick the cherries with her and sleep on the farm: I'd book right away!",
+        "points": [
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor nous a parlé de sa vie de caféicultrice avec beaucoup de chaleur",
+            "quote_en": "Noor told us about her life as a coffee grower with great warmth"
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "nous avons torréfié nos propres grains sur le feu",
+            "quote_en": "we roasted our own beans over the fire"
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "avant de déguster un café incroyable",
+            "quote_en": "before tasting an incredible coffee"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "Harvest stay with picking and overnight on the farm",
+            "quote": "Vous devriez proposer un séjour de quelques jours à la saison de la récolte",
+            "quote_en": "You should offer a few-day stay during the harvest season"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r04",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 566,
+          "cached_tokens": 0,
+          "output_tokens": 343,
+          "reasoning_tokens": 80,
+          "latency_ms": 2689,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Noor es encantadora y cuenta sus historias con mucho cariño. Tostar los granos nosotros mismos sobre el fuego fue lo mejor de la mañana. Una sugerencia: ¿y si ofrecieran un almuerzo con los frijoles y el maíz de la propia finca? Sería el cierre perfecto.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["host", "coffee_process"],
+        "wished": [],
+        "ideas": ["offer a lunch with farm food"]
+      },
+      "got": {
+        "language": "es",
+        "sentiment": "positive",
+        "translation_en": "Noor is lovely and tells her stories with great affection. Roasting the beans ourselves over the fire was the best part of the morning. One suggestion: what if they offered a lunch with the beans and corn from the farm itself? It would be the perfect ending.",
+        "points": [
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor es encantadora y cuenta sus historias con mucho cariño.",
+            "quote_en": "Noor is lovely and tells her stories with great affection."
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "Tostar los granos nosotros mismos sobre el fuego",
+            "quote_en": "Roasting the beans ourselves over the fire"
+          },
+          {
+            "aspect": "food",
+            "polarity": "wished",
+            "quote": "ofrecieran un almuerzo con los frijoles y el maíz",
+            "quote_en": "offered a lunch with the beans and corn"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "lunch from farm produce",
+            "quote": "ofrecieran un almuerzo con los frijoles y el maíz de la propia finca",
+            "quote_en": "they offered a lunch with the beans and corn from the farm itself"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 3,
+        "points_gold": 2,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r05",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 542,
+          "cached_tokens": 0,
+          "output_tokens": 306,
+          "reasoning_tokens": 55,
+          "latency_ms": 2285,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Leider kein schöner Start: Auf unsere E-Mail kam erst nach vier Tagen eine Antwort, und dann haben wir die Farm erst nach einer Stunde Suchen gefunden. Das grüne Schild nach der Schule ist winzig, wir sind an der Abzweigung vorbeigefahren und haben die Tour um 9 Uhr verpasst. Noor war zwar freundlich und hat uns in die Nachmittagsgruppe gesteckt, aber der Tag war für uns gelaufen. Eher keine Empfehlung.",
+      "expected": {
+        "sentiment": "negative",
+        "loved": ["host"],
+        "wished": ["communication", "access"],
+        "ideas": []
+      },
+      "got": {
+        "language": "de",
+        "sentiment": "negative",
+        "translation_en": "Unluckily, not a nice start: our email was only answered after four days, and then we only found the farm after an hour of searching. The green sign after the school is tiny; we drove past the turnoff and missed the 9 a.m. tour. Noor was friendly and put us into the afternoon group, but the day was ruined for us. Rather not a recommendation.",
+        "points": [
+          {
+            "aspect": "communication",
+            "polarity": "wished",
+            "quote": "Auf unsere E-Mail kam erst nach vier Tagen eine Antwort",
+            "quote_en": "Our email was only answered after four days"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "haben wir die Farm erst nach einer Stunde Suchen gefunden",
+            "quote_en": "we only found the farm after an hour of searching"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "Das grüne Schild nach der Schule ist winzig",
+            "quote_en": "The green sign after the school is tiny"
+          },
+          {
+            "aspect": "timing",
+            "polarity": "wished",
+            "quote": "wir sind an der Abzweigung vorbeigefahren und haben die Tour um 9 Uhr verpasst",
+            "quote_en": "we drove past the turnoff and missed the 9 a.m. tour"
+          },
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor war zwar freundlich",
+            "quote_en": "Noor was friendly"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 4,
+        "points_gold": 3,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 5,
+        "verbatim": 5
+      },
+      "id": "r06",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 574,
+          "cached_tokens": 0,
+          "output_tokens": 408,
+          "reasoning_tokens": 108,
+          "latency_ms": 3077,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Zelf koffiebonen roosteren boven het vuur was echt top! En de koffie smaakte daarna veel beter dan thuis. Alleen de weg ernaartoe was lastig te vinden, dat groene bordje na de basisschool is zo makkelijk te missen.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["coffee_process", "tasting"],
+        "wished": ["access"],
+        "ideas": []
+      },
+      "got": {
+        "language": "nl",
+        "sentiment": "positive",
+        "translation_en": "Roasting coffee beans over the fire ourselves was really great! And the coffee tasted much better than at home afterward. Only the road there was hard to find; that little green sign after the primary school is so easy to miss.",
+        "points": [
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "Zelf koffiebonen roosteren boven het vuur was echt top!",
+            "quote_en": "Roasting coffee beans over the fire ourselves was really great!"
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "de koffie smaakte daarna veel beter dan thuis.",
+            "quote_en": "the coffee tasted much better than at home afterward."
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "de weg ernaartoe was lastig te vinden",
+            "quote_en": "the road there was hard to find"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r07",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 530,
+          "cached_tokens": 0,
+          "output_tokens": 234,
+          "reasoning_tokens": 43,
+          "latency_ms": 1984,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Che bella mattinata! Abbiamo tostato i chicchi sul fuoco, un'esperienza fantastica, e poi assaggiato il caffè: un profumo e un sapore che non dimenticherò. Un consiglio: vendete anche i chicchi tostati in piccoli sacchetti, ne avrei comprati volentieri un paio da portare a casa.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["coffee_process", "tasting"],
+        "wished": [],
+        "ideas": ["sell roasted beans to take home"]
+      },
+      "got": {
+        "language": "it",
+        "sentiment": "positive",
+        "translation_en": "What a lovely morning! We roasted the beans over the fire, a fantastic experience, and then tasted the coffee: a smell and flavor I will not forget. One suggestion: also sell the roasted beans in small bags; I would have gladly bought a couple to take home.",
+        "points": [
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "Abbiamo tostato i chicchi sul fuoco, un'esperienza fantastica",
+            "quote_en": "We roasted the beans over the fire, a fantastic experience"
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "poi assaggiato il caffè: un profumo e un sapore che non dimenticherò",
+            "quote_en": "then tasted the coffee: a smell and flavor I will not forget"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "Sell roasted beans in small bags",
+            "quote": "vendete anche i chicchi tostati in piccoli sacchetti",
+            "quote_en": "also sell the roasted beans in small bags"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 2,
+        "points_gold": 2,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r08",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 562,
+          "cached_tokens": 0,
+          "output_tokens": 274,
+          "reasoning_tokens": 52,
+          "latency_ms": 2585,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "自分たちで生豆を焚き火で焙煎する体験が、旅行のハイライトになりました。焙煎したての豆で淹れたコーヒーは香りが全然違い、思わず感動しました。ヌールさんは終始笑顔で、いろいろなエピソードを話してくれて、とても温かい気持ちになりました。",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["coffee_process", "tasting", "host"],
+        "wished": [],
+        "ideas": []
+      },
+      "got": {
+        "language": "ja",
+        "sentiment": "positive",
+        "translation_en": "The experience of roasting green coffee beans ourselves over a campfire was the highlight of the trip. The coffee brewed from freshly roasted beans had a completely different aroma and truly moved us. Nur was smiling the whole time and shared many stories, which made us feel very warm and welcomed.",
+        "points": [
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "自分たちで生豆を焚き火で焙煎する体験が、旅行のハイライトになりました。",
+            "quote_en": "The experience of roasting green beans over a campfire ourselves was the highlight of the trip."
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "焙煎したての豆で淹れたコーヒーは香りが全然違い",
+            "quote_en": "The coffee brewed from freshly roasted beans had a completely different aroma."
+          },
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "ヌールさんは終始笑顔で、いろいろなエピソードを話してくれて",
+            "quote_en": "Nur was smiling the whole time and shared many stories."
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r09",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 579,
+          "cached_tokens": 0,
+          "output_tokens": 311,
+          "reasoning_tokens": 49,
+          "latency_ms": 2349,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Tour was okay, roasting the beans over the fire was the best part. we got lost for 20 mins looking for the turn after the school tho, and after the 2pm tour we were starving with nothing to eat nearby. a lunch made with whatever grows on the farm would really round it off",
+      "expected": {
+        "sentiment": "neutral",
+        "loved": ["coffee_process"],
+        "wished": ["access", "food"],
+        "ideas": ["offer a lunch with farm food"]
+      },
+      "got": {
+        "language": "en",
+        "sentiment": "neutral",
+        "translation_en": "Tour was okay, roasting the beans over the fire was the best part. we got lost for 20 mins looking for the turn after the school tho, and after the 2pm tour we were starving with nothing to eat nearby. a lunch made with whatever grows on the farm would really round it off",
+        "points": [
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "roasting the beans over the fire was the best part",
+            "quote_en": "Roasting the beans over the fire was the best part"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "we got lost for 20 mins looking for the turn after the school tho",
+            "quote_en": "We got lost for 20 minutes looking for the turn after the school though"
+          },
+          {
+            "aspect": "food",
+            "polarity": "wished",
+            "quote": "we were starving with nothing to eat nearby",
+            "quote_en": "We were starving with nothing to eat nearby"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "farm lunch",
+            "quote": "a lunch made with whatever grows on the farm would really round it off",
+            "quote_en": "A lunch made with whatever grows on the farm would really round it off"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r10",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 541,
+          "cached_tokens": 0,
+          "output_tokens": 267,
+          "reasoning_tokens": 75,
+          "latency_ms": 2161,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Wir haben viel über das Leben auf dem Land gelernt: Weiter unten wachsen Mais und Bohnen, und Noor hat uns erzählt, was es bedeutet, Mitglied der Kaffee-Genossenschaft zu sein. Sehr ehrlich und nahbar! Nach dem Rundgang hatten wir allerdings richtig Hunger, und in der Nähe gab es nichts zu essen. Ein einfaches Mittagessen mit Bohnen und Mais vom eigenen Feld wäre die perfekte Ergänzung.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["farm_life", "host"],
+        "wished": ["food"],
+        "ideas": ["offer a lunch with farm food"]
+      },
+      "got": {
+        "language": "de",
+        "sentiment": "positive",
+        "translation_en": "We learned a lot about life in the countryside: down below, corn and beans are growing, and Noor told us what it means to be a member of the coffee cooperative. Very honest and approachable! After the tour, however, we were really hungry, and there was nothing to eat nearby. A simple lunch with beans and corn from the farm’s own field would be the perfect addition.",
+        "points": [
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "Wir haben viel über das Leben auf dem Land gelernt",
+            "quote_en": "We learned a lot about life in the countryside"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "was es bedeutet, Mitglied der Kaffee-Genossenschaft zu sein",
+            "quote_en": "what it means to be a member of the coffee cooperative"
+          },
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Sehr ehrlich und nahbar!",
+            "quote_en": "Very honest and approachable!"
+          },
+          {
+            "aspect": "food",
+            "polarity": "wished",
+            "quote": "in der Nähe gab es nichts zu essen",
+            "quote_en": "there was nothing to eat nearby"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "simple lunch with beans and corn from the farm’s own field",
+            "quote": "Ein einfaches Mittagessen mit Bohnen und Mais vom eigenen Feld",
+            "quote_en": "A simple lunch with beans and corn from the farm’s own field"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 5,
+        "verbatim": 5
+      },
+      "id": "r11",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 564,
+          "cached_tokens": 0,
+          "output_tokens": 378,
+          "reasoning_tokens": 80,
+          "latency_ms": 2759,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Nimefurahi sana kutembelea shamba la Dada Noor! Alitukaribisha kwa moyo mkunjufu na kutusimulia hadithi nyingi za maisha yake kama mkulima. Nimependa pia kuona maisha ya shambani: mahindi na maharage chini ya mteremko, na chama cha ushirika wa kahawa anachoshiriki. Kukaanga kahawa wenyewe kwenye moto ndiyo sehemu niliyoipenda zaidi, na ladha yake ilikuwa ya kipekee. Nitawaleta wazazi wangu wakati mwingine.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["host", "farm_life", "coffee_process", "tasting"],
+        "wished": [],
+        "ideas": []
+      },
+      "got": {
+        "language": "sw",
+        "sentiment": "positive",
+        "translation_en": "I was very happy to visit Dada Noor's farm! She welcomed us warmly and told us many stories about her life as a farmer. I also loved seeing farm life: maize and beans on the hillside, and the coffee cooperative she is part of. Roasting the coffee ourselves over the fire was my favorite part, and its taste was unique. I will bring my parents another time.",
+        "points": [
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Alitukaribisha kwa moyo mkunjufu",
+            "quote_en": "She welcomed us warmly"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "kutusimulia hadithi nyingi za maisha yake kama mkulima",
+            "quote_en": "telling us many stories about her life as a farmer"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "kuona maisha ya shambani: mahindi na maharage chini ya mteremko",
+            "quote_en": "seeing farm life: maize and beans on the hillside"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "chama cha ushirika wa kahawa anachoshiriki",
+            "quote_en": "the coffee cooperative she is part of"
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "Kukaanga kahawa wenyewe kwenye moto ndiyo sehemu niliyoipenda zaidi",
+            "quote_en": "Roasting the coffee ourselves over the fire was my favorite part"
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "ladha yake ilikuwa ya kipekee",
+            "quote_en": "its taste was unique"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 4,
+        "points_predicted": 4,
+        "points_gold": 4,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 6,
+        "verbatim": 6
+      },
+      "id": "r12",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 597,
+          "cached_tokens": 0,
+          "output_tokens": 417,
+          "reasoning_tokens": 70,
+          "latency_ms": 3165,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Interessant om te zien hoe het leven op een koffieboerderij eruitziet, met maïs en bonen lager op de helling en de coöperatie waar Noor lid van is. We moesten alleen erg lang wachten op antwoord op onze boekingsmail, en na afloop was er niets te eten. Al met al gemengde gevoelens: ik zou het misschien nog eens doen als dat beter geregeld is.",
+      "expected": {
+        "sentiment": "neutral",
+        "loved": ["farm_life"],
+        "wished": ["communication", "food"],
+        "ideas": []
+      },
+      "got": {
+        "language": "nl",
+        "sentiment": "neutral",
+        "translation_en": "It was interesting to see what life on a coffee farm is like, with corn and beans lower on the slope and the cooperative that Noor is a member of. We just had to wait a very long time for a reply to our booking email, and afterwards there was nothing to eat. All in all mixed feelings: I might do it again if that were better organized.",
+        "points": [
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "hoe het leven op een koffieboerderij eruitziet",
+            "quote_en": "what life on a coffee farm looks like"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "met maïs en bonen lager op de helling",
+            "quote_en": "with corn and beans lower on the slope"
+          },
+          {
+            "aspect": "communication",
+            "polarity": "wished",
+            "quote": "erg lang wachten op antwoord op onze boekingsmail",
+            "quote_en": "waited a very long time for a reply to our booking email"
+          },
+          {
+            "aspect": "food",
+            "polarity": "wished",
+            "quote": "was er niets te eten",
+            "quote_en": "there was nothing to eat"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r13",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 564,
+          "cached_tokens": 0,
+          "output_tokens": 527,
+          "reasoning_tokens": 279,
+          "latency_ms": 4531,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Como brasileira, achei incrível ver o café sendo torrado na fogueira e ainda poder torrar os meus próprios grãos! A Noor é uma anfitriã super simpática. Fica a dica: vendam pacotinhos do café torrado (eu levaria vários!) e, quem sabe, ofereçam um almoço com comida da roça no final.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["coffee_process", "host"],
+        "wished": [],
+        "ideas": ["sell roasted beans to take home", "offer a lunch with farm food"]
+      },
+      "got": {
+        "language": "pt",
+        "sentiment": "positive",
+        "translation_en": "As a Brazilian, I thought it was incredible to see the coffee being roasted over the fire and to roast my own beans too! Noor is a super friendly host. A tip: sell little bags of the roasted coffee (I would take several!) and, who knows, offer a lunch with farm-style food at the end.",
+        "points": [
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "ver o café sendo torrado na fogueira",
+            "quote_en": "see the coffee being roasted over the fire"
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "torrar os meus próprios grãos",
+            "quote_en": "roast my own beans"
+          },
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "A Noor é uma anfitriã super simpática.",
+            "quote_en": "Noor is a super friendly host."
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "Sell small bags of roasted coffee",
+            "quote": "vendam pacotinhos do café torrado",
+            "quote_en": "sell little bags of the roasted coffee"
+          },
+          {
+            "idea": "Offer a farm-style lunch",
+            "quote": "ofereçam um almoço com comida da roça",
+            "quote_en": "offer a lunch with farm-style food"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 2,
+        "points_gold": 2,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 5,
+        "verbatim": 5
+      },
+      "id": "r14",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 553,
+          "cached_tokens": 0,
+          "output_tokens": 407,
+          "reasoning_tokens": 146,
+          "latency_ms": 3301,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "tres bonne expérience, la balade entre les caféiers est top et la vue aussi. on a torréfié nos grains sur le feu, un super moment, et le café à la fin etait délicieux. seul bémol : pas de toilettes sur place, pensez-y avant de monter !",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["landscape", "coffee_process", "tasting"],
+        "wished": ["facilities"],
+        "ideas": []
+      },
+      "got": {
+        "language": "fr",
+        "sentiment": "positive",
+        "translation_en": "very good experience, the walk among the coffee plants is great and so is the view. we roasted our beans over the fire, a great moment, and the coffee at the end was delicious. only downside: no toilets on site, keep that in mind before coming up!",
+        "points": [
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "la balade entre les caféiers est top et la vue aussi",
+            "quote_en": "the walk among the coffee plants is great and so is the view"
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "on a torréfié nos grains sur le feu",
+            "quote_en": "we roasted our beans over the fire"
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "le café à la fin etait délicieux",
+            "quote_en": "the coffee at the end was delicious"
+          },
+          {
+            "aspect": "facilities",
+            "polarity": "wished",
+            "quote": "pas de toilettes sur place",
+            "quote_en": "no toilets on site"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 4,
+        "points_predicted": 4,
+        "points_gold": 4,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r15",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 541,
+          "cached_tokens": 0,
+          "output_tokens": 264,
+          "reasoning_tokens": 38,
+          "latency_ms": 2104,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Me gustó ver cómo es la vida en una finca de café: el maíz y los frijoles más abajo, la cooperativa de la que Noor forma parte, el ritmo de la gente. Lo que no me gustó es que no había nada para comer al terminar y a esa hora ya teníamos mucha hambre. En conjunto, una experiencia regular. Sería interesante añadir una visita a la cooperativa.",
+      "expected": {
+        "sentiment": "neutral",
+        "loved": ["farm_life"],
+        "wished": ["food"],
+        "ideas": ["add a visit to the local coffee cooperative"]
+      },
+      "got": {
+        "language": "es",
+        "sentiment": "neutral",
+        "translation_en": "I liked seeing what life is like on a coffee farm: the corn and beans lower down, the cooperative that Noor is part of, the pace of the people. What I didn't like is that there was nothing to eat at the end, and by then we were already very hungry. Overall, an average experience. It would be interesting to add a visit to the cooperative.",
+        "points": [
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "ver cómo es la vida en una finca de café",
+            "quote_en": "to see what life is like on a coffee farm"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "el maíz y los frijoles más abajo",
+            "quote_en": "the corn and beans lower down"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "la cooperativa de la que Noor forma parte",
+            "quote_en": "the cooperative that Noor is part of"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "el ritmo de la gente",
+            "quote_en": "the pace of the people"
+          },
+          {
+            "aspect": "food",
+            "polarity": "wished",
+            "quote": "no había nada para comer al terminar",
+            "quote_en": "there was nothing to eat at the end"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "visit to the cooperative",
+            "quote": "Sería interesante añadir una visita a la cooperativa",
+            "quote_en": "It would be interesting to add a visit to the cooperative"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 2,
+        "points_gold": 2,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 6,
+        "verbatim": 6
+      },
+      "id": "r16",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 564,
+          "cached_tokens": 0,
+          "output_tokens": 428,
+          "reasoning_tokens": 116,
+          "latency_ms": 2919,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Noor was a wonderful host and the coffee we tasted at the end was the best I've had on this trip. Have you ever thought about selling the roasted beans? I'd happily have bought a kilo to take home!",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["host", "tasting"],
+        "wished": [],
+        "ideas": ["sell roasted beans to take home"]
+      },
+      "got": {
+        "language": "en",
+        "sentiment": "positive",
+        "translation_en": "Noor was a wonderful host and the coffee we tasted at the end was the best I've had on this trip. Have you ever thought about selling the roasted beans? I'd happily have bought a kilo to take home!",
+        "points": [
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor was a wonderful host",
+            "quote_en": "Noor was a wonderful host"
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "the coffee we tasted at the end was the best I've had on this trip",
+            "quote_en": "the coffee we tasted at the end was the best I've had on this trip"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "sell roasted beans",
+            "quote": "selling the roasted beans",
+            "quote_en": "selling the roasted beans"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 2,
+        "points_gold": 2,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r17",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 523,
+          "cached_tokens": 0,
+          "output_tokens": 206,
+          "reasoning_tokens": 76,
+          "latency_ms": 1744,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "焙煎体験が最高でした！",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["coffee_process"],
+        "wished": [],
+        "ideas": []
+      },
+      "got": {
+        "language": "ja",
+        "sentiment": "positive",
+        "translation_en": "The roasting experience was amazing!",
+        "points": [
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "焙煎体験が最高でした！",
+            "quote_en": "The roasting experience was amazing!"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 1,
+        "points_predicted": 1,
+        "points_gold": 1,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 1,
+        "verbatim": 1
+      },
+      "id": "r18",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 490,
+          "cached_tokens": 0,
+          "output_tokens": 129,
+          "reasoning_tokens": 57,
+          "latency_ms": 1588,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Déçue. Le panneau vert « Kahawa » est minuscule, nous nous sommes perdus deux fois, et la piste de terre jusqu'à la ferme est franchement mauvaise. Pas une zone d'ombre sur toute la montée, ni un endroit où s'asseoir. L'organisation laisse vraiment à désirer.",
+      "expected": {
+        "sentiment": "negative",
+        "loved": [],
+        "wished": ["access", "facilities"],
+        "ideas": []
+      },
+      "got": {
+        "language": "fr",
+        "sentiment": "negative",
+        "translation_en": "Disappointed. The green “Kahawa” sign is tiny, we got lost twice, and the dirt track to the farm is frankly bad. No shade at all on the climb, nor anywhere to sit. The organization really leaves something to be desired.",
+        "points": [
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "Le panneau vert « Kahawa » est minuscule",
+            "quote_en": "The green “Kahawa” sign is tiny"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "la piste de terre jusqu'à la ferme est franchement mauvaise",
+            "quote_en": "the dirt track to the farm is frankly bad"
+          },
+          {
+            "aspect": "facilities",
+            "polarity": "wished",
+            "quote": "Pas une zone d'ombre sur toute la montée",
+            "quote_en": "No shade at all on the whole climb"
+          },
+          {
+            "aspect": "facilities",
+            "polarity": "wished",
+            "quote": "ni un endroit où s'asseoir",
+            "quote_en": "nor anywhere to sit"
+          },
+          {
+            "aspect": "other",
+            "polarity": "wished",
+            "quote": "L'organisation laisse vraiment à désirer",
+            "quote_en": "The organization really leaves something to be desired"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 3,
+        "points_gold": 2,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 5,
+        "verbatim": 5
+      },
+      "id": "r19",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 545,
+          "cached_tokens": 0,
+          "output_tokens": 332,
+          "reasoning_tokens": 76,
+          "latency_ms": 2737,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "war richtig cool! das rösten übers feuer hat total spaß gemacht und der kaffe danach schmeckt echt anders als alles was ich kenne. die aussicht von oben ist auch der hammer, nur schatten gibts auf dem weg nach oben null. gerne wieder",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["coffee_process", "tasting", "landscape"],
+        "wished": ["facilities"],
+        "ideas": []
+      },
+      "got": {
+        "language": "de",
+        "sentiment": "positive",
+        "translation_en": "That was really cool! Roasting over the fire was a lot of fun, and the coffee afterward tastes really different from anything I know. The view from the top is also amazing, there’s just zero shade on the way up. I’d love to come again.",
+        "points": [
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "das rösten übers feuer hat total spaß gemacht",
+            "quote_en": "roasting over the fire was a lot of fun"
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "der kaffe danach schmeckt echt anders als alles was ich kenne",
+            "quote_en": "the coffee afterward tastes really different from anything I know"
+          },
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "die aussicht von oben ist auch der hammer",
+            "quote_en": "the view from the top is amazing"
+          },
+          {
+            "aspect": "facilities",
+            "polarity": "wished",
+            "quote": "nur schatten gibts auf dem weg nach oben null",
+            "quote_en": "there is zero shade on the way up"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 4,
+        "points_predicted": 4,
+        "points_gold": 4,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r20",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 533,
+          "cached_tokens": 0,
+          "output_tokens": 321,
+          "reasoning_tokens": 86,
+          "latency_ms": 2823,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "坡上的景色太美了，穿过咖啡树一路往上走，心情特别好。最有意思的是自己在火上烘焙咖啡豆，香味扑鼻。唯一的遗憾是结束后附近没有地方吃饭，肚子饿得咕咕叫。如果能买到烘焙好的咖啡豆带回家就更好了。",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["landscape", "coffee_process"],
+        "wished": ["food"],
+        "ideas": ["sell roasted beans to take home"]
+      },
+      "got": {
+        "language": "zh",
+        "sentiment": "positive",
+        "translation_en": "The scenery on the slope was beautiful; walking up through the coffee trees felt especially uplifting. The most interesting part was roasting coffee beans myself over the fire, with the aroma filling the air. The only regret was that there was nowhere nearby to eat after it ended, so I was left hungry. It would be even better if I could buy roasted coffee beans to take home.",
+        "points": [
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "坡上的景色太美了",
+            "quote_en": "The scenery on the slope was beautiful."
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "自己在火上烘焙咖啡豆",
+            "quote_en": "Roasting coffee beans myself over the fire."
+          },
+          {
+            "aspect": "food",
+            "polarity": "wished",
+            "quote": "结束后附近没有地方吃饭",
+            "quote_en": "There was nowhere nearby to eat after it ended."
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "roasted coffee beans to take home",
+            "quote": "如果能买到烘焙好的咖啡豆带回家就更好了",
+            "quote_en": "It would be even better if I could buy roasted coffee beans to take home."
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r21",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 571,
+          "cached_tokens": 0,
+          "output_tokens": 352,
+          "reasoning_tokens": 87,
+          "latency_ms": 2726,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Las vistas desde la ladera son preciosas y el café que probamos al final estaba buenísimo. Eso sí, encontrar la finca nos costó: el cartel verde de «Kahawa» después de la escuela primaria es pequeño y pasamos de largo dos veces. Aun así, volveríamos.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["landscape", "tasting"],
+        "wished": ["access"],
+        "ideas": []
+      },
+      "got": {
+        "language": "es",
+        "sentiment": "positive",
+        "translation_en": "The views from the hillside are beautiful, and the coffee we tasted at the end was delicious. That said, finding the farm was difficult: the green \"Kahawa\" sign after the primary school is small and we passed it twice. Still, we would return.",
+        "points": [
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "Las vistas desde la ladera son preciosas",
+            "quote_en": "The views from the hillside are beautiful"
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "el café que probamos al final estaba buenísimo",
+            "quote_en": "the coffee we tasted at the end was delicious"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "encontrar la finca nos costó",
+            "quote_en": "finding the farm was difficult"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r22",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 542,
+          "cached_tokens": 0,
+          "output_tokens": 245,
+          "reasoning_tokens": 59,
+          "latency_ms": 2157,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Esperienza nella media: Noor è molto accogliente e ci ha spiegato tutto con pazienza, ma con due bambini piccoli la salita è stata davvero faticosa. Un giro più breve pensato per le famiglie sarebbe un'ottima idea.",
+      "expected": {
+        "sentiment": "neutral",
+        "loved": ["host"],
+        "wished": ["landscape"],
+        "ideas": ["offer a shorter tour suitable for children"]
+      },
+      "got": {
+        "language": "it",
+        "sentiment": "neutral",
+        "translation_en": "An average experience: Noor is very welcoming and explained everything patiently, but with two small children the climb was really tiring. A shorter tour designed for families would be a great idea.",
+        "points": [
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor è molto accogliente",
+            "quote_en": "Noor is very welcoming"
+          },
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "ci ha spiegato tutto con pazienza",
+            "quote_en": "he explained everything patiently"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "con due bambini piccoli la salita è stata davvero faticosa",
+            "quote_en": "with two small children the climb was really tiring"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "shorter family tour",
+            "quote": "Un giro più breve pensato per le famiglie",
+            "quote_en": "A shorter tour designed for families"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 1,
+        "points_predicted": 2,
+        "points_gold": 2,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r23",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 532,
+          "cached_tokens": 0,
+          "output_tokens": 294,
+          "reasoning_tokens": 100,
+          "latency_ms": 2192,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "We booked this tour on a whim while staying in Moshi and it ended up being the best day of our two weeks in Tanzania. Noor was a wonderful guide: she met us where the track ends and walked us up the slope between the coffee trees, explaining everything from picking to pulping to drying, and the views over the valley kept getting better. Lower down she showed us the maize and beans and told us about the cooperative she belongs to, which gave us a real sense of what a farming year looks like here. Then we roasted our own beans over a fire, which was the highlight for me, and drank the result: honestly the best cup of coffee I've had in years. The only hiccup was finding the place: the green Kahawa sign after the primary school is easy to miss and the dirt track beyond it looks like it leads nowhere. One idea: sell small bags of the roasted beans and maybe offer a few days at harvest time, because half our group wanted to take some home and the other half wanted to come back and pick.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["host", "coffee_process", "landscape", "tasting", "farm_life"],
+        "wished": ["access"],
+        "ideas": [
+          "sell roasted beans to take home",
+          "offer a longer harvest-season experience or stay at the farm"
+        ]
+      },
+      "got": {
+        "language": "en",
+        "sentiment": "positive",
+        "translation_en": "We booked this tour on a whim while staying in Moshi and it ended up being the best day of our two weeks in Tanzania. Noor was a wonderful guide: she met us where the track ends and walked us up the slope between the coffee trees, explaining everything from picking to pulping to drying, and the views over the valley kept getting better. Lower down she showed us the maize and beans and told us about the cooperative she belongs to, which gave us a real sense of what a farming year looks like here. Then we roasted our own beans over a fire, which was the highlight for me, and drank the result: honestly the best cup of coffee I've had in years. The only hiccup was finding the place: the green Kahawa sign after the primary school is easy to miss and the dirt track beyond it looks like it leads nowhere. One idea: sell small bags of the roasted beans and maybe offer a few days at harvest time, because half our group wanted to take some home and the other half wanted to come back and pick.",
+        "points": [
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor was a wonderful guide",
+            "quote_en": "Noor was a wonderful guide"
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "explaining everything from picking to pulping to drying",
+            "quote_en": "explaining everything from picking to pulping to drying"
+          },
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "the views over the valley kept getting better",
+            "quote_en": "the views over the valley kept getting better"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "showed us the maize and beans",
+            "quote_en": "showed us the maize and beans"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "told us about the cooperative she belongs to",
+            "quote_en": "told us about the cooperative she belongs to"
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "we roasted our own beans over a fire",
+            "quote_en": "we roasted our own beans over a fire"
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "the best cup of coffee I've had in years",
+            "quote_en": "the best cup of coffee I've had in years"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "finding the place: the green Kahawa sign after the primary school is easy to miss",
+            "quote_en": "finding the place: the green Kahawa sign after the primary school is easy to miss"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "the dirt track beyond it looks like it leads nowhere",
+            "quote_en": "the dirt track beyond it looks like it leads nowhere"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "sell small bags of roasted beans",
+            "quote": "sell small bags of the roasted beans",
+            "quote_en": "sell small bags of the roasted beans"
+          },
+          {
+            "idea": "offer harvest-time day visits",
+            "quote": "offer a few days at harvest time",
+            "quote_en": "offer a few days at harvest time"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 6,
+        "points_predicted": 6,
+        "points_gold": 6,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 11,
+        "verbatim": 11
+      },
+      "id": "r24",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 692,
+          "cached_tokens": 0,
+          "output_tokens": 444,
+          "reasoning_tokens": 24,
+          "latency_ms": 4871,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "斜面を登りながら見渡す景色が本当に素晴らしかったです。もしできるなら、焙煎した豆を小分けにしてお土産として買えるようになると、もっとうれしいです。",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["landscape"],
+        "wished": [],
+        "ideas": ["sell roasted beans to take home"]
+      },
+      "got": {
+        "language": "ja",
+        "sentiment": "positive",
+        "translation_en": "The view while climbing the slope was truly wonderful. If possible, I would be even happier if roasted beans could be sold in small portions as souvenirs.",
+        "points": [
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "斜面を登りながら見渡す景色が本当に素晴らしかったです。",
+            "quote_en": "The view while climbing the slope was truly wonderful."
+          },
+          {
+            "aspect": "other",
+            "polarity": "wished",
+            "quote": "焙煎した豆を小分けにしてお土産として買えるようになると",
+            "quote_en": "If roasted beans could be sold in small portions as souvenirs"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "small-pack roasted beans",
+            "quote": "焙煎した豆を小分けにしてお土産として買えるようになると",
+            "quote_en": "If roasted beans could be sold in small portions as souvenirs"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 1,
+        "points_predicted": 2,
+        "points_gold": 1,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r25",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 537,
+          "cached_tokens": 0,
+          "output_tokens": 415,
+          "reasoning_tokens": 207,
+          "latency_ms": 3379,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Das Rösten über dem offenen Feuer war richtig gut, keine Frage. Aber der Aufstieg am Hang ist steil, und unterwegs gibt es weder Schatten noch eine Bank zum Ausruhen. Bei der Tour um 14 Uhr in der prallen Sonne war das für meine Mutter (68) ziemlich anstrengend. Unterm Strich ein gemischter Eindruck.",
+      "expected": {
+        "sentiment": "neutral",
+        "loved": ["coffee_process"],
+        "wished": ["landscape", "facilities"],
+        "ideas": []
+      },
+      "got": {
+        "language": "de",
+        "sentiment": "neutral",
+        "translation_en": "The roasting over the open fire was really good, no question. But the climb up the slope is steep, and along the way there is neither shade nor a bench to rest on. With the 2 p.m. tour in the blazing sun, that was pretty exhausting for my mother (68). Overall, a mixed impression.",
+        "points": [
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "Das Rösten über dem offenen Feuer war richtig gut",
+            "quote_en": "The roasting over the open fire was really good"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "der Aufstieg am Hang ist steil",
+            "quote_en": "the climb up the slope is steep"
+          },
+          {
+            "aspect": "facilities",
+            "polarity": "wished",
+            "quote": "gibt es weder Schatten noch eine Bank zum Ausruhen",
+            "quote_en": "there is neither shade nor a bench to rest on"
+          },
+          {
+            "aspect": "timing",
+            "polarity": "wished",
+            "quote": "Bei der Tour um 14 Uhr in der prallen Sonne",
+            "quote_en": "With the 2 p.m. tour in the blazing sun"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 4,
+        "points_gold": 3,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r26",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 553,
+          "cached_tokens": 0,
+          "output_tokens": 325,
+          "reasoning_tokens": 77,
+          "latency_ms": 2357,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Passeio lindíssimo pelo meio dos cafeeiros, com uma vista que vale a viagem. Tivemos alguma dificuldade em encontrar a quinta, porque o letreiro verde depois da escola é pequeno, mas torrar nós próprios os grãos ao lume foi o ponto alto do dia. Voltaremos!",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["landscape", "coffee_process"],
+        "wished": ["access"],
+        "ideas": []
+      },
+      "got": {
+        "language": "pt",
+        "sentiment": "positive",
+        "translation_en": "A beautiful walk through the coffee plants, with a view worth the trip. We had some difficulty finding the farm, because the green sign after the school is small, but roasting the beans ourselves over the fire was the highlight of the day. We will be back!",
+        "points": [
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "Passeio lindíssimo pelo meio dos cafeeiros",
+            "quote_en": "A beautiful walk among the coffee plants"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "tivemos alguma dificuldade em encontrar a quinta",
+            "quote_en": "we had some difficulty finding the farm"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "o letreiro verde depois da escola é pequeno",
+            "quote_en": "the green sign after the school is small"
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "torrar nós próprios os grãos ao lume",
+            "quote_en": "roasting the beans ourselves over the fire"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r27",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 539,
+          "cached_tokens": 0,
+          "output_tokens": 304,
+          "reasoning_tokens": 82,
+          "latency_ms": 2238,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "J'ai adoré voir le quotidien d'une ferme de café : le maïs et les haricots plus bas sur la pente, la coopérative dont Noor fait partie, le rythme des journées. Petite suggestion : proposez un déjeuner avec les produits de la ferme à la fin de la visite, je suis sûre que beaucoup de visiteurs en seraient ravis.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["farm_life"],
+        "wished": [],
+        "ideas": ["offer a lunch with farm food"]
+      },
+      "got": {
+        "language": "fr",
+        "sentiment": "positive",
+        "translation_en": "J'ai adoré voir le quotidien d'une ferme de café : le maïs et les haricots plus bas sur la pente, la coopérative dont Noor fait partie, le rythme des journées. Petite suggestion : proposez un déjeuner avec les produits de la ferme à la fin de la visite, je suis sûre que beaucoup de visiteurs en seraient ravis.",
+        "points": [
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "le quotidien d'une ferme de café",
+            "quote_en": "the daily life of a coffee farm"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "le maïs et les haricots plus bas sur la pente",
+            "quote_en": "the corn and beans lower down the slope"
+          },
+          {
+            "aspect": "farm_life",
+            "polarity": "loved",
+            "quote": "la coopérative dont Noor fait partie",
+            "quote_en": "the cooperative that Noor is part of"
+          },
+          {
+            "aspect": "timing",
+            "polarity": "loved",
+            "quote": "le rythme des journées",
+            "quote_en": "the rhythm of the days"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "farm lunch with farm products",
+            "quote": "proposez un déjeuner avec les produits de la ferme",
+            "quote_en": "offer a lunch with products from the farm"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 1,
+        "points_predicted": 2,
+        "points_gold": 1,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 5,
+        "verbatim": 5
+      },
+      "id": "r28",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 553,
+          "cached_tokens": 0,
+          "output_tokens": 234,
+          "reasoning_tokens": 32,
+          "latency_ms": 1923,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Kahawa ilikuwa tamu sana, ila tulipata shida kulifikia shamba. Kibao cha kijani cha «Kahawa» baada ya shule ya msingi ni kidogo, tukakipita mara mbili. Baada ya ziara hatukupata chakula chochote, na tulikuwa na njaa. Ingependeza kama mngetoa chakula cha mchana kwa kutumia mazao ya shamba lenyewe. Kwa ujumla ilikuwa sawa tu.",
+      "expected": {
+        "sentiment": "neutral",
+        "loved": ["tasting"],
+        "wished": ["access", "food"],
+        "ideas": ["offer a lunch with farm food"]
+      },
+      "got": {
+        "language": "sw",
+        "sentiment": "neutral",
+        "translation_en": "The coffee was very delicious, but we had trouble getting to the farm. The green “Coffee” sign after the primary school is small; we passed it twice. After the tour we didn’t get any food, and we were hungry. It would be nice if you offered lunch using the farm’s own produce. Overall it was just okay.",
+        "points": [
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "Kahawa ilikuwa tamu sana",
+            "quote_en": "The coffee was very delicious"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "tulipata shida kulifikia shamba",
+            "quote_en": "we had trouble getting to the farm"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "Kibao cha kijani cha «Kahawa» baada ya shule ya msingi ni kidogo",
+            "quote_en": "The green “Coffee” sign after the primary school is small"
+          },
+          {
+            "aspect": "food",
+            "polarity": "wished",
+            "quote": "hatukupata chakula chochote",
+            "quote_en": "we didn’t get any food"
+          },
+          {
+            "aspect": "food",
+            "polarity": "wished",
+            "quote": "Ingependeza kama mngetoa chakula cha mchana kwa kutumia mazao ya shamba lenyewe",
+            "quote_en": "It would be nice if you offered lunch using the farm’s own produce"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "farm-to-table lunch",
+            "quote": "chakula cha mchana kwa kutumia mazao ya shamba lenyewe",
+            "quote_en": "lunch using the farm’s own produce"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 6,
+        "verbatim": 6
+      },
+      "id": "r29",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 579,
+          "cached_tokens": 0,
+          "output_tokens": 380,
+          "reasoning_tokens": 43,
+          "latency_ms": 2756,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Der Weg zur Farm war ein kleines Abenteuer: Nach der Grundschule haben wir das grüne Kahawa-Schild gleich zweimal übersehen, und der Feldweg zum Schluss sieht aus, als würde er ins Nichts führen. Aber oben wurden wir mit einer traumhaften Aussicht über die Hügel belohnt – es hat sich absolut gelohnt.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["landscape"],
+        "wished": ["access"],
+        "ideas": []
+      },
+      "got": {
+        "language": "de",
+        "sentiment": "positive",
+        "translation_en": "The way to the farm was a little adventure: after the elementary school we missed the green Kahawa sign twice, and the dirt road at the end looks like it leads nowhere. But up top we were rewarded with a dreamy view over the hills - it was absolutely worth it.",
+        "points": [
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "Nach der Grundschule haben wir das grüne Kahawa-Schild gleich zweimal übersehen",
+            "quote_en": "After the elementary school we missed the green Kahawa sign twice"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "der Feldweg zum Schluss sieht aus, als würde er ins Nichts führen",
+            "quote_en": "the dirt road at the end looks like it leads nowhere"
+          },
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "wurden wir mit einer traumhaften Aussicht über die Hügel belohnt",
+            "quote_en": "we were rewarded with a dreamy view over the hills"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 2,
+        "points_gold": 2,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r30",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 547,
+          "cached_tokens": 0,
+          "output_tokens": 283,
+          "reasoning_tokens": 65,
+          "latency_ms": 2206,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Prachtige wandeling tussen de koffieplanten, en Noor vertelt met zoveel warmte dat je aan haar lippen hangt. Voor onze kinderen van 5 en 7 was de rondleiding wel een beetje te lang. Een kortere versie voor gezinnen met kleine kinderen zou fantastisch zijn!",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["landscape", "host"],
+        "wished": ["timing"],
+        "ideas": ["offer a shorter tour suitable for children"]
+      },
+      "got": {
+        "language": "nl",
+        "sentiment": "positive",
+        "translation_en": "A beautiful walk among the coffee plants, and Noor tells things with so much warmth that you hang on her every word. For our children of 5 and 7, the tour was a bit too long. A shorter version for families with small children would be fantastic!",
+        "points": [
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "Prachtige wandeling tussen de koffieplanten",
+            "quote_en": "Beautiful walk among the coffee plants"
+          },
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor vertelt met zoveel warmte",
+            "quote_en": "Noor tells things with so much warmth"
+          },
+          {
+            "aspect": "timing",
+            "polarity": "wished",
+            "quote": "de rondleiding wel een beetje te lang",
+            "quote_en": "the tour was a bit too long"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "shorter family tour",
+            "quote": "Een kortere versie voor gezinnen met kleine kinderen zou fantastisch zijn!",
+            "quote_en": "A shorter version for families with small children would be fantastic!"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 3,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r31",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 536,
+          "cached_tokens": 0,
+          "output_tokens": 290,
+          "reasoning_tokens": 67,
+          "latency_ms": 2476,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Honestly disappointed. After the drive from Moshi there was no toilet at the farm, and nowhere to sit or get out of the sun on the way up. For 25,000 TZS each I expected a lot more comfort, so I can't really recommend it.",
+      "expected": {
+        "sentiment": "negative",
+        "loved": [],
+        "wished": ["facilities", "value"],
+        "ideas": []
+      },
+      "got": {
+        "language": "en",
+        "sentiment": "negative",
+        "translation_en": "Honestly disappointed. After the drive from Moshi there was no toilet at the farm, and nowhere to sit or get out of the sun on the way up. For 25,000 TZS each I expected a lot more comfort, so I can't really recommend it.",
+        "points": [
+          {
+            "aspect": "facilities",
+            "polarity": "wished",
+            "quote": "there was no toilet at the farm",
+            "quote_en": "there was no toilet at the farm"
+          },
+          {
+            "aspect": "facilities",
+            "polarity": "wished",
+            "quote": "nowhere to sit or get out of the sun",
+            "quote_en": "nowhere to sit or get out of the sun"
+          },
+          {
+            "aspect": "value",
+            "polarity": "wished",
+            "quote": "For 25,000 TZS each I expected a lot more comfort",
+            "quote_en": "For 25,000 TZS each I expected a lot more comfort"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 2,
+        "points_gold": 2,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r32",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 534,
+          "cached_tokens": 0,
+          "output_tokens": 187,
+          "reasoning_tokens": 41,
+          "latency_ms": 1875,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Noor 씨가 정말 따뜻하게 맞아 주셨고, 직접 불에 원두를 볶아 본 것도 오래 기억에 남을 것 같아요. 다만 산비탈이 꽤 가팔라서 올라가는 길이 조금 힘들었어요.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["host", "coffee_process"],
+        "wished": ["landscape"],
+        "ideas": []
+      },
+      "got": {
+        "language": "ko",
+        "sentiment": "neutral",
+        "translation_en": "Noor 씨 welcomed us very warmly, and roasting the beans over an open fire myself will likely stay with me for a long time. However, the hillside was quite steep, so the walk up was a little difficult.",
+        "points": [
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor 씨가 정말 따뜻하게 맞아 주셨고",
+            "quote_en": "Mr. Noor welcomed us very warmly"
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "직접 불에 원두를 볶아 본 것도 오래 기억에 남을 것 같아요",
+            "quote_en": "Roasting the beans over an open fire myself will likely stay with me for a long time"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "산비탈이 꽤 가팔라서 올라가는 길이 조금 힘들었어요",
+            "quote_en": "The hillside was quite steep, so the walk up was a little difficult"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": false,
+        "points_tp": 2,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r33",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 536,
+          "cached_tokens": 0,
+          "output_tokens": 252,
+          "reasoning_tokens": 34,
+          "latency_ms": 2297,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "que experiencia!! me encanto tostar los granos en el fuego y el cafe recien hecho estaba buenisimo. ojala vendieran bolsitas de cafe tostado para llevar, yo compraba 3 jaja",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["coffee_process", "tasting"],
+        "wished": [],
+        "ideas": ["sell roasted beans to take home"]
+      },
+      "got": {
+        "language": "es",
+        "sentiment": "positive",
+        "translation_en": "What an experience!! I loved roasting the beans over the fire and the freshly made coffee was delicious. I wish they sold bags of roasted coffee to take away; I would buy 3 haha.",
+        "points": [
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "me encanto tostar los granos en el fuego",
+            "quote_en": "I loved roasting the beans over the fire"
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "el cafe recien hecho estaba buenisimo",
+            "quote_en": "the freshly made coffee was delicious"
+          },
+          {
+            "aspect": "other",
+            "polarity": "wished",
+            "quote": "ojala vendieran bolsitas de cafe tostado para llevar",
+            "quote_en": "I wish they sold bags of roasted coffee to take away"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "Sell roasted coffee bags to take away",
+            "quote": "ojala vendieran bolsitas de cafe tostado para llevar",
+            "quote_en": "I wish they sold bags of roasted coffee to take away"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 3,
+        "points_gold": 2,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r34",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 524,
+          "cached_tokens": 0,
+          "output_tokens": 313,
+          "reasoning_tokens": 93,
+          "latency_ms": 2295,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Un'esperienza autentica: Noor ci ha accolti come amici e ci ha fatto sentire a casa. Sarebbe bellissimo poter fermarsi qualche giorno in fattoria durante la raccolta e aiutarla con le ciliegie di caffè: se organizzate qualcosa del genere, noi ci siamo!",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["host"],
+        "wished": [],
+        "ideas": ["offer a longer harvest-season experience or stay at the farm"]
+      },
+      "got": {
+        "language": "it",
+        "sentiment": "positive",
+        "translation_en": "An authentic experience: Noor welcomed us like friends and made us feel at home. It would be wonderful to be able to stay a few days on the farm during the harvest and help her with the coffee cherries: if you organize something like that, count us in!",
+        "points": [
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor ci ha accolti come amici",
+            "quote_en": "Noor welcomed us like friends"
+          },
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "ci ha fatto sentire a casa",
+            "quote_en": "she made us feel at home"
+          },
+          {
+            "aspect": "timing",
+            "polarity": "wished",
+            "quote": "poter fermarsi qualche giorno in fattoria durante la raccolta",
+            "quote_en": "to be able to stay a few days on the farm during the harvest"
+          },
+          {
+            "aspect": "coffee_process",
+            "polarity": "wished",
+            "quote": "aiutarla con le ciliegie di caffè",
+            "quote_en": "help her with the coffee cherries"
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "Harvest farm stay",
+            "quote": "poter fermarsi qualche giorno in fattoria durante la raccolta",
+            "quote_en": "to be able to stay a few days on the farm during the harvest"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 1,
+        "points_predicted": 3,
+        "points_gold": 1,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 5,
+        "verbatim": 5
+      },
+      "id": "r35",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 544,
+          "cached_tokens": 0,
+          "output_tokens": 322,
+          "reasoning_tokens": 54,
+          "latency_ms": 2311,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "La vue sur les collines est magnifique, c'est certain, mais la montée est vraiment raide et il n'y a ni ombre ni banc pour souffler. Avec ma mère de 70 ans, nous avons dû nous arrêter plusieurs fois en plein soleil. Magnifique, mais éprouvant.",
+      "expected": {
+        "sentiment": "neutral",
+        "loved": ["landscape"],
+        "wished": ["landscape", "facilities"],
+        "ideas": []
+      },
+      "got": {
+        "language": "fr",
+        "sentiment": "neutral",
+        "translation_en": "The view over the hills is magnificent, for sure, but the climb is really steep and there is neither shade nor a bench to catch your breath. With my 70-year-old mother, we had to stop several times in the full sun. Magnificent, but exhausting.",
+        "points": [
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "La vue sur les collines est magnifique",
+            "quote_en": "The view over the hills is magnificent"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "la montée est vraiment raide",
+            "quote_en": "the climb is really steep"
+          },
+          {
+            "aspect": "facilities",
+            "polarity": "wished",
+            "quote": "il n'y a ni ombre ni banc pour souffler",
+            "quote_en": "there is neither shade nor a bench to catch your breath"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 3,
+        "points_gold": 3,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r36",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 541,
+          "cached_tokens": 0,
+          "output_tokens": 255,
+          "reasoning_tokens": 67,
+          "latency_ms": 1957,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "最大8人の少人数制なので質問もしやすく、ゆったり楽しめました。最後に飲んだコーヒーは酸味と甘みのバランスがよく、とても美味しかったです。家でも美味しく淹れられるように、淹れ方のミニ講座などがあったらさらに嬉しいです。",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["group", "tasting"],
+        "wished": [],
+        "ideas": ["teach visitors how to brew coffee at home"]
+      },
+      "got": {
+        "language": "ja",
+        "sentiment": "positive",
+        "translation_en": "Since it was a small-group tour of up to eight people, it was easy to ask questions and we could enjoy it at a relaxed pace. The coffee we had at the end had a great balance of acidity and sweetness and was very delicious. I would be even happier if they offered a mini lesson on brewing so I could make it delicious at home too.",
+        "points": [
+          {
+            "aspect": "group",
+            "polarity": "loved",
+            "quote": "最大8人の少人数制なので質問もしやすく",
+            "quote_en": "Since it was a small group of up to eight people, it was easy to ask questions."
+          },
+          {
+            "aspect": "timing",
+            "polarity": "loved",
+            "quote": "ゆったり楽しめました",
+            "quote_en": "We could enjoy it at a relaxed pace."
+          },
+          {
+            "aspect": "tasting",
+            "polarity": "loved",
+            "quote": "酸味と甘みのバランスがよく、とても美味しかったです",
+            "quote_en": "The balance of acidity and sweetness was good, and it was very delicious."
+          }
+        ],
+        "ideas": [
+          {
+            "idea": "brewing mini lesson",
+            "quote": "淹れ方のミニ講座などがあったら",
+            "quote_en": "If they offered something like a mini lesson on brewing"
+          }
+        ]
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 3,
+        "points_gold": 2,
+        "has_idea": true,
+        "idea_labelled": true,
+        "quotes": 4,
+        "verbatim": 4
+      },
+      "id": "r37",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 563,
+          "cached_tokens": 0,
+          "output_tokens": 386,
+          "reasoning_tokens": 110,
+          "latency_ms": 2830,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Great, thanks! Would recommend.",
+      "expected": {
+        "sentiment": "positive",
+        "loved": [],
+        "wished": [],
+        "ideas": []
+      },
+      "got": {
+        "language": "en",
+        "sentiment": "positive",
+        "translation_en": "Great, thanks! Would recommend.",
+        "points": [],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 0,
+        "points_predicted": 0,
+        "points_gold": 0,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 0,
+        "verbatim": 0
+      },
+      "id": "r38",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 487,
+          "cached_tokens": 0,
+          "output_tokens": 67,
+          "reasoning_tokens": 37,
+          "latency_ms": 1180,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "No lo recomiendo. Pagamos 25.000 TZS por persona y me pareció caro para lo que se ofrece: una subida muy empinada y poco más. Me fui con la sensación de que no valió la pena.",
+      "expected": {
+        "sentiment": "negative",
+        "loved": [],
+        "wished": ["value", "landscape"],
+        "ideas": []
+      },
+      "got": {
+        "language": "es",
+        "sentiment": "negative",
+        "translation_en": "I do not recommend it. We paid 25,000 TZS per person and it seemed expensive for what is offered: a very steep climb and little else. I left feeling that it was not worth it.",
+        "points": [
+          {
+            "aspect": "value",
+            "polarity": "wished",
+            "quote": "me pareció caro",
+            "quote_en": "it seemed expensive to me"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "una subida muy empinada",
+            "quote_en": "a very steep climb"
+          },
+          {
+            "aspect": "other",
+            "polarity": "wished",
+            "quote": "poco más",
+            "quote_en": "little else"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 1,
+        "points_predicted": 3,
+        "points_gold": 2,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 3,
+        "verbatim": 3
+      },
+      "id": "r39",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 528,
+          "cached_tokens": 0,
+          "output_tokens": 327,
+          "reasoning_tokens": 178,
+          "latency_ms": 2737,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Hat uns sehr gut gefallen, danke!",
+      "expected": {
+        "sentiment": "positive",
+        "loved": [],
+        "wished": [],
+        "ideas": []
+      },
+      "got": {
+        "language": "de",
+        "sentiment": "positive",
+        "translation_en": "We really liked it, thank you!",
+        "points": [],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 0,
+        "points_predicted": 0,
+        "points_gold": 0,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 0,
+        "verbatim": 0
+      },
+      "id": "r40",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 488,
+          "cached_tokens": 0,
+          "output_tokens": 99,
+          "reasoning_tokens": 60,
+          "latency_ms": 1371,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Torréfier soi-même le café sur le feu, c'était génial, et pour 25 000 TZS par personne on en a largement pour son argent !",
+      "expected": {
+        "sentiment": "positive",
+        "loved": ["coffee_process", "value"],
+        "wished": [],
+        "ideas": []
+      },
+      "got": {
+        "language": "fr",
+        "sentiment": "positive",
+        "translation_en": "Roasting the coffee oneself over the fire was amazing, and for 25,000 TZS per person it was really worth the money!",
+        "points": [
+          {
+            "aspect": "coffee_process",
+            "polarity": "loved",
+            "quote": "Torréfier soi-même le café sur le feu, c'était génial",
+            "quote_en": "Roasting the coffee oneself over the fire was amazing"
+          },
+          {
+            "aspect": "value",
+            "polarity": "loved",
+            "quote": "pour 25 000 TZS par personne on en a largement pour son argent",
+            "quote_en": "for 25,000 TZS per person it was really worth the money"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 2,
+        "points_predicted": 2,
+        "points_gold": 2,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 2,
+        "verbatim": 2
+      },
+      "id": "r41",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 515,
+          "cached_tokens": 0,
+          "output_tokens": 210,
+          "reasoning_tokens": 58,
+          "latency_ms": 1783,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Landschaftlich wunderschön, und Noor ist eine tolle Gastgeberin. Die Buchung per Mail hat allerdings ewig gedauert: Erst nach einer Woche kam eine SMS, da hatten wir fast schon woanders gebucht. Und nach der langen Anfahrt gab es oben nicht einmal eine Toilette. Gemischte Gefühle.",
+      "expected": {
+        "sentiment": "neutral",
+        "loved": ["landscape", "host"],
+        "wished": ["communication", "facilities"],
+        "ideas": []
+      },
+      "got": {
+        "language": "de",
+        "sentiment": "neutral",
+        "translation_en": "Beautiful scenery, and Noor is a great host. However, booking by email took forever: only after a week did we get a text message, and by then we had almost booked somewhere else. And after the long journey up there wasn’t even a toilet at the top. Mixed feelings.",
+        "points": [
+          {
+            "aspect": "landscape",
+            "polarity": "loved",
+            "quote": "Landschaftlich wunderschön",
+            "quote_en": "Beautiful scenery"
+          },
+          {
+            "aspect": "host",
+            "polarity": "loved",
+            "quote": "Noor ist eine tolle Gastgeberin",
+            "quote_en": "Noor is a great host"
+          },
+          {
+            "aspect": "communication",
+            "polarity": "wished",
+            "quote": "Die Buchung per Mail hat allerdings ewig gedauert",
+            "quote_en": "However, booking by email took forever"
+          },
+          {
+            "aspect": "communication",
+            "polarity": "wished",
+            "quote": "Erst nach einer Woche kam eine SMS",
+            "quote_en": "Only after a week did we get a text message"
+          },
+          {
+            "aspect": "facilities",
+            "polarity": "wished",
+            "quote": "gab es oben nicht einmal eine Toilette",
+            "quote_en": "there wasn’t even a toilet at the top"
+          },
+          {
+            "aspect": "access",
+            "polarity": "wished",
+            "quote": "nach der langen Anfahrt",
+            "quote_en": "after the long journey"
+          }
+        ],
+        "ideas": []
+      },
+      "score": {
+        "sentiment": true,
+        "points_tp": 4,
+        "points_predicted": 5,
+        "points_gold": 4,
+        "has_idea": false,
+        "idea_labelled": false,
+        "quotes": 6,
+        "verbatim": 6
+      },
+      "id": "r42",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "analyze_review",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 546,
+          "cached_tokens": 0,
+          "output_tokens": 322,
+          "reasoning_tokens": 45,
+          "latency_ms": 2600,
+          "ok": true
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,21 @@ import { analyzeReview, groupIdeas, writeInsightsSms } from "./review-tasks";
 import type { Ai, CallTool, GuestClassification, HostClassification, UsageListener } from "./types";
 
 /** "2026-10-05" -> "Monday 2026-10-05". Given only the date, models miscount "next Saturday". */
+/** "This week is Mon 5 Oct–Sun 11 Oct; next week is Mon 12 Oct–Sun 18 Oct." Small models
+ * miscount "next week's Saturday" from a weekday alone; the two weeks make it a lookup. */
+export function weeksAround(iso: string): string {
+  const day = new Date(`${iso}T12:00:00Z`);
+  const monday = day.getTime() - ((day.getUTCDay() + 6) % 7) * 86400e3;
+  const at = (n: number) =>
+    new Date(monday + n * 86400e3).toLocaleDateString("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      timeZone: "UTC",
+    });
+  return `This week is ${at(0)}–${at(6)}; next week is ${at(7)}–${at(13)}.`;
+}
+
 export function withWeekday(iso: string): string {
   const day = new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", {
     weekday: "long",
@@ -18,8 +33,8 @@ export async function classifyGuest(
   ctx: { today: string; slots: string[]; booking: string },
 ): Promise<GuestClassification> {
   return call<GuestClassification>(
-    `You classify emails sent to a small coffee-farm tour operator. Today is ${withWeekday(ctx.today)}. Tour slots: ${ctx.slots.join(", ")} (morning = first slot, afternoon = second). Current booking of this guest: ${ctx.booking}.
-Rules: dates as ISO YYYY-MM-DD (assume the next future occurrence). slot must be one of the listed slots or null. "missing" lists which of date_from, party_size are still unknown for a booking_request (consider the existing booking). translation_for_noor: faithful Swahili translation of the email. translation_en: faithful English translation, or "" if the email is in English. feedback_text: if ANY part of the email expresses an opinion, praise, complaint or suggestion about the farm, tour, host or service (even alongside a question, booking or cancellation), copy that part verbatim in the original language; otherwise null. Choose intent by the main purpose of the email; use "feedback" only when giving feedback is its main purpose. Never invent prices, availability or directions. If unsure, use lower confidence.`,
+    `You classify emails sent to a small coffee-farm tour operator. Today is ${withWeekday(ctx.today)}. ${weeksAround(ctx.today)} Tour slots: ${ctx.slots.join(", ")} (morning = first slot, afternoon = second). Current booking of this guest: ${ctx.booking}.
+Rules: dates as ISO YYYY-MM-DD (assume the next future occurrence); date_from/date_to are the visit's dates (date_to only for multi-day visits), and for a change, the new ones. slot must be one of the listed slots or null. "missing" lists which of date_from, party_size are still unknown for a booking_request (consider the existing booking). translation_for_noor: faithful Swahili translation of the email. translation_en: faithful English translation, or "" if the email is in English. feedback_text: if ANY part of the email expresses an opinion, praise, complaint or suggestion about the farm, tour, host or service (even alongside a question, booking or cancellation), copy that part verbatim in the original language; otherwise null. Choose intent by the main purpose of the email; use "feedback" only when giving feedback is its main purpose. Never invent prices, availability or directions. If unsure, use lower confidence.`,
     text,
     "classify_guest",
     {
@@ -68,7 +83,7 @@ export async function classifyHost(
   ctx: { today: string; openPrompts: string },
 ): Promise<HostClassification> {
   return call<HostClassification>(
-    `You interpret SMS replies (usually Swahili) from Noor, a coffee-farm tour host. Today is ${withWeekday(ctx.today)}. Her OPEN prompts:\n${ctx.openPrompts}\n"booking" must be one of the open prompt IDs like "B14", or null. proposed_date as YYYY-MM-DD. answer_text_for_guest: her answer in English, only for answer_question. translation_en: her whole SMS in English, or "" if it is in English. If unclear use intent unknown.`,
+    `You interpret SMS replies (usually Swahili) from Noor, a coffee-farm tour host. Today is ${withWeekday(ctx.today)}. ${weeksAround(ctx.today)} Her OPEN prompts:\n${ctx.openPrompts}\n"booking" must be one of the open prompt IDs like "B14", or null. proposed_date as YYYY-MM-DD. answer_text_for_guest: her answer in English, only for answer_question. translation_en: her whole SMS in English, or "" if it is in English. If unclear use intent unknown.`,
     text,
     "classify_host",
     {

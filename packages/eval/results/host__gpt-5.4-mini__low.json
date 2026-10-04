@@ -1,0 +1,882 @@
+{
+  "kind": "model",
+  "suite": "host",
+  "task": "classify_host",
+  "title": "Noor's SMS replies",
+  "model": "gpt-5.4-mini",
+  "effort": "low",
+  "answered_at": "2026-10-04T00:26:40.718Z",
+  "dataset": {
+    "source": "packages/eval/data/host.json",
+    "sha256": "15e88a6194b6d47e7c57ad3f486246b488394f1bdafc2d1ef7b797896b7d567f",
+    "cases": 18,
+    "total": 18
+  },
+  "partial": false,
+  "prices": {
+    "in": 0.75,
+    "out": 4.5
+  },
+  "metrics": [
+    {
+      "key": "intent",
+      "label": "Intent",
+      "format": "pct",
+      "value": 1,
+      "num": 18,
+      "den": 18
+    },
+    {
+      "key": "booking",
+      "label": "Booking id",
+      "format": "pct",
+      "value": 0.8888888888888888,
+      "num": 16,
+      "den": 18
+    },
+    {
+      "key": "proposed_date",
+      "label": "Proposed date",
+      "format": "pct",
+      "value": 1,
+      "num": 4,
+      "den": 4
+    },
+    {
+      "key": "exact",
+      "label": "Every field right",
+      "format": "pct",
+      "value": 0.8888888888888888,
+      "num": 16,
+      "den": 18
+    },
+    {
+      "key": "handoff",
+      "label": "Asked to rephrase",
+      "format": "pct",
+      "value": 0.2777777777777778,
+      "num": 5,
+      "den": 18
+    },
+    {
+      "key": "wrong_but_confident",
+      "label": "Wrong but confident",
+      "format": "pct",
+      "value": 0,
+      "num": 0,
+      "den": 18
+    }
+  ],
+  "usage": [
+    {
+      "key": "calls",
+      "label": "Model calls",
+      "format": "int",
+      "value": 18
+    },
+    {
+      "key": "failed",
+      "label": "Failed calls",
+      "format": "int",
+      "value": 0
+    },
+    {
+      "key": "input_tokens",
+      "label": "Avg input tokens",
+      "format": "int",
+      "value": 241.05555555555554
+    },
+    {
+      "key": "cached_tokens",
+      "label": "Avg cached input",
+      "format": "int",
+      "value": 0
+    },
+    {
+      "key": "output_tokens",
+      "label": "Avg output tokens",
+      "format": "int",
+      "value": 119.44444444444444
+    },
+    {
+      "key": "reasoning_tokens",
+      "label": "Avg reasoning tokens",
+      "format": "int",
+      "value": 59.5
+    },
+    {
+      "key": "latency_avg",
+      "label": "Latency avg",
+      "format": "ms",
+      "value": 1288
+    },
+    {
+      "key": "latency_p50",
+      "label": "Latency p50",
+      "format": "ms",
+      "value": 1262
+    },
+    {
+      "key": "latency_p95",
+      "label": "Latency p95",
+      "format": "ms",
+      "value": 1790
+    },
+    {
+      "key": "cost_per_1k",
+      "label": "Cost per 1,000 messages",
+      "format": "usd",
+      "value": 0.7182916666666667
+    }
+  ],
+  "cases": [
+    {
+      "text": "Sawa, wakaribishwe Jumamosi.",
+      "open": "B14 (approve_booking)",
+      "expected": {
+        "intent": "approve",
+        "booking": "B14"
+      },
+      "got": {
+        "intent": "approve",
+        "booking": "B14",
+        "confidence": 0.96,
+        "proposed_date": "2026-10-10",
+        "answer_text_for_guest": null,
+        "translation_en": "Okay, you are welcome on Saturday."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.96,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "\"OK, let them be welcome on Saturday.\"",
+      "id": "sw-approve-welcome",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 239,
+          "cached_tokens": 0,
+          "output_tokens": 198,
+          "reasoning_tokens": 141,
+          "latency_ms": 1708,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Tarehe 20 itafaa zaidi.",
+      "open": "B21 (ask_other_date)",
+      "expected": {
+        "intent": "propose_other_date",
+        "booking": "B21",
+        "proposed_date": "2026-10-20"
+      },
+      "got": {
+        "intent": "propose_other_date",
+        "booking": "B21",
+        "confidence": 0.86,
+        "proposed_date": "2026-10-20",
+        "answer_text_for_guest": null,
+        "translation_en": "The 20th would be better."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": true,
+        "exact": true,
+        "confidence": 0.86,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "\"The 20th would suit better.\" She pressed 3 and was asked for another day; she answered in words instead of 'B21 2026-10-20'.",
+      "id": "sw-other-day-in-words",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 238,
+          "cached_tokens": 0,
+          "output_tokens": 218,
+          "reasoning_tokens": 158,
+          "latency_ms": 1790,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Hapana, siku hiyo nina kazi nyingi shambani.",
+      "open": "B15 (approve_booking)",
+      "expected": {
+        "intent": "decline",
+        "booking": "B15"
+      },
+      "got": {
+        "intent": "decline",
+        "booking": null,
+        "confidence": 0.97,
+        "proposed_date": null,
+        "answer_text_for_guest": null,
+        "translation_en": "No, I have a lot of work in the farm that day."
+      },
+      "score": {
+        "intent": true,
+        "booking": false,
+        "proposed_date": null,
+        "exact": false,
+        "confidence": 0.97,
+        "handoff": true,
+        "wrong_but_confident": false
+      },
+      "note": "\"No, that day I have a lot of work on the farm.\"",
+      "id": "sw-decline-busy",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 239,
+          "cached_tokens": 0,
+          "output_tokens": 68,
+          "reasoning_tokens": 10,
+          "latency_ms": 891,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Jumamosi siwezi, lakini Jumapili asubuhi ni sawa.",
+      "open": "B16 (approve_booking)",
+      "expected": {
+        "intent": "propose_other_date",
+        "booking": "B16",
+        "proposed_date": {
+          "any_of": ["2026-10-11", "2026-10-18"]
+        }
+      },
+      "got": {
+        "intent": "propose_other_date",
+        "booking": "B16",
+        "confidence": 0.95,
+        "proposed_date": "2026-10-11",
+        "answer_text_for_guest": null,
+        "translation_en": "I can’t on Saturday, but Sunday morning is fine."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": true,
+        "exact": true,
+        "confidence": 0.95,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "\"Saturday I can't, but Sunday morning is fine.\" The prompt doesn't show the booking's date, so either coming Sunday is accepted.",
+      "id": "sw-propose-sunday",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 244,
+          "cached_tokens": 0,
+          "output_tokens": 186,
+          "reasoning_tokens": 122,
+          "latency_ms": 1742,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Ndiyo, tuna chakula cha mboga: wali, maharage na ndizi.",
+      "open": "B17 (answer_question)",
+      "expected": {
+        "intent": "answer_question",
+        "booking": "B17"
+      },
+      "got": {
+        "intent": "answer_question",
+        "booking": "B17",
+        "confidence": 0.98,
+        "proposed_date": null,
+        "answer_text_for_guest": "Yes, we have vegetarian food: rice, beans, and bananas.",
+        "translation_en": "Yes, we have vegetarian food: rice, beans, and bananas."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.98,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "\"Yes, we have vegetarian food: rice, beans and bananas.\"",
+      "id": "sw-answer-vegetarian",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 246,
+          "cached_tokens": 0,
+          "output_tokens": 113,
+          "reasoning_tokens": 42,
+          "latency_ms": 1093,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Bei ni shilingi 25,000 kwa kila mtu, watoto nusu bei.",
+      "open": "B18 (answer_question)",
+      "expected": {
+        "intent": "answer_question",
+        "booking": "B18"
+      },
+      "got": {
+        "intent": "answer_question",
+        "booking": "B18",
+        "confidence": 0.98,
+        "proposed_date": null,
+        "answer_text_for_guest": "It is 25,000 shillings per person. Children are half price.",
+        "translation_en": "It is shillings 25,000 per person, children half price."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.98,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "\"The price is 25,000 shillings per person, children half price.\"",
+      "id": "sw-answer-price",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 245,
+          "cached_tokens": 0,
+          "output_tokens": 122,
+          "reasoning_tokens": 46,
+          "latency_ms": 1347,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "B19: wapande daladala hadi Kibosho, nitawasubiri kituoni.",
+      "open": "B19 (answer_question)\nB20 (approve_booking)",
+      "expected": {
+        "intent": "answer_question",
+        "booking": "B19"
+      },
+      "got": {
+        "intent": "answer_question",
+        "booking": "B19",
+        "confidence": 0.97,
+        "proposed_date": null,
+        "answer_text_for_guest": "Take a daladala to Kibosho, and I will wait for you at the station.",
+        "translation_en": "Take a daladala to Kibosho, I will wait for you at the station."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.97,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "\"B19: take a daladala to Kibosho, I'll wait for them at the stop.\"",
+      "id": "sw-answer-directions-coded",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 251,
+          "cached_tokens": 0,
+          "output_tokens": 139,
+          "reasoning_tokens": 59,
+          "latency_ms": 1328,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Yes ok, they can come",
+      "open": "B24 (approve_booking)",
+      "expected": {
+        "intent": "approve",
+        "booking": "B24"
+      },
+      "got": {
+        "intent": "approve",
+        "booking": null,
+        "confidence": 0.95,
+        "proposed_date": null,
+        "answer_text_for_guest": null,
+        "translation_en": "Yes, okay, they can come."
+      },
+      "score": {
+        "intent": true,
+        "booking": false,
+        "proposed_date": null,
+        "exact": false,
+        "confidence": 0.95,
+        "handoff": true,
+        "wrong_but_confident": false
+      },
+      "id": "en-approve",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 233,
+          "cached_tokens": 0,
+          "output_tokens": 81,
+          "reasoning_tokens": 30,
+          "latency_ms": 1052,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Poa, wakuje tu.",
+      "open": "B25 (approve_booking)",
+      "expected": {
+        "intent": "approve",
+        "booking": "B25"
+      },
+      "got": {
+        "intent": "approve",
+        "booking": "B25",
+        "confidence": 0.94,
+        "proposed_date": null,
+        "answer_text_for_guest": null,
+        "translation_en": "Good, they can just come."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.94,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "Sheng: \"Cool, let them come.\"",
+      "id": "sheng-approve",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 235,
+          "cached_tokens": 0,
+          "output_tokens": 142,
+          "reasoning_tokens": 91,
+          "latency_ms": 1406,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Nitaangalia kesho nikujibu.",
+      "open": "B26 (approve_booking)",
+      "expected": {
+        "intent": "unknown",
+        "booking": {
+          "any_of": ["B26", null]
+        }
+      },
+      "got": {
+        "intent": "unknown",
+        "booking": "B26",
+        "confidence": 0.93,
+        "proposed_date": null,
+        "answer_text_for_guest": null,
+        "translation_en": "I will check tomorrow and reply to you."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.93,
+        "handoff": true,
+        "wrong_but_confident": false
+      },
+      "note": "\"I'll check tomorrow and answer you\": not a decision yet.",
+      "id": "sw-check-tomorrow",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 237,
+          "cached_tokens": 0,
+          "output_tokens": 105,
+          "reasoning_tokens": 52,
+          "latency_ms": 1104,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Habari za asubuhi",
+      "open": "B27 (approve_booking)",
+      "expected": {
+        "intent": "unknown",
+        "booking": {
+          "any_of": ["B27", null]
+        }
+      },
+      "got": {
+        "intent": "unknown",
+        "booking": null,
+        "confidence": 0.98,
+        "proposed_date": null,
+        "answer_text_for_guest": null,
+        "translation_en": "Good morning"
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.98,
+        "handoff": true,
+        "wrong_but_confident": false
+      },
+      "note": "\"Good morning.\"",
+      "id": "sw-greeting",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 233,
+          "cached_tokens": 0,
+          "output_tokens": 53,
+          "reasoning_tokens": 8,
+          "latency_ms": 1262,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Ndiyo, karibuni.",
+      "open": "B28 (approve_booking)\nB29 (approve_booking)",
+      "expected": {
+        "intent": {
+          "any_of": ["approve", "unknown"]
+        },
+        "booking": null
+      },
+      "got": {
+        "intent": "approve",
+        "booking": null,
+        "confidence": 0.98,
+        "proposed_date": null,
+        "answer_text_for_guest": null,
+        "translation_en": "Yes, welcome."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.98,
+        "handoff": true,
+        "wrong_but_confident": false
+      },
+      "note": "\"Yes, welcome.\" Two requests wait and she names neither: guessing one is wrong (the engine then asks her to rephrase).",
+      "id": "sw-yes-two-waiting",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 240,
+          "cached_tokens": 0,
+          "output_tokens": 57,
+          "reasoning_tokens": 10,
+          "latency_ms": 873,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Samahani sana, siku hiyo nina msiba. Siwezi kuwapokea.",
+      "open": "B30 (approve_booking)",
+      "expected": {
+        "intent": "decline",
+        "booking": "B30"
+      },
+      "got": {
+        "intent": "decline",
+        "booking": "B30",
+        "confidence": 0.98,
+        "proposed_date": null,
+        "answer_text_for_guest": null,
+        "translation_en": "Sorry very much, I have a funeral that day. I cannot host you."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.98,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "\"Very sorry, that day there is a funeral. I can't receive them.\"",
+      "id": "sw-decline-funeral",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 244,
+          "cached_tokens": 0,
+          "output_tokens": 73,
+          "reasoning_tokens": 12,
+          "latency_ms": 1059,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Sorry siwezi, niko safari wiki hii yote.",
+      "open": "B34 (approve_booking)",
+      "expected": {
+        "intent": "decline",
+        "booking": "B34"
+      },
+      "got": {
+        "intent": "decline",
+        "booking": "B34",
+        "confidence": 0.98,
+        "proposed_date": null,
+        "answer_text_for_guest": null,
+        "translation_en": "Sorry, I can’t. I’m traveling all this week."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.98,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "\"Sorry I can't, I'm travelling all this week.\"",
+      "id": "mixed-decline-travel",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 237,
+          "cached_tokens": 0,
+          "output_tokens": 115,
+          "reasoning_tokens": 57,
+          "latency_ms": 1573,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Wiki hii nimejaa. Waje Jumamosi ijayo, tarehe 17.",
+      "open": "B35 (approve_booking)",
+      "expected": {
+        "intent": "propose_other_date",
+        "booking": "B35",
+        "proposed_date": "2026-10-17"
+      },
+      "got": {
+        "intent": "propose_other_date",
+        "booking": "B35",
+        "confidence": 0.98,
+        "proposed_date": "2026-10-17",
+        "answer_text_for_guest": null,
+        "translation_en": "I'm fully booked this week. They should come next Saturday, the 17th."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": true,
+        "exact": true,
+        "confidence": 0.98,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "\"This week I'm full. Let them come next Saturday, the 17th.\"",
+      "id": "sw-propose-explicit-17",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 245,
+          "cached_tokens": 0,
+          "output_tokens": 131,
+          "reasoning_tokens": 62,
+          "latency_ms": 1435,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "B37 ndiyo, wakaribishwe.",
+      "open": "B36 (approve_booking)\nB37 (approve_booking)",
+      "expected": {
+        "intent": "approve",
+        "booking": "B37"
+      },
+      "got": {
+        "intent": "approve",
+        "booking": "B37",
+        "confidence": 0.98,
+        "proposed_date": null,
+        "answer_text_for_guest": null,
+        "translation_en": "Yes, welcome."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.98,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "id": "sw-approve-coded-two-waiting",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 243,
+          "cached_tokens": 0,
+          "output_tokens": 98,
+          "reasoning_tokens": 50,
+          "latency_ms": 950,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "Ndiyo, watoto chini ya miaka 5 hawalipi.",
+      "open": "B38 (approve_booking)\nB39 (answer_question)",
+      "expected": {
+        "intent": "answer_question",
+        "booking": "B39"
+      },
+      "got": {
+        "intent": "answer_question",
+        "booking": "B39",
+        "confidence": 0.99,
+        "proposed_date": null,
+        "answer_text_for_guest": "Yes, children under 5 do not pay.",
+        "translation_en": "Yes, children under 5 do not pay."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": null,
+        "exact": true,
+        "confidence": 0.99,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "\"Yes, children under 5 don't pay.\" Starts with \"yes\" but answers B39's question about children; it does not approve B38.",
+      "id": "sw-yes-that-answers-question",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 246,
+          "cached_tokens": 0,
+          "output_tokens": 124,
+          "reasoning_tokens": 61,
+          "latency_ms": 1371,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "text": "B44 siwezi tarehe hiyo, waje tarehe 24 Oktoba.",
+      "open": "B44 (approve_booking)",
+      "expected": {
+        "intent": "propose_other_date",
+        "booking": "B44",
+        "proposed_date": "2026-10-24"
+      },
+      "got": {
+        "intent": "propose_other_date",
+        "booking": "B44",
+        "confidence": 0.99,
+        "proposed_date": "2026-10-24",
+        "answer_text_for_guest": null,
+        "translation_en": "B44 I can’t do that date; come on October 24."
+      },
+      "score": {
+        "intent": true,
+        "booking": true,
+        "proposed_date": true,
+        "exact": true,
+        "confidence": 0.99,
+        "handoff": false,
+        "wrong_but_confident": false
+      },
+      "note": "\"B44 I can't that date, let them come on 24 October.\"",
+      "id": "sw-propose-coded-date",
+      "cached": false,
+      "error": null,
+      "usage": [
+        {
+          "task": "classify_host",
+          "model": "gpt-5.4-mini",
+          "input_tokens": 244,
+          "cached_tokens": 0,
+          "output_tokens": 127,
+          "reasoning_tokens": 60,
+          "latency_ms": 1200,
+          "ok": true
+        }
+      ]
+    }
+  ]
+}

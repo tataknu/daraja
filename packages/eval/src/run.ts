@@ -20,6 +20,7 @@ import {
   writeCache,
   type CacheEntry,
 } from "./cache";
+import { priceOf } from "@daraja/engine/metrics";
 import { loadEnv } from "./env";
 import { formatMetric, updateDocs, writeJson, type SafetyReport, type SuiteResult } from "./report";
 import { usageMetrics, type Prices } from "./score";
@@ -283,10 +284,14 @@ function positive(v: string | undefined, flag: string, fallback: number | null):
   return n;
 }
 
-function pricesFrom(env: Record<string, string | undefined>): Prices | null {
+/** Prices from AI_PRICE_*_PER_MTOK when set, else the engine's table (official prices, dated). */
+function pricesFrom(env: Record<string, string | undefined>, model: string): Prices | null {
   const pin = env["AI_PRICE_IN_PER_MTOK"];
   const pout = env["AI_PRICE_OUT_PER_MTOK"];
-  if (!pin || !pout) return null;
+  if (!pin || !pout) {
+    const listed = priceOf(model);
+    return listed ? { in: listed.input, out: listed.output } : null;
+  }
   const prices = { in: Number(pin), out: Number(pout) };
   if (!Number.isFinite(prices.in) || !Number.isFinite(prices.out))
     throw new UsageError("AI_PRICE_IN_PER_MTOK / AI_PRICE_OUT_PER_MTOK must be numbers (USD)");
@@ -354,7 +359,7 @@ async function main(): Promise<number> {
     limit: positive(values.limit, "limit", null),
     concurrency: positive(values.concurrency, "concurrency", 4) ?? 4,
     fresh: values.fresh,
-    prices: pricesFrom(env),
+    prices: pricesFrom(env, model),
   };
   const maxCalls = positive(values["max-calls"], "max-calls", 120) ?? 120;
 
