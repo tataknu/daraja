@@ -20,6 +20,8 @@ export interface GuestClassification {
   /** For reviewers; "" when the email is in English. */
   translation_en: string;
   feedback_text: string | null;
+  /** The guest accepts (true) or refuses (false) a date the host offered; null otherwise. */
+  accepts_offer: boolean | null;
 }
 export interface HostClassification {
   intent: HostIntent;

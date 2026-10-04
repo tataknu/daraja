@@ -34,7 +34,7 @@ export async function classifyGuest(
 ): Promise<GuestClassification> {
   return call<GuestClassification>(
     `You classify emails sent to a small coffee-farm tour operator. Today is ${withWeekday(ctx.today)}. ${weeksAround(ctx.today)} Tour slots: ${ctx.slots.join(", ")} (morning = first slot, afternoon = second). Current booking of this guest: ${ctx.booking}.
-Rules: dates as ISO YYYY-MM-DD (assume the next future occurrence); date_from/date_to are the visit's dates (date_to only for multi-day visits), and for a change, the new ones. slot must be one of the listed slots or null. "missing" lists which of date_from, party_size are still unknown for a booking_request (consider the existing booking). translation_for_noor: faithful Swahili translation of the email. translation_en: faithful English translation, or "" if the email is in English. feedback_text: if ANY part of the email expresses an opinion, praise, complaint or suggestion about the farm, tour, host or service (even alongside a question, booking or cancellation), copy that part verbatim in the original language; otherwise null. Choose intent by the main purpose of the email; use "feedback" only when giving feedback is its main purpose. Never invent prices, availability or directions. If unsure, use lower confidence.`,
+Rules: dates as ISO YYYY-MM-DD (assume the next future occurrence); date_from/date_to are the visit's dates (date_to only for multi-day visits), and for a change, the new ones. slot must be one of the listed slots or null. "missing" lists which of date_from, party_size are still unknown for a booking_request (consider the existing booking). translation_for_noor: faithful Swahili translation of the email. translation_en: faithful English translation, or "" if the email is in English. feedback_text: if ANY part of the email expresses an opinion, praise, complaint or suggestion about the farm, tour, host or service (even alongside a question, booking or cancellation), copy that part verbatim in the original language; otherwise null. accepts_offer: true if the guest accepts a date the host offered, false if they refuse it, null otherwise. Choose intent by the main purpose of the email; use "feedback" only when giving feedback is its main purpose. Never invent prices, availability or directions. If unsure, use lower confidence.`,
     text,
     "classify_guest",
     {
@@ -62,6 +62,7 @@ Rules: dates as ISO YYYY-MM-DD (assume the next future occurrence); date_from/da
         translation_for_noor: { type: "string" },
         translation_en: { type: "string" },
         feedback_text: { type: ["string", "null"] },
+        accepts_offer: { type: ["boolean", "null"] },
       },
       required: [
         "intent",
@@ -72,6 +73,7 @@ Rules: dates as ISO YYYY-MM-DD (assume the next future occurrence); date_from/da
         "translation_for_noor",
         "translation_en",
         "feedback_text",
+        "accepts_offer",
       ],
     },
   );

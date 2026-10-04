@@ -110,29 +110,34 @@ export async function handleGuest(
     });
   }
 
-  // Low confidence or unknown: a human decides.
-  if (r.confidence < CONF_MIN || r.intent === "unknown") {
-    booking = booking ?? (await newBooking());
-    await ctx.repo.createPrompt(booking.id, "answer_question", {
-      question: r.translation_for_noor,
-    });
+  /** A human decides: the message goes to Noor as it is, for her to answer. */
+  const forwardToNoor = async (about: Booking | null): Promise<InboundResult> => {
+    const b = about ?? (await newBooking());
+    await ctx.repo.createPrompt(b.id, "answer_question", { question: r.translation_for_noor });
     await ctx.smsNoor(
-      `${code(booking.id)} ${firstName(guest.name)}: ${r.translation_for_noor}`,
-      `${code(booking.id)} ${firstName(guest.name)}: ${english}`,
-      booking.id,
+      `${code(b.id)} ${firstName(guest.name)}: ${r.translation_for_noor}`,
+      `${code(b.id)} ${firstName(guest.name)}: ${english}`,
+      b.id,
     );
-    await ctx.emailGuest(
-      guest,
-      "Thank you for your message. Noor will get back to you.",
-      booking.id,
-    );
+    await ctx.emailGuest(guest, "Thank you for your message. Noor will get back to you.", b.id);
     await log("forwarded_to_noor", true);
-    return { booking_id: booking.id };
-  }
+    return { booking_id: b.id };
+  };
+
+  // Low confidence or unknown: a human decides.
+  if (r.confidence < CONF_MIN || r.intent === "unknown") return forwardToNoor(booking);
 
   switch (r.intent) {
     case "booking_request":
     case "modify":
+      // A reply to the date Noor offered: only the guest's own yes confirms it; unclear goes to her.
+      if (
+        booking?.status === "COUNTER_OFFERED" &&
+        (!r.entities.date_from || r.entities.date_from === booking.date_from)
+      ) {
+        if (typeof r.accepts_offer !== "boolean") return forwardToNoor(booking);
+        return answerOffer(ctx, s, guest, booking, r.accepts_offer, log);
+      }
       return requestBooking(ctx, s, guest, text, r, booking, log);
 
     case "cancel": {
@@ -191,6 +196,48 @@ export async function handleGuest(
   return {};
 }
 
+/** The guest's answer to the date Noor offered: yes confirms it (Noor chose it), no closes it. */
+async function answerOffer(
+  ctx: Ctx,
+  s: FarmSettings,
+  guest: Contact,
+  booking: Booking,
+  accepted: boolean,
+  log: (action: string, routed?: boolean) => Promise<void>,
+): Promise<InboundResult> {
+  const id = code(booking.id);
+  if (accepted) {
+    await ctx.transition(booking, "CONFIRMED", "guest");
+    await ctx.repo.resolvePrompts(booking.id, "accepted", ctx.now());
+    await ctx.emailGuest(
+      guest,
+      `Wonderful — your visit (${id}) on ${booking.date_from} at ${booking.slot ?? s.slots[0]} is confirmed.\n\nHow to get there: ${s.directions}\n\nNoor's Farm Visits`,
+      booking.id,
+    );
+    await ctx.smsNoor(
+      `${id}: mgeni amekubali ${swDate(booking.date_from)}. Imethibitishwa.`,
+      `${id}: the guest accepted ${enDate(booking.date_from)}. Confirmed.`,
+      booking.id,
+    );
+    await log("counter_offer_accepted");
+  } else {
+    await ctx.transition(booking, "CLOSED", "guest");
+    await ctx.repo.resolvePrompts(booking.id, "offer_declined", ctx.now());
+    await ctx.emailGuest(
+      guest,
+      `Thank you for letting us know. We are sorry that ${booking.date_from} does not suit you, so your request (${id}) is now closed. You are very welcome to send a new request for another day.\n\nNoor's Farm Visits`,
+      booking.id,
+    );
+    await ctx.smsNoor(
+      `${id}: mgeni amekataa ${swDate(booking.date_from)}. Ombi limefungwa.`,
+      `${id}: the guest declined ${enDate(booking.date_from)}. The request is closed.`,
+      booking.id,
+    );
+    await log("counter_offer_declined");
+  }
+  return { booking_id: booking.id };
+}
+
 /** A booking request or change: ask for what's missing, or send it to Noor for a yes or no. */
 async function requestBooking(
   ctx: Ctx,
@@ -202,28 +249,6 @@ async function requestBooking(
   log: (action: string, routed?: boolean) => Promise<void>,
 ): Promise<InboundResult> {
   let booking = existing;
-
-  // Guest accepting a counter-offer (Noor already chose the date).
-  if (
-    booking?.status === "COUNTER_OFFERED" &&
-    (!r.entities.date_from || r.entities.date_from === booking.date_from)
-  ) {
-    await ctx.transition(booking, "CONFIRMED", "guest");
-    await ctx.repo.resolvePrompts(booking.id, "accepted", ctx.now());
-    await ctx.emailGuest(
-      guest,
-      `Wonderful — your visit (${code(booking.id)}) on ${booking.date_from} at ${booking.slot ?? s.slots[0]} is confirmed.\n\nHow to get there: ${s.directions}\n\nNoor's Farm Visits`,
-      booking.id,
-    );
-    await ctx.smsNoor(
-      `${code(booking.id)}: mgeni amekubali ${swDate(booking.date_from)}. Imethibitishwa.`,
-      `${code(booking.id)}: the guest accepted ${enDate(booking.date_from)}. Confirmed.`,
-      booking.id,
-    );
-    await log("counter_offer_accepted");
-    return { booking_id: booking.id };
-  }
-
   const e = r.entities;
   // A friend's code in the message links the booking to them, once.
   const found = booking?.referred_by ? null : await findReferrer(ctx, guest, text);

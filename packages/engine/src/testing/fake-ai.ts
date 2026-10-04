@@ -25,6 +25,7 @@ export function guestSays({ entities, ...rest }: GuestOverrides = {}): GuestClas
     translation_for_noor: "Mgeni anataka kutembelea shamba.",
     translation_en: "The guest wants to visit the farm.",
     feedback_text: null,
+    accepts_offer: null,
     ...rest,
     entities: { date_from: "2026-10-10", date_to: null, party_size: 3, slot: "09:00", ...entities },
   };

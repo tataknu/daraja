@@ -176,9 +176,10 @@ describe("Noor decides by SMS", () => {
     expect(t.booking(14)).toMatchObject({ status: "COUNTER_OFFERED", date_from: "2026-10-12" });
     expect(t.emailsTo("lena@example.de").at(-1)).toContain("she can offer 2026-10-12");
 
-    t.script.guest(guestSays({ entities: { date_from: null } }));
+    t.script.guest(guestSays({ accepts_offer: true, entities: { date_from: null } }));
     await t.engine.handleInbound(t.email("lena@example.de", "Ja, gerne!", { thread_ref: "B14" }));
     expect(t.booking(14)?.status).toBe("CONFIRMED");
+    expect(t.toNoor().at(-1)).toBe("B14: mgeni amekubali Jumatatu 12 Okt. Imethibitishwa.");
   });
 
   it("reads free text back to her before acting on it", async () => {
@@ -242,6 +243,75 @@ describe("Noor decides by SMS", () => {
     await t.noorTexts("1");
 
     expect(t.booking(14)?.status).toBe("CONFIRMED");
+  });
+});
+
+describe("the guest answers the day Noor offered", () => {
+  /** Lena asks for Saturday; Noor offers Monday 12 Oct instead (B14). */
+  async function offered() {
+    const t = setup();
+    await t.request();
+    await t.noorTexts("B14 3");
+    await t.noorTexts("B14 2026-10-12");
+    const reply = (text: string, says: Parameters<typeof guestSays>[0]) => {
+      t.script.guest(guestSays(says));
+      return t.engine.handleInbound(t.email("lena@example.de", text, { thread_ref: "B14" }));
+    };
+    return { ...t, reply };
+  }
+
+  it("confirms on the guest's explicit yes", async () => {
+    const t = await offered();
+    await t.reply("Ja, der 12. passt!", {
+      accepts_offer: true,
+      entities: { date_from: "2026-10-12" },
+    });
+
+    expect(t.booking(14)?.status).toBe("CONFIRMED");
+    expect(t.emailsTo("lena@example.de").at(-1)).toContain("is confirmed");
+  });
+
+  it("closes the request when the guest refuses the day, and tells Noor", async () => {
+    const t = await offered();
+    // Read as a request for the 12th, as before; only accepts_offer says it is a no.
+    await t.reply("Der 12. passt uns leider nicht.", {
+      accepts_offer: false,
+      entities: { date_from: "2026-10-12" },
+    });
+
+    expect(t.booking(14)?.status).toBe("CLOSED");
+    expect(t.smsToNoor().at(-1)).toMatchObject({
+      text_original: "B14: mgeni amekataa Jumatatu 12 Okt. Ombi limefungwa.",
+      text_en: "B14: the guest declined Monday 12 Oct. The request is closed.",
+    });
+    expect(t.emailsTo("lena@example.de").at(-1)).toMatch(
+      /^\[de\] Thank you for letting us know\. We are sorry that 2026-10-12 does not suit you/,
+    );
+    expect(t.data.decisions.at(-1)).toMatchObject({ action: "counter_offer_declined" });
+  });
+
+  it("hands an unclear reply to Noor instead of confirming it", async () => {
+    const t = await offered();
+    await t.reply("Und am 12. gibt es auch Mittagessen?", {
+      translation_for_noor: "Na tarehe 12 kuna chakula cha mchana?",
+      entities: { date_from: null },
+    });
+
+    expect(t.booking(14)?.status).toBe("COUNTER_OFFERED");
+    expect(t.toNoor().at(-1)).toBe("B14 Lena: Na tarehe 12 kuna chakula cha mchana?");
+    expect(t.data.prompts.at(-1)).toMatchObject({ booking_id: 14, kind: "answer_question" });
+    expect(t.data.decisions.at(-1)).toMatchObject({ action: "forwarded_to_noor", routed: true });
+  });
+
+  it("sends a yes to another day back to Noor: only she chooses the day", async () => {
+    const t = await offered();
+    await t.reply("Ja, aber lieber am 13.", {
+      accepts_offer: true,
+      entities: { date_from: "2026-10-13" },
+    });
+
+    expect(t.booking(14)).toMatchObject({ status: "PENDING_NOOR", date_from: "2026-10-13" });
+    expect(t.toNoor().at(-1)).toMatch(/^B14: Lena \(Ujerumani\), watu 3, Jumanne 13 Okt/);
   });
 });
 
@@ -371,7 +441,7 @@ describe("English for reviewers", () => {
     await t.noorTexts("B14 1"); // confirmed
     await t.noorTexts("B15 3"); // which other day?
     await t.noorTexts("B15 2026-10-12"); // offer sent
-    t.script.guest(guestSays({ entities: { date_from: null } }));
+    t.script.guest(guestSays({ accepts_offer: true, entities: { date_from: null } }));
     await t.engine.handleInbound(t.email("b@example.de", "Ja, gerne!", { thread_ref: "B15" }));
     t.script.guest(guestSays({ intent: "question" }));
     await t.engine.handleInbound(t.email("c@example.de", "Gibt es Mittagessen?")); // B16
