@@ -82,12 +82,12 @@ const REVIEWS = [
 const FIXED_SW = [
   "Endelea: Kuonja kahawa. Wageni 4 kati ya 5 walipenda.",
   "Boresha: Njia ya kufika shambani. Wageni 2 kati ya 5 walitaja.",
-  "Jaribu: [sw] sell beans to take home. Wageni 2 walipendekeza.",
+  "Jaribu: [sw] sell beans to take home. Wageni 2 kati ya 5 walipendekeza.",
 ];
 const FIXED_EN = [
   "Keep: Tasting the coffee. 4 of 5 visitors loved it.",
   "Improve: Finding the farm. 2 of 5 visitors mentioned it.",
-  "Try: sell beans to take home. Suggested by 2 visitors.",
+  "Try: sell beans to take home. 2 of 5 visitors suggested it.",
 ];
 
 /** The AI with some tasks replaced, also in the metered copies the engine makes. */
@@ -148,8 +148,9 @@ describe("monthly insights", () => {
 
     const report = await t.engine.monthlyInsights();
 
-    expect(report.sms_sw).toEqual(["Wageni wanapenda kuchoma kahawa."]);
-    expect(report.sms_en).toEqual(["Visitors love roasting coffee."]);
+    const n = report.review_count;
+    expect(report.sms_sw).toEqual([`Wageni ${n} kati ya ${n} wanapenda kuchoma kahawa.`]);
+    expect(report.sms_en).toEqual([`${n} of ${n} visitors love roasting coffee.`]);
     expect(t.toNoor()).toEqual(report.sms_sw);
     expect(t.data.insightReports).toHaveLength(1);
     expect(t.data.insightReports[0]).toMatchObject(report);
@@ -225,23 +226,37 @@ describe("monthly insights", () => {
   it("keeps the SMS to three lines", async () => {
     const t = await setup();
     t.script.sms({
-      lines_sw: ["Wageni 4 kati ya 5 wanapenda kuonja kahawa.", "Boresha njia.", "Jaribu.", "Nne."],
-      lines_en: ["4 of 5 visitors love the tasting.", "Improve the road.", "Try.", "Four."],
+      lines_sw: [
+        "Wageni 4 kati ya 5 wanapenda kuonja kahawa.",
+        "Boresha njia: wageni 4 kati ya 5.",
+        "Jaribu: wageni 4 kati ya 5.",
+        "Nne: wageni 4 kati ya 5.",
+      ],
+      lines_en: ["4 of 5 love the tasting.", "Road: 4 of 5.", "Try: 4 of 5.", "Four: 4 of 5."],
     });
 
     const report = await t.engine.monthlyInsights();
 
     expect(report.sms_sw).toEqual([
       "Wageni 4 kati ya 5 wanapenda kuonja kahawa.",
-      "Boresha njia.",
-      "Jaribu.",
+      "Boresha njia: wageni 4 kati ya 5.",
+      "Jaribu: wageni 4 kati ya 5.",
     ]);
-    expect(report.sms_en).toEqual([
-      "4 of 5 visitors love the tasting.",
-      "Improve the road.",
-      "Try.",
-    ]);
+    expect(report.sms_en).toEqual(["4 of 5 love the tasting.", "Road: 4 of 5.", "Try: 4 of 5."]);
     expect(t.toNoor()).toEqual(report.sms_sw);
+  });
+
+  it("sends the fixed SMS when the AI leaves the counts out", async () => {
+    const t = await setup();
+    t.script.sms({
+      lines_sw: ["Wageni walipenda kuonja kahawa. Endelea hivyo."],
+      lines_en: ["Visitors loved the tasting. Keep it up."],
+    });
+
+    const report = await t.engine.monthlyInsights();
+
+    expect(report.sms_sw.every((l) => l.includes(`kati ya ${report.review_count}`))).toBe(true);
+    expect(report.sms_sw[0]).toMatch(/^Endelea: /);
   });
 
   it("sends the fixed SMS rather than a line cut short, whose English would say more", async () => {

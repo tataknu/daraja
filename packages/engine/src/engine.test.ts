@@ -387,7 +387,7 @@ describe("feedback and insights", () => {
       lang: "de",
       quote: "Bohnen selbst zu rösten",
     });
-    expect(t.toNoor().at(-1)).toBe("Wageni wanapenda kuchoma kahawa.");
+    expect(t.toNoor().at(-1)).toBe("Wageni 1 kati ya 1 wanapenda kuchoma kahawa.");
     expect(t.data.insightReports).toHaveLength(1);
   });
 

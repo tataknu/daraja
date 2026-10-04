@@ -220,7 +220,9 @@ async function smsFor(ctx: Ctx, c: Counts): Promise<{ sw: string[]; en: string[]
   const madeUp = lines.some((l) => `${l.sw} ${l.en}`.match(/\d+/g)?.some((d) => !given.has(d)));
   // A line longer than one SMS would reach Noor cut, while its English still read in full.
   const tooLong = lines.some((l) => l.sw.length > SMS_LENGTH);
-  if (!lines.length || madeUp || tooLong) return template(c);
+  // The counts are the point: a line without "… kati ya <reviews>" tells her nothing new.
+  const uncounted = lines.some((l) => !l.sw.toLowerCase().includes(`kati ya ${c.review_count}`));
+  if (!lines.length || madeUp || tooLong || uncounted) return template(c);
   return { sw: lines.map((l) => l.sw), en: lines.map((l) => l.en) };
 }
 
@@ -246,8 +248,8 @@ function template(c: Counts): { sw: string[]; en: string[] } {
   // An idea the AI couldn't word in Swahili (its grouping failed) is left out: Noor reads Swahili.
   if (idea && idea.label_sw !== idea.label_en) {
     lines.push({
-      sw: `Jaribu: ${idea.label_sw}. ${visitorsSw(idea.count)} ${verbSw(idea.count, "lipendekeza")}.`,
-      en: `Try: ${idea.label_en}. Suggested by ${idea.count} visitor${idea.count === 1 ? "" : "s"}.`,
+      sw: `Jaribu: ${idea.label_sw}. ${visitorsSw(idea.count, n)} ${verbSw(idea.count, "lipendekeza")}.`,
+      en: `Try: ${idea.label_en}. ${idea.count} of ${n} visitors suggested it.`,
     });
   }
   // Each line whole in one SMS: an idea's label comes from the AI and may be long.

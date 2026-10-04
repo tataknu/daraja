@@ -115,16 +115,19 @@ export function fakeAi() {
           "group_ideas",
           ideaGroups.length ? next(ideaGroups, "idea groups") : groupsByText(ideas),
         ),
-      writeInsightsSms: async () =>
-        used(
+      writeInsightsSms: async (summary) => {
+        // By default one line counting every review, as the real prompt asks.
+        const n = /Reviews: (\d+)/.exec(summary)?.[1] ?? "1";
+        return used(
           "write_insights_sms",
           sms.length
             ? next(sms, "insights SMS")
             : {
-                lines_sw: ["Wageni wanapenda kuchoma kahawa."],
-                lines_en: ["Visitors love roasting coffee."],
+                lines_sw: [`Wageni ${n} kati ya ${n} wanapenda kuchoma kahawa.`],
+                lines_en: [`${n} of ${n} visitors love roasting coffee.`],
               },
-        ),
+        );
+      },
     };
   };
   const ai = make();

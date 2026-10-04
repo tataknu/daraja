@@ -99,7 +99,7 @@ export async function groupIdeas(
 
 export async function writeInsightsSms(call: CallTool, summary: string): Promise<InsightsSms> {
   return call<InsightsSms>(
-    `You write SMS for Noor, a coffee farmer who reads simple Swahili on a basic phone. From this summary of her visitors' reviews, write 2-3 lines_sw, each under 140 characters, in plain everyday Swahili, copying each count phrase exactly as the summary gives it (e.g. "wageni 5 kati ya 9", "mgeni 1 kati ya 9"): first what visitors love (keep doing it), then what to improve, then one idea visitors suggested, to try. Skip a line the summary has nothing for.
+    `You write SMS for Noor, a coffee farmer who reads simple Swahili on a basic phone. From this summary of her visitors' reviews, write 2-3 lines_sw, each under 140 characters, in plain everyday Swahili, every line containing its count phrase copied exactly as the summary gives it (e.g. "wageni 5 kati ya 9", "mgeni 1 kati ya 9"): first what visitors love (keep doing it), then what to improve, then one idea visitors suggested, to try. Skip a line the summary has nothing for.
 Use only the summary and no other numbers. lines_en: the same lines in English.`,
     summary,
     "write_insights_sms",

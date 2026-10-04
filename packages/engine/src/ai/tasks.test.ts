@@ -41,7 +41,7 @@ describe("what the prompts ask for", () => {
     await writeInsightsSms(call, "Reviews: 9");
     expect(sent[0]?.system).toContain("each under 140 characters");
     expect(sent[0]?.system).toContain(
-      'copying each count phrase exactly as the summary gives it (e.g. "wageni 5 kati ya 9", "mgeni 1 kati ya 9")',
+      'every line containing its count phrase copied exactly as the summary gives it (e.g. "wageni 5 kati ya 9", "mgeni 1 kati ya 9")',
     );
   });
 });
