@@ -46,6 +46,15 @@ describe("Noor's keypad replies", () => {
     }
   });
 
+  it("never splits a booking number to find a choice", () => {
+    // "B141 hapana" must not approve B14; "B32 ndiyo" is for the AI to read, not B3 + 2.
+    expect(parseHostReply("B141 hapana", [waiting(14), waiting(141)])).toEqual({
+      kind: "free_text",
+    });
+    expect(parseHostReply("B32 ndiyo", [waiting(32)])).toEqual({ kind: "free_text" });
+    expect(parseHostReply("B14 12", [waiting(14)])).toEqual({ kind: "free_text" });
+  });
+
   it("says so when the named booking has nothing waiting", () => {
     expect(parseHostReply("B20 1", [waiting(14)])).toEqual({
       kind: "no_open_request",

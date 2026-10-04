@@ -47,7 +47,16 @@ DO $$ DECLARE t text; BEGIN
   END LOOP;
 END $$;
 
-ALTER PUBLICATION supabase_realtime ADD TABLE public.insight_reports, public.ai_calls;
+-- Live updates in the demo's Data, Insights and Metrics tabs need every table it reads in the
+-- realtime publication (one table missing makes the server reject the whole channel).
+DO $$ DECLARE t text; BEGIN
+  FOREACH t IN ARRAY ARRAY['insight_reports','ai_calls','pending_prompts','reminders_sent','farm_settings'] LOOP
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables
+                   WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = t) THEN
+      EXECUTE format('ALTER PUBLICATION supabase_realtime ADD TABLE public.%I', t);
+    END IF;
+  END LOOP;
+END $$;
 
 CREATE OR REPLACE FUNCTION public.reset_demo()
 RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$

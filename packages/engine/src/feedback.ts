@@ -48,9 +48,16 @@ export async function importReviews(
   ctx: Ctx,
   reviews: ReviewInput[],
   source: "guest" | "sample",
-): Promise<{ imported: number; analysed: number }> {
+): Promise<{ imported: number; skipped: number; analysed: number }> {
+  // Importing the same set twice must not double every count in the insights.
+  const stored = new Set(
+    (await ctx.repo.feedbackForInsights(1000))
+      .filter((f) => f.source === source)
+      .map((f) => f.text_original),
+  );
+  const fresh = reviews.filter((r) => !stored.has(r.text));
   let analysed = 0;
-  await inParallel(reviews, IMPORT_CONCURRENCY, async (r) => {
+  await inParallel(fresh, IMPORT_CONCURRENCY, async (r) => {
     let analysis = r.analysis ?? null;
     if (!analysis) {
       analysed++;
@@ -59,7 +66,7 @@ export async function importReviews(
     const lang = r.lang ?? analysis?.language ?? "und";
     await save(ctx, { bookingId: null, text: r.text, lang, source }, analysis);
   });
-  return { imported: reviews.length, analysed };
+  return { imported: fresh.length, skipped: reviews.length - fresh.length, analysed };
 }
 
 /** Stores a review with the points and ideas whose quotes check out; without analysis, as neutral. */

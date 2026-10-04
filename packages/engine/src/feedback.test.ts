@@ -119,6 +119,17 @@ describe("ingestFeedback", () => {
 });
 
 describe("importReviews", () => {
+  it("skips reviews it already has, so loading the samples twice changes nothing", async () => {
+    const t = setup();
+    const reviews = [{ text: GERMAN, lang: "de", analysis: reviewSays() }];
+
+    await t.engine.importReviews(reviews, "sample");
+    const again = await t.engine.importReviews(reviews, "sample");
+
+    expect(again).toEqual({ imported: 0, skipped: 1, analysed: 0 });
+    expect(t.data.feedback).toHaveLength(1);
+  });
+
   it("uses a stored analysis without calling the AI, and still checks its quotes", async () => {
     const t = setup();
     const analysis = reviewSays({
@@ -130,7 +141,7 @@ describe("importReviews", () => {
 
     const result = await t.engine.importReviews([{ text: GERMAN, lang: "de", analysis }], "sample");
 
-    expect(result).toEqual({ imported: 1, analysed: 0 });
+    expect(result).toEqual({ imported: 1, skipped: 0, analysed: 0 });
     expect(t.data.aiCalls).toEqual([]);
     expect(t.data.feedback[0]).toMatchObject({
       source: "sample",
@@ -149,7 +160,7 @@ describe("importReviews", () => {
 
     const result = await t.engine.importReviews([...reviews, { text: "Avis", lang: "fr" }]);
 
-    expect(result).toEqual({ imported: 7, analysed: 7 });
+    expect(result).toEqual({ imported: 7, skipped: 0, analysed: 7 });
     expect(running.most).toBe(4);
     const row = (text: string) => t.data.feedback.find((f) => f.text_original === text);
     expect(row("Review 0")).toMatchObject({ lang: "ja", sentiment: "positive" });

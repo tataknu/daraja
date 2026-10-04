@@ -47,7 +47,8 @@ export function parseHostReply(text: string, open: Prompt[]): HostCommand {
     };
   }
   const only = waiting.length === 1 ? waiting[0] : undefined;
-  const coded = /^\s*B?\s*(\d+)[\s\-:.,/]*([1-3])\b/i.exec(text);
+  // (?!\d): never split a booking number to find a choice ("B141 …" is not B14 + 1).
+  const coded = /^\s*B?\s*(\d+)(?!\d)[\s\-:.,/]*([1-3])\b/i.exec(text);
   const pick =
     bareChoice && only?.booking_id
       ? { bookingId: only.booking_id, choice: Number(bareChoice[1]) }

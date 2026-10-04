@@ -114,9 +114,11 @@ export function InsightsView() {
       "samples",
       async () => {
         const n = importedCount(await loadSamples());
-        toast.success(
-          n === null ? "Sample reviews loaded" : `${plural(n, "sample review")} loaded`,
-        );
+        if (n === 0) toast("The sample reviews are already loaded");
+        else
+          toast.success(
+            n === null ? "Sample reviews loaded" : `${plural(n, "sample review")} loaded`,
+          );
       },
       "Couldn’t load the sample reviews",
     );
