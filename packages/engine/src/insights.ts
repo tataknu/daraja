@@ -4,7 +4,6 @@
 import type { Aspect, ReviewPoint } from "./ai/types";
 import type { Ctx } from "./context";
 import { quoteInText } from "./feedback";
-import { sms160 } from "./format";
 import type { FeedbackRow } from "./repo";
 import type { InsightItem, InsightQuote, InsightReport } from "./types";
 
@@ -15,6 +14,7 @@ const REVIEW_LIMIT = 200;
 const ITEMS_PER_LIST = 5;
 const QUOTES_PER_ITEM = 3;
 const SMS_LINES = 3;
+const SMS_LENGTH = 160; // one segment, as in sms160
 
 // How each aspect is named in the report and the SMS. The Swahili needs a native speaker's check.
 const ASPECT_LABELS: Record<Aspect, { label_en: string; label_sw: string }> = {
@@ -188,12 +188,16 @@ function pickQuotes(quotes: InsightQuote[]): InsightQuote[] {
   return [...firstPerLang, ...rest].slice(0, QUOTES_PER_ITEM);
 }
 
-/** Labels and counts only, so the SMS call costs the same however many reviews there are. */
+/**
+ * Labels and counts only, so the SMS call costs the same however many reviews there are. Each
+ * count is the phrase the SMS should copy: "wageni 4 kati ya 5", 4 of the 5 visitors.
+ */
 function summaryOf(c: Counts): string {
+  const n = c.review_count;
   const list = (items: InsightItem[]) =>
     items
       .slice(0, 3)
-      .map((i) => `${i.label_sw} (${i.label_en}): ${i.count}`)
+      .map((i) => `${i.label_sw} (${i.label_en}): ${visitorsSw(i.count, n).toLowerCase()}`)
       .join("; ") || "none";
   return [
     `Reviews: ${c.review_count}`,
@@ -214,8 +218,10 @@ async function smsFor(ctx: Ctx, c: Counts): Promise<{ sw: string[]; en: string[]
     .slice(0, SMS_LINES);
   const given = new Set(summary.match(/\d+/g));
   const madeUp = lines.some((l) => `${l.sw} ${l.en}`.match(/\d+/g)?.some((d) => !given.has(d)));
-  if (!lines.length || madeUp) return template(c);
-  return { sw: lines.map((l) => sms160(l.sw)), en: lines.map((l) => l.en) };
+  // A line longer than one SMS would reach Noor cut, while its English still read in full.
+  const tooLong = lines.some((l) => l.sw.length > SMS_LENGTH);
+  if (!lines.length || madeUp || tooLong) return template(c);
+  return { sw: lines.map((l) => l.sw), en: lines.map((l) => l.en) };
 }
 
 /** The SMS without AI: fixed Swahili around the top label and count of each list. */
@@ -237,20 +243,23 @@ function template(c: Counts): { sw: string[]; en: string[] } {
       en: `Improve: ${improve.label_en}. ${improve.count} of ${n} visitors mentioned it.`,
     });
   }
-  if (idea) {
+  // An idea the AI couldn't word in Swahili (its grouping failed) is left out: Noor reads Swahili.
+  if (idea && idea.label_sw !== idea.label_en) {
     lines.push({
       sw: `Jaribu: ${idea.label_sw}. ${visitorsSw(idea.count)} ${verbSw(idea.count, "lipendekeza")}.`,
       en: `Try: ${idea.label_en}. Suggested by ${idea.count} visitor${idea.count === 1 ? "" : "s"}.`,
     });
   }
-  if (!lines.length) {
+  // Each line whole in one SMS: an idea's label comes from the AI and may be long.
+  const fit = lines.filter((l) => l.sw.length <= SMS_LENGTH);
+  if (!fit.length) {
     const s = c.sentiment;
-    lines.push({
+    fit.push({
       sw: `Maoni ya wageni: ${n}. Wamefurahi: ${s.positive}. Hawakufurahi: ${s.negative}.`,
       en: `Visitor reviews: ${n}. Happy: ${s.positive}. Unhappy: ${s.negative}.`,
     });
   }
-  return { sw: lines.map((l) => sms160(l.sw)), en: lines.map((l) => l.en) };
+  return { sw: fit.map((l) => l.sw), en: fit.map((l) => l.en) };
 }
 
 /** "Wageni 5 kati ya 9", or "Mgeni 1" for one visitor. */

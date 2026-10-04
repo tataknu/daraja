@@ -78,6 +78,18 @@ const REVIEWS = [
   ]),
 ];
 
+/** The fixed SMS for REVIEWS and its English: what Noor gets when the AI's wording can't be used. */
+const FIXED_SW = [
+  "Endelea: Kuonja kahawa. Wageni 4 kati ya 5 walipenda.",
+  "Boresha: Njia ya kufika shambani. Wageni 2 kati ya 5 walitaja.",
+  "Jaribu: [sw] sell beans to take home. Wageni 2 walipendekeza.",
+];
+const FIXED_EN = [
+  "Keep: Tasting the coffee. 4 of 5 visitors loved it.",
+  "Improve: Finding the farm. 2 of 5 visitors mentioned it.",
+  "Try: sell beans to take home. Suggested by 2 visitors.",
+];
+
 /** The AI with some tasks replaced, also in the metered copies the engine makes. */
 function replacing(ai: Ai, tasks: Partial<Pick<Ai, "groupIdeas" | "writeInsightsSms">>): Ai {
   return { ...ai, ...tasks, withUsage: (l) => replacing(ai.withUsage(l), tasks) };
@@ -210,22 +222,47 @@ describe("monthly insights", () => {
     expect((await t.engine.monthlyInsights()).dropped_quotes).toBe(3);
   });
 
-  it("keeps the SMS to three lines of one segment each", async () => {
+  it("keeps the SMS to three lines", async () => {
     const t = await setup();
     t.script.sms({
-      lines_sw: ["Wageni 4 kati ya 5 wanapenda kuonja kahawa.", "x".repeat(200), "Jaribu.", "Nne."],
-      lines_en: ["4 of 5 visitors love the tasting.", "x", "Try.", "Four."],
+      lines_sw: ["Wageni 4 kati ya 5 wanapenda kuonja kahawa.", "Boresha njia.", "Jaribu.", "Nne."],
+      lines_en: ["4 of 5 visitors love the tasting.", "Improve the road.", "Try.", "Four."],
     });
 
     const report = await t.engine.monthlyInsights();
 
-    expect(report.sms_sw).toHaveLength(3);
-    expect(report.sms_sw.every((l) => l.length <= 160)).toBe(true);
-    expect(report.sms_en).toEqual(["4 of 5 visitors love the tasting.", "x", "Try."]);
+    expect(report.sms_sw).toEqual([
+      "Wageni 4 kati ya 5 wanapenda kuonja kahawa.",
+      "Boresha njia.",
+      "Jaribu.",
+    ]);
+    expect(report.sms_en).toEqual([
+      "4 of 5 visitors love the tasting.",
+      "Improve the road.",
+      "Try.",
+    ]);
     expect(t.toNoor()).toEqual(report.sms_sw);
   });
 
-  it("phrases only labels and counts, never the reviews themselves", async () => {
+  it("sends the fixed SMS rather than a line cut short, whose English would say more", async () => {
+    // 170 characters: cut to one SMS, Noor would read "… Mgeni 1..." and never "kati ya 5".
+    const long =
+      "Wageni 4 kati ya 5 wanapenda kuonja kahawa".padEnd(150, ", sana") + ". Mgeni 1 kati ya 5.";
+    expect(long).toHaveLength(170);
+    const t = await setup();
+    t.script.sms({
+      lines_sw: [long, "Boresha njia."],
+      lines_en: ["4 of 5 visitors love the tasting, and 1 of 5 too.", "Improve the road."],
+    });
+
+    const report = await t.engine.monthlyInsights();
+
+    expect(report.sms_sw).toEqual(FIXED_SW);
+    expect(report.sms_en).toEqual(FIXED_EN);
+    expect(t.toNoor()).toEqual(FIXED_SW);
+  });
+
+  it("phrases only labels and counts, each count as the Swahili phrase to copy", async () => {
     const summaries: string[] = [];
     const t = await setup(REVIEWS, {
       writeInsightsSms: async (summary) => {
@@ -239,19 +276,14 @@ describe("monthly insights", () => {
     expect(summaries).toEqual([
       [
         "Reviews: 5",
-        "Visitors who loved: Kuonja kahawa (Tasting the coffee): 4; Mandhari na matembezi (Views and the walk): 2",
-        "Visitors who wished it different: Njia ya kufika shambani (Finding the farm): 2; Muda wa ziara (Length and pace): 1; Choo, kivuli na viti (Toilets, shade and seats): 1",
-        "Visitors who suggested: [sw] sell beans to take home (sell beans to take home): 2; [sw] roast your own coffee (roast your own coffee): 1",
+        "Visitors who loved: Kuonja kahawa (Tasting the coffee): wageni 4 kati ya 5; Mandhari na matembezi (Views and the walk): wageni 2 kati ya 5",
+        "Visitors who wished it different: Njia ya kufika shambani (Finding the farm): wageni 2 kati ya 5; Muda wa ziara (Length and pace): mgeni 1 kati ya 5; Choo, kivuli na viti (Toilets, shade and seats): mgeni 1 kati ya 5",
+        "Visitors who suggested: [sw] sell beans to take home (sell beans to take home): wageni 2 kati ya 5; [sw] roast your own coffee (roast your own coffee): mgeni 1 kati ya 5",
       ].join("\n"),
     ]);
   });
 
   it("falls back to a fixed Swahili SMS when the AI fails or makes up a number", async () => {
-    const expected = [
-      "Endelea: Kuonja kahawa. Wageni 4 kati ya 5 walipenda.",
-      "Boresha: Njia ya kufika shambani. Wageni 2 kati ya 5 walitaja.",
-      "Jaribu: [sw] sell beans to take home. Wageni 2 walipendekeza.",
-    ];
     const t = await setup();
     t.script.sms(new Error("gateway down"));
     t.script.sms({
@@ -259,12 +291,13 @@ describe("monthly insights", () => {
       lines_en: ["7 of 5 visitors love the tasting."],
     });
 
-    expect((await t.engine.monthlyInsights()).sms_sw).toEqual(expected);
-    expect(t.toNoor()).toEqual(expected);
-    expect((await t.engine.monthlyInsights()).sms_sw).toEqual(expected);
+    expect((await t.engine.monthlyInsights()).sms_sw).toEqual(FIXED_SW);
+    expect(t.toNoor()).toEqual(FIXED_SW);
+    const again = await t.engine.monthlyInsights();
+    expect([again.sms_sw, again.sms_en]).toEqual([FIXED_SW, FIXED_EN]);
   });
 
-  it("still reports when ideas can't be grouped, one visitor is singular", async () => {
+  it("still reports when ideas can't be grouped, and keeps their English out of the SMS", async () => {
     const t = await setup([REVIEWS[2]!]);
     t.script.ideaGroups(new Error("gateway down"));
     t.script.sms(new Error("gateway down"));
@@ -272,10 +305,40 @@ describe("monthly insights", () => {
     const report = await t.engine.monthlyInsights();
 
     expect(report.next.map((i) => [i.key, i.count])).toEqual([["roast your own coffee", 1]]);
-    expect(report.sms_sw).toEqual([
-      "Endelea: Kuonja kahawa. Mgeni 1 kati ya 1 alipenda.",
-      "Jaribu: roast your own coffee. Mgeni 1 alipendekeza.",
+    // Without its grouping the idea has no Swahili label: Noor's SMS leaves it out.
+    expect(report.sms_sw).toEqual(["Endelea: Kuonja kahawa. Mgeni 1 kati ya 1 alipenda."]);
+
+    const ideaOnly = review(
+      "es",
+      "positive",
+      "Sería genial poder tostar nuestro propio café.",
+      [],
+      [["roast your own coffee", "poder tostar nuestro propio café"]],
+    );
+    const u = await setup([ideaOnly]);
+    u.script.ideaGroups(new Error("gateway down"));
+    u.script.sms(new Error("gateway down"));
+    expect((await u.engine.monthlyInsights()).sms_sw).toEqual([
+      "Maoni ya wageni: 1. Wamefurahi: 1. Hawakufurahi: 0.",
     ]);
+  });
+
+  it("leaves out an idea whose Swahili label is too long for one SMS", async () => {
+    const label_sw = "Ongeza ".repeat(25).trim();
+    const t = await setup(REVIEWS, {
+      groupIdeas: async (ideas) => ({
+        groups: [{ label_en: "A long idea", label_sw, ids: ideas.map((i) => i.id) }],
+      }),
+      writeInsightsSms: async () => {
+        throw new Error("gateway down");
+      },
+    });
+
+    const report = await t.engine.monthlyInsights();
+
+    expect(report.next[0]).toMatchObject({ label_sw, count: 3 });
+    expect(report.sms_sw).toEqual(FIXED_SW.slice(0, 2));
+    expect(report.sms_en).toEqual(FIXED_EN.slice(0, 2));
   });
 
   it("without points or ideas, sends sentiment counts without calling the AI", async () => {
