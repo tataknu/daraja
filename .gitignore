@@ -40,3 +40,6 @@ packages/db/supabase/.temp
 
 # Eval cache: model answers, never paid for twice (packages/eval)
 packages/eval/results/.cache/
+
+# Vercel build output and local project link
+.vercel

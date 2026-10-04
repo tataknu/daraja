@@ -38,3 +38,29 @@ Server secrets (`SUPABASE_SERVICE_ROLE_KEY`, `LOVABLE_API_KEY`, `TWILIO_AUTH_TOK
 
 This app was generated with [Lovable](https://lovable.dev). Lovable syncs `main` and expects the
 app at the repository root, so it cannot edit this monorepo layout. See [AGENTS.md](../AGENTS.md).
+
+## Deploying to Vercel
+
+The build targets Vercel by itself: on Vercel, Nitro detects the platform and writes Vercel's build
+output (Node runtime); elsewhere it falls back to a Cloudflare Worker. `apps/web/vercel.json` pins
+the install and build commands for this monorepo.
+
+1. **Database.** Create a Supabase project and apply the migrations in order (they create the
+   tables, the demo seed, row-level security and the realtime publication):
+   `make db-migrate DB_URL="postgresql://postgres:<password>@db.<project-ref>.supabase.co:5432/postgres"`
+2. **Vercel project.** Import the repository, set **Root Directory** to `apps/web`, and leave the
+   framework preset on "Other" (`vercel.json` sets the commands). To deploy this branch to
+   production, set it as the production branch under Settings → Git.
+3. **Environment variables** (Production and Preview):
+
+   | Variable                                                                         | Value                                                                             |
+   | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+   | `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_PROJECT_ID` | The new project's URL, publishable (anon) key and project ref; read at build time |
+   | `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`          | The same URL and keys, for the server; the service key never reaches the browser  |
+   | `AI_GATEWAY_URL`, `AI_MODEL`, `OPENAI_API_KEY`                                   | `https://api.openai.com/v1/responses`, `gpt-5.4-mini`, your key                   |
+   | `LOVABLE_CRON_SECRET`                                                            | Any long random string; authenticates the timers hook                             |
+   | `PHASE2_ENABLED`                                                                 | `false`: the real SMS and email webhooks stay off                                 |
+
+These override the Lovable project values in the committed `apps/web/.env`. Note that the demo
+resets its shared data every time someone opens it, so a public deployment suits one presenter at
+a time.
