@@ -260,6 +260,7 @@ export type Database = {
           ideas: Json
           lang: string | null
           points: Json
+          quotes_dropped: number
           sentiment: string | null
           source: string
           text_original: string
@@ -273,6 +274,7 @@ export type Database = {
           ideas?: Json
           lang?: string | null
           points?: Json
+          quotes_dropped?: number
           sentiment?: string | null
           source?: string
           text_original: string
@@ -286,6 +288,7 @@ export type Database = {
           ideas?: Json
           lang?: string | null
           points?: Json
+          quotes_dropped?: number
           sentiment?: string | null
           source?: string
           text_original?: string

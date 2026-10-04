@@ -243,6 +243,7 @@ export function memoryRepo(clock: () => Date) {
           points: copy(f.points ?? []),
           ideas: copy(f.ideas ?? []),
           source: f.source ?? "guest",
+          quotes_dropped: f.quotes_dropped ?? 0,
         }));
     },
     async saveInsightReport(report) {

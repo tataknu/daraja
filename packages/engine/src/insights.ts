@@ -91,8 +91,10 @@ export async function monthlyInsights(ctx: Ctx): Promise<InsightReport> {
 function checkQuotes(reviews: FeedbackRow[]) {
   const points: CheckedPoint[] = [];
   const ideas: CheckedIdea[] = [];
+  // Quotes dropped when each review arrived, plus any that no longer match now.
   let dropped = 0;
   for (const r of reviews) {
+    dropped += r.quotes_dropped;
     const quoteOf = (x: { quote: string; quote_en: string }): InsightQuote | null => {
       if (quoteInText(x.quote, r.text_original)) {
         return { feedback_id: r.id, lang: r.lang ?? "und", quote: x.quote, quote_en: x.quote_en };

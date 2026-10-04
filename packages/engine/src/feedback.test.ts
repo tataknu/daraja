@@ -96,6 +96,7 @@ describe("ingestFeedback", () => {
       text_translated: "Roasting the beans ourselves was great! The way was hard to find.",
       themes: ["coffee_process", "access"],
       source: "guest",
+      quotes_dropped: 2, // the lunch point and the coffee-to-go idea
     });
   });
 

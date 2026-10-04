@@ -200,7 +200,7 @@ export function supabaseRepo(db: Db): Repo {
       const { data, error } = await db
         .from("feedback")
         .select(
-          "id, created_at, booking_id, lang, text_original, text_translated, sentiment, points, ideas, source",
+          "id, created_at, booking_id, lang, text_original, text_translated, sentiment, points, ideas, source, quotes_dropped",
         )
         .order("created_at", { ascending: false })
         .limit(limit);

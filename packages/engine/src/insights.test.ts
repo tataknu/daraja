@@ -194,6 +194,22 @@ describe("monthly insights", () => {
     expect(report.next).toEqual([]);
   });
 
+  it("adds the quotes dropped when each review arrived", async () => {
+    const t = await setup([]);
+    await t.repo.saveFeedback({
+      booking_id: null,
+      text_original: "Wonderful tasting.",
+      lang: "en",
+      text_translated: "Wonderful tasting.",
+      themes: ["tasting"],
+      sentiment: "positive",
+      points: [{ aspect: "tasting", polarity: "loved", quote: "Wonderful tasting", quote_en: "" }],
+      quotes_dropped: 3,
+    });
+
+    expect((await t.engine.monthlyInsights()).dropped_quotes).toBe(3);
+  });
+
   it("keeps the SMS to three lines of one segment each", async () => {
     const t = await setup();
     t.script.sms({

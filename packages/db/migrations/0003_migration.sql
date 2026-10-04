@@ -3,7 +3,9 @@
 ALTER TABLE public.feedback
   ADD COLUMN IF NOT EXISTS points jsonb NOT NULL DEFAULT '[]'::jsonb,
   ADD COLUMN IF NOT EXISTS ideas jsonb NOT NULL DEFAULT '[]'::jsonb,
-  ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'guest';
+  ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'guest',
+  -- Quotes the AI returned that were not in the review text, and were dropped.
+  ADD COLUMN IF NOT EXISTS quotes_dropped int NOT NULL DEFAULT 0;
 
 CREATE TABLE IF NOT EXISTS public.insight_reports (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

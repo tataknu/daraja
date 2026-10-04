@@ -44,6 +44,8 @@ export interface NewFeedback {
   ideas?: ReviewIdea[];
   /** "guest" for feedback emails, "sample" for imported sample reviews. */
   source?: "guest" | "sample";
+  /** Quotes the AI returned that weren't in the review, and were dropped. */
+  quotes_dropped?: number;
 }
 
 /** A stored review, as the insights report reads it. */
@@ -58,6 +60,7 @@ export interface FeedbackRow {
   points: ReviewPoint[];
   ideas: ReviewIdea[];
   source: string;
+  quotes_dropped: number;
 }
 
 /** One model call, linked to what triggered it. */

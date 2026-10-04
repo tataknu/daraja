@@ -81,6 +81,9 @@ async function save(
     points,
     ideas,
     source: review.source,
+    quotes_dropped: analysis
+      ? analysis.points.length - points.length + analysis.ideas.length - ideas.length
+      : 0,
   });
   return { id, sentiment, language: review.lang };
 }
